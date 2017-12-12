@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html >
+<style type="text/css">
+text{
+	font: 14px sans-serif;
+}
+
+</style>
+<head>
+  
+</head>
+
+<body>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
+  	//variables for page sizing
+  	var margin = {top: 20, right: 20, bottom: 20, left: 40};
+  	var width = 500 - margin.left  - margin.right;
+  	var height = 500 - margin.top - margin.bottom;
+
+  	var svg = d3.select("body")
+        .append("div")
+        .classed("svg-container", true) //container class to make it responsive
+        .append("svg")
+        //responsive SVG needs these 2 attributes and no width and height attr
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 1000 1000")
+        //class to make it responsive
+        .classed("svg-content-responsive", true)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+       
+  	// set up the svg object (the "canvas")
+  	//var svg = d3.select("body").append("svg")
+       // .attr("width", width + margin.left + margin.right)
+        //.attr("height", height + margin.top + margin.bottom)
+      //.append("g")
+        //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    function star(id, name, teq, eccen, mag, orbit){
+    	this.id = id;
+    	this.name = name;
+    	this.mag = mag;
+       
+    }
+
+    function evolve(interval){
+        var G = 100.0; // looks just about right 
+        var Mstar= 1.0;
+
+        var relative_x = this.x - (w/2); //x_star - x_planet
+        var relative_y = this.y - (h/2);
+
+        var rsq = Math.pow(relative_x, 2) + Math.pow(relative_y,2);
+
+        var r = Math.pow(rsq, 0.5);
+
+        var ax = ((-G*Mstar)/rsq) *(relative_x/r);
+        var ay = ((-G*Mstar)/rsq) *(relative_y/r);
+
+        this.vx = this.vx + interval*ax;
+        this.vy = this.vy + interval*ay;
+        this.x = this.x + interval*vx;
+        this.y = this.y + interval*vy;
+
+      }
+
+      function Planet(mass, x, y, vx, vy){
+        this.mass = mass; //this refers to the specific object being created
+        this.x = x;
+        this.y = y;
+        this.vx = vx
+        this.vy = vy
+        this.teq = teq;
+        this.eccen = eccen;
+        this.orbit = orbit;
+        this.evolve = evolve; 
+      }
+    var updateInterval=.25; //milliseconds
+
+    /*var planet1 = new Planet(mass=0.1, x=w/4, y=h/4, vx=0.5, vy=0.1);
+    var planet2 = new Planet(mass=0.1, x=(3*w)/4, y=(3*h)/4, vx=-0.5, vy=-0.1);*/
+
+    /*var drawnPlanet1 = svg.append("circle")
+          .attr("cx",planet1.x)
+          .attr("cy",planet1.y)
+          .style("fill","steelblue")
+          .style("stroke","black")
+          .style("r","5px");
+
+    var drawnPlanet2 = svg.append("circle")
+          .attr("cx",planet2.x)
+          .attr("cy",planet2.y)
+          .style("fill","red")
+          .style("stroke","black")
+          .style("r","5px");*/
+
+    //var planetArray = [planet1, planet2];
+    var drawnPlanetArray = [drawnPlanet1, drawnPlanet2];
+
+    function timeStep(){
+      planet1.evolve(interval=updateInterval);
+      drawnPlanet1.attr("cx",planet1.x)
+          .attr("cy",planet1.y);
+
+        planet2.evolve(interval=updateInterval);
+      drawnPlanet2.attr("cx",planet2.x)
+          .attr("cy",planet2.y);
+
+        for (i=0; i<planetArray.length; i++){
+          var indivPlanet = planetArray[i];
+          var indivDrawnPlanet = drawnPlanetArray[i];
+
+          indivPlanet.evolve(interval=updateInterval);
+        indivDrawnPlanet.attr("cx",indivPlanet.x)
+              .attr("cy",indivPlanet.y);
+        }
+    }
+
+    setInterval(timeStep, updateInterval) //calls timeStep every "interval" milliseconds
+
+    // create a variable to hold an array of "star" objects
+    var keplerData = []
+    d3.csv("./KOIarchive_stellar.csv", function(csvdata){
+
+    for(i=0; i<csvdata.length; i++){
+      // the "+" is a shorthamd for forcing js to interpret something as a number instead of a string
+      var rowStar = new star(id = +csvdata[i].kepid,
+                  name = csvdata[i].kepoi_name,
+                  teq = +csvdata[i].koi_teq,
+                  eccen = +csvdata[i].koi_eccen,
+                  orbit = +csvdata[i].koi_orbit,
+                  mag = +csvdata[i].koi_kepmag);}
+
+      //append star object to keplerData
+      keplerData.push(rowStar);
+    }
+  }
+  )
+</script>
+</body>
+</html>
