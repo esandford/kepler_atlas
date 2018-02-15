@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+	<!-- Google fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+	
+	<link type="text/css" rel="stylesheet" href="css/style.css"/>
+	<link type="text/css" rel="stylesheet" href="css/tooltip.css"/>
+	<link type="text/css" rel="stylesheet" href="css/infoBox.css"/>
+
+  </head>
+  <body>
+
+	<!-- creates box to hold planets animation -->
+    <div id="planetarium"></div>
+
+	<!-- Create div structure for Tooltip -->
+	<div id="tooltip">
+		<div id="tooltip-Container">
+			<div class="tooltip-planet"></div>
+			<div class="tooltip-rule"></div>
+			<div class="tooltip-year"></div>
+			<div id="tooltip-radius"	class="tooltip-info"></div>
+			<div id="tooltip-dist" 		class="tooltip-info"></div>
+			<div id="tooltip-period" 	class="tooltip-info"></div>
+			<div id="tooltip-eccen" 	class="tooltip-info"></div>
+			<div id="tooltip-class" 	class="tooltip-info"></div>
+			<div class="tooltip-tail"></div>
+		</div>
+
+	</div>
+	<!-- Separate functions that became too big for the main script -->
+	<!-- <script src="js/helperFunctions.js"></script>	
+	<script src="js/exoplanets.js"></script>	<!data -->
+	<!-- <script src="js/showTooltip.js"></script>	
+	<script src="js/gradients.js"></script>
+	<script src="js/legend.js"></script>
+	<script src="js/progressCircle.js"></script>	 -->
+	
+	<script src="js/KOIarchive_stellar.js"></script>
+
+	<script src="js/galacticCoords.js"></script>
+
+    <script src="js/mainCode.js"></script>
+
+
+  </body>
+
+</html>
