@@ -5,6 +5,9 @@
 //but
 // !function(t,n){return;} returns True
 ! function(t, n) {
+	//console.log("t is " + t); //t is [object Window]
+	//console.log("n is " + n); //n is function defined below
+
 	//"ternary operator." example:
 	//condition ? value-if-true : value-if-false
 
@@ -29,15 +32,24 @@
   	//	(x < 5) 			  ? "small"  :
   	//	((x > 5) && (x < 10)) ? "medium" :
     //       		                "big"    ;
-
+    
+    //console.log(typeof exports); //undefined
+    //console.log(typeof module); //undefined
+    //console.log(typeof define); //undefined
+    //console.log(define["exports"], n)
 
     ("object" == typeof exports && "undefined" != typeof module) ? n(exports)             : 
     ("function" == typeof define && define.amd) 				 ? define(["exports"], n) : 
-    															   (n(t.d3_x3dom_axis = t.d3_x3dom_axis || {}))
+    															   ( n(t.d3_x3dom_axis = t.d3_x3dom_axis || {}) )
 	}(this, function(t) {
+		//console.log("this is " + this); //this is [object Window]
+		//console.log("t is " + t); //t is [object Object]
 		"use strict";
 
 		function n(t, n, e) {
+			console.log("t is " + t); //t is x, t is y, t is y, t is z
+			console.log("n is " + n); //n is z, n is z, n is x, n is x
+			console.log("e is " + e); //e is function r(t){return i(+t)} (always)
 		    function l(a) {
 			function l(t) {
 			    var n;

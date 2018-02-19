@@ -113,7 +113,7 @@ var planets = planetContainer.selectAll("g.planet")
 				.attr("cx", function(d) {
 					var x = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[0]; // "d" = the planet I'm currently on, in the implicit for-loop
 					var scaledX = xScale(x)
-					console.log(x);
+					//console.log(x);
 					return scaledX;}) // "d" = the planet I'm currently on, in the implicit for-loop
 				.attr("cy", function(d) {return yScale(convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[1]);}) // "d" = the planet I'm currently on, in the implicit for-loop
 				.style("fill", "white") // d.koi_steff or d.nkoi
