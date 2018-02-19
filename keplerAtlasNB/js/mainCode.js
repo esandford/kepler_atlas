@@ -101,41 +101,44 @@ var orbits = orbitsContainer.selectAll("g.orbit") //select everything of type g 
 				.style("stroke-opacity", 0);*/
 
 //Drawing the planets			
+//Drawing the planets			
 var planetContainer = container.append("g").attr("class","planetContainer");
 var planets = planetContainer.selectAll("g.planet")
-				.data(planets).enter()					
+				.data(planets).enter()
+				//.append("g")
+				//.attr("class", "planetWrap")					
 				.append("circle")
 				.attr("class", "planet")
-				//.attr("r", function(d) {return radiusSizer*d.Radius;})//rScale(d.Radius);})
-				//.attr("cx", function(d) {return d.x;})
-				//.attr("cy", function(d) {return d.y;})
-				.attr("r", 2) //  d.koi_srad
+				// .attr("r", function(d) {return radiusSizer*d.Radius;})//rScale(d.Radius);})
+				// .attr("cx", function(d) {return d.x;})											//doesn't work because we don't have the data to plot
+				// .attr("cy", function(d) {return d.y;})
+				.attr("r",  function(d) {return d.koi_srad;}) //set radius to d.koi_srad
 				.attr("cx", function(d) {
-					var x = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[0]; // "d" = the planet I'm currently on, in the implicit for-loop
-					var scaledX = xScale(x)
+					var x = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[0]
 					//console.log(x);
-					return scaledX;}) // "d" = the planet I'm currently on, in the implicit for-loop
-				.attr("cy", function(d) {return yScale(convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[1]);}) // "d" = the planet I'm currently on, in the implicit for-loop
-				.style("fill", "white") // d.koi_steff or d.nkoi
-				//.style("fill", function(d){return "url(#gradientRadial-" + d.ID + ")";}) //what is going on here?
-				//.style("opacity", planetOpacity) // make this depend on Z
-				.style("opacity", function(d) {
-					var z = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[2];
-					if (z > 2000){
-						console.log(d.kepid);
-					}
-					return opacityScale(z);})
-				.style("stroke-opacity", 0)
+					return xScale(x);}) 	//"d" = the planet I'm currently on, in the implicit for-loop
+				.attr("cy", function(d) {
+					var y = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[1];
+					//console.log(y);
+					return yScale(y);})
+				.style("fill", function(d) {return colorScale(d.koi_steff)}) //d.koi_steff
+				// .style("fill", function(d){return "url(#gradientRadial-" + d.ID + ")";}) 		//no more d.ID
+					// .style("opacity", function(d) {
+					// 	var z = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[2];
+					// 	// console.log(z)
+					// 	return opacityScale(z);})
+				.style("opacity", .6)
+				.style("stroke-opacity", 0)//depend on z 
 				.style("stroke-width", "3px")
 				.style("stroke", "white")
-				//.on("mouseover", function(d, i) {
-				//	stopTooltip = false					
-				//	showTooltip(d);
-				//	showEllipse(d, i, 0.8);
-				//})
-				//.on("mouseout", function(d, i) {
-				//	showEllipse(d, i, 0);
-				//});
+				// .on("mouseover", function(d, i) {		/relies on showEllipse function in helperFunctions.js
+				// 	stopTooltip = false					
+				// 	showTooltip(d);
+				// 	showEllipse(d, i, 0.8);
+				// })
+				// .on("mouseout", function(d, i) {
+				// 	showEllipse(d, i, 0);
+				// });
 
 //Remove tooltip when clicking anywhere in body
 d3.select("svg")
