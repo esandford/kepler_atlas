@@ -22,7 +22,26 @@ var play =  progressWrapper.append("path")
 	.attr("transform", "translate(1,0) rotate(90)")
 	.style("opacity", 0);
 
+/*
+//Create pause icon
+var pause = container.selectAll(".pause")
+				.data([-5,2])
+				.enter()
+				.append("rect")
+				.attr("transform", "translate(0,-200)")
+				.attr("x", function (d) {console.log(d); return d;})
+				.attr("y",  -5)
+				.attr("width", 3)
+				.attr("height", 10)
+				.style("fill", "white");
+*/
 
+/*
+//The circle, already created in main script
+var arc = d3.svg.arc()
+	.innerRadius(10)
+	.outerRadius(12);
+*/
 
 //Create the arc around the play button
 var progress = progressWrapper.append("path")

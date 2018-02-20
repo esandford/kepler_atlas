@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
-  <head>
+  <head profile="http://www.w3.org/2005/10/profile"> <!-- favicon -->
+	<link rel="icon" type="image/x-icon" href="http://www.noteaproductions.com/art/SC%20photos/planets/Planet___Alaerin_by_Stock7000.jpg">
     <meta charset="utf-8" />
 
-    <!-- load in google and d4 libraries-->
-
+    <!-- load in Google and d3 libraries -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
 	<!-- Google fonts -->
 	<link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
 	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+
 	
+	<!-- load in custom css -->
 	<link type="text/css" rel="stylesheet" href="css/style.css"/>
 	<link type="text/css" rel="stylesheet" href="css/tooltip.css"/>
 	<link type="text/css" rel="stylesheet" href="css/infoBox.css"/>
@@ -18,16 +20,11 @@
   </head>
   <body>
 
-	<!-- Button to start introduction -->
-	<!-- <div id="start" class="bigButton"><span>INTRODUCTION</span></div> -->
-	
-	<!-- Chart -->
-	<!-- creates a box to hold the "planetarium", i.e. the planets animation. like an svg "canvas"-->
+	<!-- create a box to hold the "planetarium", i.e. the planets animation -->
     <div id="planetarium"></div>
 
-	
-	<!-- nested divs for the tooltip: 9, within "tooltip-container", within "tooltip"-->
 	<!-- Create div structure for Tooltip -->
+	<!-- Nested divs for tooltip: 9, within "tooltip-Container", within "tooltip"-->
 	<div id="tooltip">
 		<div id="tooltip-Container">
 			<div class="tooltip-planet"></div>
@@ -43,21 +40,17 @@
 	</div>
 		
 	<!-- Separate functions that became too big for the main script -->
-
-	<!-- loads in javascript code -->
-	<!-- <<script src="js/helperFunctions.js"></script>	
-	<script src="js/KOIarchive_stellar.js"></script>
-	<script src="js/exoplanets.js"></script><!data -->
-
-	<script src="js/KOIarchive_stellar.js"></script>
-
-	<script src="js/galacticCoords1.js"></script>
-
-
+	<!-- Loads in javascript code -->
+	<!-- <script src="js/helperFunctions.js"></script>	-->
+	
+	<script src="js/KOIarchive_stellar.js"></script> 
+	<!-- <script src="js/exoplanets.js"></script> --> <!-- data -->
+	
 	<!-- <script src="js/showTooltip.js"></script>	
 	<script src="js/gradients.js"></script> -->
-
 	
+	<script src="js/galacticCoords.js"></script>
+
     <script src="js/mainCode.js"></script>
 
 
