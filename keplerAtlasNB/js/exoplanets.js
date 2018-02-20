@@ -289,7 +289,9 @@ var planets = [
 { "major":165.4101, "minor":165.4101, "e":0, "focus":0, "r":165.4101, "cx":0, "cy":0, "x":165.4101, "y":0, "theta": 0, "ID":1499, "Radius":0.041927, "period":5.28696, "speed":196.5784, "name":"Kepler-102 b", "discovered":2014, "class":"G", "temp":4903}
 ];
 
-// prints every planets' major 
-for (i==0;i<planets.length;i++){
-	console.log(planets[i].major)
-}
+// a for-loop to print out every planet's major axis length
+/*console.log(planets.length);
+
+for(i=0;i<planets.length;i++){
+	console.log(planets[i].major);
+}*/

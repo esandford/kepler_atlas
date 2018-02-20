@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
- 
-  <head profile="http://www.w3.org/2005/10/profile">
-	<link rel="icon" type="image/x-icon" href="http://www.optimalmodification.com/wp-content/uploads/2016/02/Planet-Earth-HD_saturation-rise.png">
-   
+  <head profile="http://www.w3.org/2005/10/profile"> <!-- favicon -->
+	<link rel="icon" type="image/x-icon" href="http://www.noteaproductions.com/art/SC%20photos/planets/Planet___Alaerin_by_Stock7000.jpg">
     <meta charset="utf-8" />
 
+    <!-- load in Google and d3 libraries -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
 	<!-- Google fonts -->
 	<link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
 	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+
 	
+	<!-- load in custom css -->
 	<link type="text/css" rel="stylesheet" href="css/style.css"/>
 	<link type="text/css" rel="stylesheet" href="css/tooltip.css"/>
 	<link type="text/css" rel="stylesheet" href="css/infoBox.css"/>
@@ -19,10 +20,11 @@
   </head>
   <body>
 
-	<!-- creates box to hold planets animation -->
+	<!-- create a box to hold the "planetarium", i.e. the planets animation -->
     <div id="planetarium"></div>
 
 	<!-- Create div structure for Tooltip -->
+	<!-- Nested divs for tooltip: 9, within "tooltip-Container", within "tooltip"-->
 	<div id="tooltip">
 		<div id="tooltip-Container">
 			<div class="tooltip-planet"></div>
@@ -35,18 +37,18 @@
 			<div id="tooltip-class" 	class="tooltip-info"></div>
 			<div class="tooltip-tail"></div>
 		</div>
-
 	</div>
+		
 	<!-- Separate functions that became too big for the main script -->
-	<!-- <script src="js/helperFunctions.js"></script>	
-	<script src="js/exoplanets.js"></script>	<!data -->
-	<!-- <script src="js/showTooltip.js"></script>	
-	<script src="js/gradients.js"></script>
-	<script src="js/legend.js"></script>
-	<script src="js/progressCircle.js"></script>	 -->
+	<!-- Loads in javascript code -->
+	<!-- <script src="js/helperFunctions.js"></script>	-->
 	
-	<script src="js/KOIarchive_stellar.js"></script>
-
+	<script src="js/KOIarchive_stellar.js"></script> 
+	<!-- <script src="js/exoplanets.js"></script> --> <!-- data -->
+	
+	<!-- <script src="js/showTooltip.js"></script>	
+	<script src="js/gradients.js"></script> -->
+	
 	<script src="js/galacticCoords.js"></script>
 
     <script src="js/mainCode.js"></script>

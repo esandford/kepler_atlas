@@ -78,8 +78,19 @@ function locate(coord) {
 function showEllipse(d, i, opacity) {
 		var planet = i;
 		//console.log(d);
+		//if opacity == 0, set duration = to 2000; otherwise set duration equal to 100.
 		var duration = (opacity == 0) ? 2000 : 100; //If the opacity is zero slowly remove the orbit line
+		//console.log(duration);
 		
+		//alternative way:
+		/*var duration;
+		if (opacity==0){
+			duration = 2000; //slow transition
+		}
+		else{
+			duration = 100; //fast transition
+		}*/
+
 		//Highlight the chosen planet
 		svg.selectAll(".planet")
 			.filter(function(d, i) {return i == planet;})
@@ -93,7 +104,7 @@ function showEllipse(d, i, opacity) {
 			.style("stroke-opacity", opacity)
 			.style("fill-opacity", opacity/3);
 
-}//showEllipse	
+}
 
 /*	
 //Decrease opacity of non selected stellar classes when hovering in Legend	
@@ -110,6 +121,8 @@ function classSelect(opacity) {
 	
 //Turn degrees into radians
 function toRadians (angle) { return angle * (Math.PI / 180);}
+
+function toDegrees (angle) { return angle * (180 / Math.PI);}
 
 /*//Show the information box
 function showInfo() {
@@ -160,7 +173,7 @@ function resetEvents() {
 
 */
 //Highlight the chosen planet and its orbit
-function highlight(planet, delayTime){
+/*function highlight(planet, delayTime){
 
 	if(typeof(delayTime)==='undefined') delayTime = 0;
 	//if(typeof(tooltip)==='undefined') tooltip = true;
@@ -184,7 +197,7 @@ function highlight(planet, delayTime){
 		.style("fill-opacity", 0.2);
 	
 }//function highlight
-
+*/
 
 /*
 //Function to bring opacity back of all planets
@@ -275,12 +288,12 @@ function wrap(text, width) {
 
 //Taken from https://groups.google.com/forum/#!msg/d3-js/WC_7Xi6VV50/j1HK0vIWI-EJ
 //Calls a function only after the total transition ends
-function endall(transition, callback) { 
+/*function endall(transition, callback) { 
 	var n = 0; 
 	transition 
 		.each(function() { ++n; }) 
 		.each("end", function() { if (!--n) callback.apply(this, arguments); }); 
-}
+}*/
 
 
 //Outline taken from http://stackoverflow.com/questions/16265123/resize-svg-when-window-is-resized-in-d3-js
@@ -288,9 +301,9 @@ function updateWindow(){
 	x = (w.innerWidth || e.clientWidth || g.clientWidth) - 50;
 	y = (w.innerHeight|| e.clientHeight|| g.clientHeight) - 50;
 
-	svg.attr("width", x).attr("height", y); //set svg width and height to be equal to updated page width and height 
+	svg.attr("width", x).attr("height", y); //set svg width and height to be equal to updated page width/height
 	d3.selectAll(".container").attr("transform", "translate(" + x/2 + "," + y/2 + ")"); //re-center all container objects
-	d3.selectAll(".legendContainer").attr("transform", "translate(" + 30 + "," + (y - 90) + ")");
+	d3.selectAll(".legendContainer").attr("transform", "translate(" + 30 + "," + (y - 90) + ")"); //re-center legend container
 	d3.select("#crazy").style("left", (x/2 - 112/2 + 6) + "px").style("top", (y/2 - 100) + "px");
 	//d3.selectAll(".introWrapper").attr("transform", "translate(" + -x/2 + "," + -y/2 + ")");
 }//updateWindow

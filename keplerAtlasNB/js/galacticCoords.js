@@ -29,17 +29,17 @@ function convertXYZ(distance, xyzinputRA, xyzinputdec){
                 var l = convertL(inputRA=xyzinputRA, inputdec=xyzinputdec);
                 var b = convertB(inputRA=xyzinputRA, inputdec=xyzinputdec);
 
-                l=l*(Math.PI/180.)
+                l=l*(Math.PI/180.);
 
-                b=b*(Math.PI/180.)
+                b=b*(Math.PI/180.);
 
-                var x_star = distance * (Math.cos(l)) * (Math.cos(b))
+                var x_star = distance * (Math.cos(l)) * (Math.cos(b));
                 // console.log(x_star)
 
-                var y_star = distance*(Math.cos(b))*(Math.sin(l))
+                var y_star = distance*(Math.cos(b))*(Math.sin(l));
                 // console.log(y_star)
 
-                var z_star = distance * (Math.sin(b))
+                var z_star = distance * (Math.sin(b));
                 // console.log(z_star)
 
                 var xyz_list = [x_star, y_star, z_star];
