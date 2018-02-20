@@ -1,0 +1,183 @@
+<!-- To run this code
+	-Navigate to this directory in Terminal (using "cd", "ls")
+	-Type "http-server &" and press enter
+	-Copy/Paste the http address into Chrome
+	-Add "/galacticCoords to the end of the address" !-->
+<!DOCTYPE html>
+<html >
+<style type="text/css">
+	text{
+		font: 14px sans-serif;
+	}
+</style>
+<head>
+  <meta charset="UTF-8">
+  <title>Kepler coordinate scatterplot</title>
+  
+</head>
+
+<body>
+
+   <script> function convertL(inputRA, inputdec){
+                    var Lnaught = 122.93*(Math.PI/180.);
+                    var Anaught = 192.86*(Math.PI/180.);
+                    var Dnaught = 27.13*(Math.PI/180.);
+                    var L;
+                    var inputRA_radians = inputRA*(Math.PI/180.)
+                    var inputdec_radians = inputdec*(Math.PI/180.)
+
+                    L =  (Lnaught - Math.atan(((Math.cos(inputdec_radians)) * (Math.sin(inputRA_radians - Anaught)))
+                        / (((Math.sin(inputdec_radians)) * (Math.cos(Dnaught))) - ((Math.cos(inputdec_radians)) * 
+                          (Math.sin(Dnaught)) * (Math.cos(inputRA_radians - Anaught))))));
+
+                    //console.log(L);
+                    return L*(180./Math.PI); }
+
+        function convertB(inputRA, inputdec){
+                    var Anaught = 192.86*(Math.PI/180.);
+                    var Dnaught = 27.13*(Math.PI/180.);
+                    var B;
+                    var inputRA_radians = inputRA*(Math.PI/180.)
+                    var inputdec_radians = inputdec*(Math.PI/180.)
+
+                    B =  (Math.asin(((Math.sin(inputdec_radians))*(Math.sin(Dnaught)))+((Math.cos(inputdec_radians))*(Math.cos(Dnaught))*(Math.cos(inputRA_radians-Anaught)))))
+                   
+                    //console.log(B);
+                    return B*(180./Math.PI);}
+
+
+        var x = convertL(inputRA=302., inputdec=53.);
+        console.log(x);
+
+        var y = convertB(inputRA=302., inputdec=53.);
+        console.log(y);
+
+
+
+
+
+
+</script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
+  	// varaibles for page sizing
+  	var margin = {top: 20, right: 20, bottom: 20, left: 40};
+  	var width = 500 - margin.left - margin.right;
+  	var height = 500 - margin.top - margin.bottom;
+
+  	var svg = d3.select("body")
+        .append("div")
+        .classed("svg-container", true) //container class to make it responsive
+        .append("svg")
+        //responsive SVG needs these 2 attributes and no width and height attr
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 1000 1000")
+        //class to make it responsive
+        .classed("svg-content-responsive", true)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  	// set up the svg object (the "canvas")
+  	var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+        //function to create a "star" object
+        function star(id, name, RA, dec, mag){
+        	this.id = id;
+        	this.name = name;
+        	this.RA = RA;
+        	this.dec = dec;
+        	this.mag = mag;
+
+            
+            this.L = convertL(this.RA, this.dec);
+            this.B = convertB(this.RA, this.dec);
+        }
+
+        //create a variable to hold an array of "star" objects
+        var keplerData = [];
+        //call the existing d3.csv function to read in and plot the kepler data
+        d3.csv("./KOIarchive_stellar.csv", function(csvdata){
+        	//console.log (csvdata.length);
+
+        	//for each line in csvdata, create a "star" object and append it to the existing keplerData array
+        	for(i=0; i<csvdata.length; i++){
+        		//the + is shorthand for forcing js to interpret something as a number instead of a string.
+			//create a star and put data in it
+			var rowStar = new star(id = +csvdata[i].kepid,
+										name = csvdata[i].kepoi_name,
+										RA = +csvdata[i].ra,
+										dec = +csvdata[i].dec,
+										mag = +csvdata[i].koi_kepmag);
+
+			//append star object to keplerData
+			keplerData.push(rowStar);
+        	}
+
+        	console.log(keplerData[0]);
+
+        	//set up x- and y- axis transformations
+        	var xScale = d3.scaleLinear()
+        		.domain([64.92, 87.5544])
+        		.range([0, width]);
+			var yScale = d3.scaleLinear()
+        		.domain([17.5957, 10.8696])
+        		.range([height, 0.]);
+
+
+
+
+        	var xAxis = d3.axisBottom().scale(xScale);
+        	var yAxis = d3.axisLeft().scale(yScale);
+
+        	// draw the x- axis
+        	svg.append("g")
+        		.attr("class", "xaxis") // object type is now "g.axis"
+        		.attr("transform", "translate(0,"+height+")")
+        		.call(xAxis);
+
+        	svg.append("text") //adding label "RA"
+        		.attr("class","label")
+        		.attr("transform", "translate(0,"+height+")")
+        		.attr("x", width)
+        		.attr("y", -6)
+        		.style("text-anchor", "end")
+        		.style("font-weight", "bold")
+        		.text("L");
+
+        	//draw y- axis
+        	svg.append("g")
+        		.attr("class", "yaxis") // object type is now "g.axis"
+        		// .attr("transform", "translate("+width+", height)")
+        		.call(yAxis);
+
+
+        	svg.append("text") //adding label "Dec"
+        		.attr("class","label")
+        		// .attr("transform", "translate("+width+", height)")
+        		.attr("x", 0)
+        		.attr("y", 0)
+        		.style("text-anchor", "end")
+        		.style("font-weight", "bold")
+        		.text("B");
+
+        	//Plotting data
+        	svg.selectAll("circle")
+        			.data(keplerData)
+        		.enter().append("circle")
+        		.style("r","1px")
+        		.style("fill","steelblue")
+        		.attr("cx", function(d) {return xScale(d.L)})
+        		.attr("cy", function(d) {return yScale(d.B)});
+
+
+})
+
+  </script> 
+
+</body>
+</html>
