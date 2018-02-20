@@ -1,10 +1,6 @@
-<!-- To run this code
-	-Navigate to this directory in Terminal (using "cd", "ls")
-	-Type "http-server &" and press enter
-	-Copy/Paste the http address into Chrome
-	-Add "/plotkeplercoords to the end of the address" !-->
+
 <!DOCTYPE html>
-<html>
+<html >
 <style type="text/css">
 text{
 	font: 14px sans-serif;
@@ -42,20 +38,15 @@ text{
       //.append("g")
         //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    function star(id, name, teq, eccen, mag, sma, srad){
+    function star(id, name, teq, eccen, mag, orbit){
     	this.id = id;
     	this.name = name;
-      	this.teq = teq;
-      	this.eccen = eccen;
     	this.mag = mag;
-      	this.sma = sma;
-      	this.srad = srad;
-      this.prad = prad;
        
     }
 
     function evolve(interval){
-        var G; // need to add gravity
+        var G = 100.0; // looks just about right 
         var Mstar= 1.0;
 
         var relative_x = this.x - (w/2); //x_star - x_planet
@@ -85,25 +76,27 @@ text{
         this.eccen = eccen;
         this.orbit = orbit;
         this.evolve = evolve; 
-        this.prad = prad;
       }
     var updateInterval=.25; //milliseconds
 
-    d3.csv("./KOIstarviewelements.csv", function(planetelements){
+    /*var planet1 = new Planet(mass=0.1, x=w/4, y=h/4, vx=0.5, vy=0.1);
+    var planet2 = new Planet(mass=0.1, x=(3*w)/4, y=(3*h)/4, vx=-0.5, vy=-0.1);*/
 
-    var planet = new Planet(prad = planetelements.koi_prad, );
-    var planet2 = new Planet(mass=0.1, x=(3*w)/4, y=(3*h)/4, vx=-0.5, vy=-0.1);
-
-    var 
-    var drawnPlanet1 = svg.append("circle")
+    /*var drawnPlanet1 = svg.append("circle")
           .attr("cx",planet1.x)
           .attr("cy",planet1.y)
           .style("fill","steelblue")
           .style("stroke","black")
           .style("r","5px");
-}
-)
-    var planetArray = [planet1, planet2];
+
+    var drawnPlanet2 = svg.append("circle")
+          .attr("cx",planet2.x)
+          .attr("cy",planet2.y)
+          .style("fill","red")
+          .style("stroke","black")
+          .style("r","5px");*/
+
+    //var planetArray = [planet1, planet2];
     var drawnPlanetArray = [drawnPlanet1, drawnPlanet2];
 
     function timeStep(){
@@ -138,17 +131,13 @@ text{
                   teq = +csvdata[i].koi_teq,
                   eccen = +csvdata[i].koi_eccen,
                   orbit = +csvdata[i].koi_orbit,
-                  srad = +csvdata[i].koi_srad,
-                  prad = +csvdata[i].koi_prad,
-                  sma = +csvdata[i].koi_sma,
-                  mag = +csvdata[i].koi_kepmag);
+                  mag = +csvdata[i].koi_kepmag);}
 
       //append star object to keplerData
       keplerData.push(rowStar);
     }
   }
   )
-    
 </script>
 </body>
 </html>

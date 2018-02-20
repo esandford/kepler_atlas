@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<head>
+</head>
+<body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+	var margin = {top: 20, right: 20, bottom: 20, left: 40};
+  	var width = 500 - margin.left  - margin.right;
+  	var height = 500 - margin.top - margin.bottom;
+  	var svg = d3.select("body")
+        .append("div")
+        .classed("svg-container", true) //container class to make it responsive
+        .append("svg")
+        //responsive SVG needs these 2 attributes and no width and height attr
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 1000 1000")
+        //class to make it responsive
+        .classed("svg-content-responsive", true)
+      	.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	function info(id, srad, prad, sma, period, duration, incl, insol, teq, eccen, orbit, mag){
+    	this.id = id;
+    	this.srad = srad;
+    	this.prad = prad
+    	this.sma = sma
+    	this.period = period
+    	this.duration = duration
+    	this.incl = incl
+    	this.insol = insol
+    	this.teq = teq
+    	this.eccen = eccen
+    	this.orbit = orbit
+    	this.mag = mag
+    }
+	var keplerData = []
+    d3.csv("./KOIstarviewelements.csv", function(csvdata){
+      // the "+" is a shorthamd for forcing js to interpret something as a number instead of a string
+      for(i=0; i<1; i++){
+      var rowInfo = new info(id = +csvdata[i].kepoi_id)
+                  srad = +csvdata[i].koi_srad,
+                  prad = +csvdata[i].koi_prad,
+                  sma = +csvdata[i].koi_sma,
+                  period = +csvdata[i].koi_period,                  
+                  duration = +csvdata[i].koi_duration,
+                  incl = +csvdata[i].koi_incl,
+                  insol = +csvdata[i].koi_insol,
+                  teq = +csvdata[i].koi_teq,
+                  eccen = +csvdata[i].koi_eccen,
+                  orbit = +csvdata[i].koi_orbit,
+                  mag = +csvdata[i].koi_kepmag;
+
+      //append star object to keplerData
+      keplerData.push(rowInfo);
+      console.log(rowInfo);
+      console.log(srad);
+    }
+})
+</script>
+</body>

@@ -38,11 +38,11 @@
 					//Hide tooltip
 					d3.select("#tooltip").transition().duration(300)
 						.style('opacity',0)
-					// 	.call(endall, function() { //Move tooltip out of the way
-					// 		d3.select("#tooltip")
-					// 			.style('top',0+"px")
-					// 			.style('left',0+"px");
-					// 	});	
+						/*.call(endall, function() { //Move tooltip out of the way
+							d3.select("#tooltip")
+								.style('top',0+"px")
+								.style('left',0+"px");
+						});	*/
 					//Remove show how to close
 					return stopTooltip;
 				}
