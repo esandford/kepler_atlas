@@ -8,6 +8,15 @@ var
 	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 50)*2;
 
 // window.onresize = updateWindow;	
+//console.log(planets[0]);
+
+var makeSolid = function(selection, color) {
+            selection
+                .append("appearance")
+                .append("material")
+                .attr("diffuseColor", color || "black");
+            return selection;
+        };
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////// Initiate elements ///////////////////////////////
@@ -26,14 +35,39 @@ var resolution = 1, //sets behavior or animation orbit
 	planetOpacity = 0.6;
 
 //Create SVG
-var svg = d3.select("#planetarium").append("svg")
+/*var svg = d3.select("#planetarium").append("svg")
 	.attr("width", x)
-	.attr("height", y);
+	.attr("height", y);*/
+
+var x3d = d3.select("#chartholder")
+            .attr("width", x + 'px')
+            .attr("height", y +'px')
+            .attr("showLog", 'false')
+            .attr("showStat", 'false');
+
+d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
+  .attr("width", x)
+  .attr("height", y);
+
+var scene = x3d.append("scene");   
+var view_pos = [80, 20, 80];
+console.log(view_pos);
+var fov = 0.8;
+var view_or = [0, 1, 0, 0.8];
+        
+scene.append("viewpoint")
+  .attr("id", 'dvp')
+  .attr("position", view_pos.join(" "))
+  .attr("orientation", view_or.join(" "))
+  .attr("fieldOfView", fov)
+  .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
+
+//console.log(planets[0]);
 
 
 //Create a container for everything with the centre in the middle
-var container = svg.append("g").attr("class","container")
-					.attr("transform", "translate(" + x/2 + "," + y/2 + ")")
+//var container = svg.append("g").attr("class","container")
+//					.attr("transform", "translate(" + x/2 + "," + y/2 + ")")
   
 //Create star in the Middle - scaled to the orbits
 //Radius of our Sun in these coordinates (taking into account size of circle inside image)
@@ -75,7 +109,13 @@ var xScale = d3.scale.linear()
     .range([-250, x]);
 var yScale = d3.scale.linear()
     .domain([-700, 700])
-    .range([y, 0]);
+    .range([y,0]);
+var zScale = d3.scale.linear()
+    .domain([-20, 20])
+    .range([0,100]);
+
+//console.log(zScale);
+//console.log(planets[0]);
 
 //Format with 2 decimals
 var formatSI = d3.format(".2f");
@@ -102,8 +142,29 @@ var gradientChoice = "Temp";
 // 				.style("stroke", "white")
 // 				.style("stroke-opacity", 0);	
 
-//Drawing the planets			
-var planetContainer = container.append("g").attr("class","planetContainer");
+//Drawing the planets
+//console.log(scene);
+//console.log(planets[0]);
+
+var planets = scene.selectAll('.planet')
+			    .data(planets)
+                .enter()
+                .append('transform')
+                .attr('class', 'point')
+                .attr('translation', function(d){ 
+            	    var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
+            	    //console.log(xyz);
+            	    var x = xyz[0];
+            	    var y = xyz[1];
+            	    var z = xyz[2];
+            	    console.log(z);
+            	    return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
+                .append('shape')
+                .call(makeSolid, 'white')
+                .append('sphere')
+                .attr('radius', function(d) {return d.koi_srad;}) //draw spheres to represent points
+
+/*var planetContainer = container.append("g").attr("class","planetContainer");
 var planets = planetContainer.selectAll("g.planet")
 				.data(planets).enter()
 				//.append("g")
@@ -116,7 +177,7 @@ var planets = planetContainer.selectAll("g.planet")
 				.attr("r",  function(d) {return d.koi_srad;}) //set radius to d.koi_srad
 				.attr("cx", function(d) {
 					var x = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[0]
-					console.log(x);
+					//console.log(x);
 					return xScale(x);}) 	//"d" = the planet I'm currently on, in the implicit for-loop
 				.attr("cy", function(d) {
 					var y = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[1];
@@ -139,8 +200,8 @@ var planets = planetContainer.selectAll("g.planet")
 				// })
 				// .on("mouseout", function(d, i) {
 				// 	showEllipse(d, i, 0);
-				// });
+				// });*/
 
 //Remove tooltip when clicking anywhere in body
-d3.select("svg")
-	.on("click", function(d) {stopTooltip = true;});
+//d3.select("svg")
+//	.on("click", function(d) {stopTooltip = true;});
