@@ -49,11 +49,11 @@ d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
   .attr("height", y);
 
 var scene = x3d.append("scene");   
-var view_pos = [-4154.18997, -4159.01197, 288.68446];
-var fov = 1.0;
+var view_pos = [-37902.27708, -31717.63386, -17253.83076];
+var fov = .1;
 var view_or = [0.89635, -0.26416, -0.35606, 2.18083];
-var zN = 3600;
-var zF = 10000;
+//var zN = 3600;
+//var zF = 10000;
 
 scene.append("viewpoint")
   .attr("id", 'dvp')
@@ -61,8 +61,8 @@ scene.append("viewpoint")
   .attr("orientation", view_or.join(" "))
   .attr("fieldOfView", fov)
   .attr('centerOfRotation', "0 0 0")
-  .attr('zNear', zN)
-  .attr('zFar', zF)
+ // .attr('zNear', zN)
+ //.attr('zFar', zF)
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 //Create a container for everything with the centre in the middle
@@ -83,10 +83,38 @@ var opacityScale = d3.scale.linear()
 	.domain([0, 1000])
 	.range([0, 1]);
 
+
+function return_minmax(planets){
+	var currentMinimum = 1000000;
+	var currentMaximum = 0;
+	var currentRadius;
+
+	for(i=0; i<planets.length; i++){
+		currentRadius = planets[i].koi_srad;
+
+		if(currentRadius < currentMinimum){
+			currentMinimum = currentRadius;
+		}
+
+		if(currentRadius > currentMaximum){
+			currentMaximum = currentRadius;
+		}
+
+	}
+	return [currentMinimum, currentMaximum];
+	
+	}
+
+
+radMin = return_minmax(planets)[0]
+radMax = return_minmax(planets)[1]
+
+
 //Set scale for radius of circles
 var rScale = d3.scale.linear()
-	.range([1, 20])
-	.domain([0, d3.max(planets, function(d) { return d.Radius; })]);	
+	.range([5, 60])
+	.domain([radMin, radMax]);	
+	
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
@@ -142,11 +170,11 @@ var planets = scene.selectAll(".planet")
 
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.append('shape')
-            	.call(makeSolid, function(d) {return colorScale(d.koi_steff)})
+            	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
             	//.call(makeSolid, 'white')
             	.append('sphere')
             	//.attr('radius', 5.0); //draw spheres to represent points
-            	.attr('radius', function(d) {return 5*d.koi_srad;}); //draw spheres to represent points
+            	.attr('radius', function(d) {return rScale(d.koi_srad)}); //uses a function to return the radius and apply the radius scale -- J
 
 
 

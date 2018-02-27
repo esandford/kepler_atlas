@@ -39,7 +39,7 @@
         var xAxis = d3_x3dom_axis.x3domAxis('x', 'z', x).tickSize(z.range()[1] - z.range()[0]).tickPadding(y.range()[0]);
         var yAxis = d3_x3dom_axis.x3domAxis('y', 'z', y).tickSize(z.range()[1] - z.range()[0]);
         var yAxis2 = d3_x3dom_axis.x3domAxis('y', 'x', y).tickSize(x.range()[1] - x.range()[0]).tickFormat(function(d){return ''});
-        var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', y).tickSize(x.range()[1] - x.range()[0]);
+        var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', z).tickSize(x.range()[1] - x.range()[0]);
 
         var scene = x3d.append("scene");   
         var view_pos = [80, 20, 80];
@@ -94,6 +94,7 @@
             .call(makeSolid, 'white')
             .append('sphere')
             .attr('radius', 0.8); //draw spheres to represent points
+            
         
 	scene.append('transform')
             .attr('class', 'label')
