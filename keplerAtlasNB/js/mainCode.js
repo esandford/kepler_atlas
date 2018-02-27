@@ -55,14 +55,16 @@ var view_or = [0.89635, -0.26416, -0.35606, 2.18083];
 var zN = 3600;
 var zF = 10000;
 
-scene.append("viewpoint")
+
+
+var viewpoint = scene.append("viewpoint")
   .attr("id", 'dvp')
   .attr("position", view_pos.join(" "))
   .attr("orientation", view_or.join(" "))
   .attr("fieldOfView", fov)
   .attr('centerOfRotation', "0 0 0")
-  .attr('zNear', zN)
-  .attr('zFar', zF)
+  //.attr('zNear', zN)
+  //.attr('zFar', zF)
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 //Create a container for everything with the centre in the middle
@@ -146,9 +148,19 @@ var planets = scene.selectAll(".planet")
             	//.call(makeSolid, 'white')
             	.append('sphere')
             	//.attr('radius', 5.0); //draw spheres to represent points
-            	.attr('radius', function(d) {return 5*d.koi_srad;}); //draw spheres to represent points
+            	.attr('radius', function(d) {return d.koi_srad;}); //draw spheres to represent points
+
+function earthView() {    
+				var view_pos = [-67.28213, 546.76677, 553.49863];
+				var fov = 1.0;
+				var view_or = [0.80990, 0.58521, -0.03993, 3.54568];
 
 
+				viewpoint.attr("position", view_pos.join(" "))
+				  .attr("orientation", view_or.join(" "))
+				  .attr("fieldOfView", fov)
+				  .attr('centerOfRotation', "-18.345760512980718 500.9411560290405 706.9935215264597");
+}
 
 /*var planetContainer = container.append("g").attr("class","planetContainer");
 var planets = planetContainer.selectAll("g.planet")
