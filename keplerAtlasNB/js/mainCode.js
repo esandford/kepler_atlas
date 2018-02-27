@@ -49,11 +49,11 @@ d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
   .attr("height", y);
 
 var scene = x3d.append("scene");   
-var view_pos = [-4154.18997, -4159.01197, 288.68446];
-var fov = 1.0;
+var view_pos = [-37902.27708, -31717.63386, -17253.83076];
+var fov = 0.1;
 var view_or = [0.89635, -0.26416, -0.35606, 2.18083];
-var zN = 3600;
-var zF = 10000;
+//var zN = 3600;
+//var zF = 10000;
 
 scene.append("viewpoint")
   .attr("id", 'dvp')
@@ -61,8 +61,8 @@ scene.append("viewpoint")
   .attr("orientation", view_or.join(" "))
   .attr("fieldOfView", fov)
   .attr('centerOfRotation', "0 0 0")
-  .attr('zNear', zN)
-  .attr('zFar', zF)
+  //.attr('zNear', zN)
+  //.attr('zFar', zF)
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 //Create a container for everything with the centre in the middle
@@ -146,7 +146,7 @@ var planets = scene.selectAll(".planet")
             	//.call(makeSolid, 'white')
             	.append('sphere')
             	//.attr('radius', 5.0); //draw spheres to represent points
-            	.attr('radius', function(d) {return 5*d.koi_srad;}); //draw spheres to represent points
+            	.attr('radius', function(d) {return rScale(d.koi_srad)}); //draw spheres to represent points
 
 
 
