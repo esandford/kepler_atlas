@@ -4,8 +4,8 @@ var
 	d = document,
 	e = d.documentElement,
 	g = d.getElementsByTagName('body')[0],
-	x = ((w.innerWidth || e.clientWidth || g.clientWidth) - 50)*2,
-	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 50)*2;
+	x = ((w.innerWidth || e.clientWidth || g.clientWidth) - 50),
+	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 50);
 
 // window.onresize = updateWindow;	
 
@@ -41,24 +41,28 @@ var resolution = 1, //sets behavior or animation orbit
 var x3d = d3.select("#chartholder")
             .attr("width", x + 'px')
             .attr("height", y +'px')
-            .attr("showLog", 'false')
-            .attr("showStat", 'false');
+            .attr("showLog", 'true')
+            .attr("showStat", 'true');
 
 d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
   .attr("width", x)
   .attr("height", y);
 
-
 var scene = x3d.append("scene");   
-var view_pos = [80, 20, 80];
-var fov = 0.8;
-var view_or = [0, 1, 0, 0.8];
-        
+var view_pos = [-4154.18997, -4159.01197, 288.68446];
+var fov = 1.0;
+var view_or = [0.89635, -0.26416, -0.35606, 2.18083];
+var zN = 3600;
+var zF = 10000;
+
 scene.append("viewpoint")
   .attr("id", 'dvp')
   .attr("position", view_pos.join(" "))
   .attr("orientation", view_or.join(" "))
   .attr("fieldOfView", fov)
+  .attr('centerOfRotation', "0 0 0")
+  .attr('zNear', zN)
+  .attr('zFar', zF)
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 //Create a container for everything with the centre in the middle
@@ -87,13 +91,15 @@ var rScale = d3.scale.linear()
 //scale x and y "axes"
 var xScale = d3.scale.linear()
     .domain([20, 500])
-    .range([-250, x]);
+    //.range([-250, x]);
+    .range([0,x]);
 var yScale = d3.scale.linear()
     .domain([-700, 700])
-    .range([y, 0]);
+    //.range([y, 0]);
+    .range([y,0])
 var zScale = d3.scale.linear()
-    .domain([-20, 20])
-    .range([0,100]);
+    .domain([-50, 50])
+    .range([0,y]);
 
 //Format with 2 decimals
 var formatSI = d3.format(".2f");
@@ -137,8 +143,10 @@ var planets = scene.selectAll(".planet")
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.append('shape')
             	.call(makeSolid, function(d) {return colorScale(d.koi_steff)})
+            	//.call(makeSolid, 'white')
             	.append('sphere')
-            	.attr('radius', function(d) {return d.koi_srad;}); //draw spheres to represent points
+            	//.attr('radius', 5.0); //draw spheres to represent points
+            	.attr('radius', function(d) {return 5*d.koi_srad;}); //draw spheres to represent points
 
 
 
