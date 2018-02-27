@@ -38,31 +38,31 @@ var resolution = 1, //sets behavior or animation orbit
 	.attr("width", x)
 	.attr("height", y);*/
 
-var x3d = d3.select("#chartholder")
+var x3d = d3.select("#chartholder") // creates scene/canvas -ca
             .attr("width", x + 'px')
             .attr("height", y +'px')
             .attr("showLog", 'true')
             .attr("showStat", 'true');
 
-d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
+d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects -ca
   .attr("width", x)
   .attr("height", y);
 
 var scene = x3d.append("scene");   
-var view_pos = [-4154.18997, -4159.01197, 288.68446];
+var view_pos = [-4154.18997, -4159.01197, 288.68446]; //starts camera at an ideal viewpoint -ca
 var fov = 1.0;
 var view_or = [0.89635, -0.26416, -0.35606, 2.18083];
 var zN = 3600;
 var zF = 10000;
 
-scene.append("viewpoint")
+var viewpoint = scene.append("viewpoint") //click and drag -ca
   .attr("id", 'dvp')
   .attr("position", view_pos.join(" "))
   .attr("orientation", view_or.join(" "))
   .attr("fieldOfView", fov)
   .attr('centerOfRotation', "0 0 0")
-  .attr('zNear', zN)
-  .attr('zFar', zF)
+  // .attr('zNear', zN)
+  // .attr('zFar', zF)
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 //Create a container for everything with the centre in the middle
@@ -146,48 +146,29 @@ var planets = scene.selectAll(".planet")
             	//.call(makeSolid, 'white')
             	.append('sphere')
             	//.attr('radius', 5.0); //draw spheres to represent points
-            	.attr('radius', function(d) {return 5*d.koi_srad;}); //draw spheres to represent points
+            	.attr('radius', function(d) {return 5 *d.koi_srad;}); //draw spheres to represent points
+
+function earthView() { 
+				var view_pos = [-1677.11173, 2131.25139, -5981.29509]; //starts camera at an ideal viewpoint -ca
+				var fov = 1.0;
+				var view_or = [0.72929, 0.67504, -0.11162, 3.87833];
+
+				viewpoint.attr("position", view_pos.join(" "))
+				  .attr("orientation", view_or.join(" "))
+				  .attr("fieldOfView", fov)
+				  .attr('centerOfRotation', "0 0 0");
+
+				 planets.attr('radius', function(d) {return d.koi_srad;}); //draw spheres to represent points
+
+}
+
+// view_pos ="-74.55768, 389.25155, 262.60390" orientation="0.85174 -0.47466 -0.22191 3.26234" 
+// 	zNear="4.50389"
+
+
+// <Viewpoint position="-1677.11173 2131.25139 -5981.29509" orientation="0.72929 0.67504 -0.11162 3.87833" 
+// 	zNear="5161.10156" zFar="42691.60824" description="defaultX3DViewpointNode"></Viewpoint>
 
 
 
-/*var planetContainer = container.append("g").attr("class","planetContainer");
-var planets = planetContainer.selectAll("g.planet")
-				.data(planets).enter()
-				//.append("g")
-				//.attr("class", "planetWrap")					
-				.append("circle")
-				.attr("class", "planet")
-				// .attr("r", function(d) {return radiusSizer*d.Radius;})//rScale(d.Radius);})
-				// .attr("cx", function(d) {return d.x;})											//doesn't work because we don't have the data to plot
-				// .attr("cy", function(d) {return d.y;})
-				.attr("r",  function(d) {return d.koi_srad;}) //set radius to d.koi_srad
-				.attr("cx", function(d) {
-					var x = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[0]
-					//console.log(x);
-					return xScale(x);}) 	//"d" = the planet I'm currently on, in the implicit for-loop
-				.attr("cy", function(d) {
-					var y = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[1];
-					//console.log(y);
-					return yScale(y);})
-				.style("fill", function(d) {return colorScale(d.koi_steff)}) //d.koi_steff
-				// .style("fill", function(d){return "url(#gradientRadial-" + d.ID + ")";}) 		//no more d.ID
-					// .style("opacity", function(d) {
-					// 	var z = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[2];
-					// 	// console.log(z)
-					// 	return opacityScale(z);})
-				.style("opacity", .6)
-				.style("stroke-opacity", 0)//depend on z 
-				.style("stroke-width", "3px")
-				.style("stroke", "white")
-				// .on("mouseover", function(d, i) {		/relies on showEllipse function in helperFunctions.js
-				// 	stopTooltip = false					
-				// 	showTooltip(d);
-				// 	showEllipse(d, i, 0.8);
-				// })
-				// .on("mouseout", function(d, i) {
-				// 	showEllipse(d, i, 0);
-				// });
 
-//Remove tooltip when clicking anywhere in body
-d3.select("svg")
-	.on("click", function(d) {stopTooltip = true;});*/
