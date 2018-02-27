@@ -116,7 +116,7 @@ var planets = planetContainer.selectAll("g.planet")
 				.attr("r",  function(d) {return d.koi_srad;}) //set radius to d.koi_srad
 				.attr("cx", function(d) {
 					var x = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[0]
-					console.log(x);
+					// console.log(x);
 					return xScale(x);}) 	//"d" = the planet I'm currently on, in the implicit for-loop
 				.attr("cy", function(d) {
 					var y = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[1];
