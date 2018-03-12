@@ -9,6 +9,8 @@ var
 
 // window.onresize = updateWindow;	
 
+//a function that x3dom uses to attach an "appearance" and "color" to a data selection.
+//If you subsequently append a shape to that selection, x3dom will render the shape in 3D with this appearance/color. -ES
 var makeSolid = function(selection, color) {
             selection
                 .append("appearance")
@@ -38,6 +40,7 @@ var resolution = 1, //sets behavior or animation orbit
 	.attr("width", x)
 	.attr("height", y);*/
 
+//In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
             .attr("width", x + 'px')
             .attr("height", y +'px')
@@ -48,21 +51,22 @@ d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
   .attr("width", x)
   .attr("height", y);
 
-var scene = x3d.append("scene");   
-var view_pos = [-4154.18997, -4159.01197, 288.68446];
-var fov = 1.0;
-var view_or = [0.89635, -0.26416, -0.35606, 2.18083];
-var zN = 3600;
-var zF = 10000;
+//starts camera at ideal viewpoint
+var scene = x3d.append("scene");
+var view_pos = [-37902.27708, -31717.63386, -17253.83076]; //new view_pos and fov -Chris
+var fov = 0.1;
+var view_or = [0.87137, -0.35927, -0.33412, 2.68349];
+//var zN = 3600;
+//var zF = 10000;
 
-scene.append("viewpoint")
+var viewpoint = scene.append("viewpoint")
   .attr("id", 'dvp')
   .attr("position", view_pos.join(" "))
   .attr("orientation", view_or.join(" "))
   .attr("fieldOfView", fov)
   .attr('centerOfRotation', "0 0 0")
-  .attr('zNear', zN)
-  .attr('zFar', zF)
+  //.attr('zNear', zN)
+  //.attr('zFar', zF)
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 //Create a container for everything with the centre in the middle
@@ -72,6 +76,7 @@ scene.append("viewpoint")
 ///////////////////////////////////////////////////////////////////////////
 //////////////////////////// Create Scales ////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
+
 
 //Create color gradient for planets based on the temperature of the star that they orbit
 var colors = ["#9C1E1E","#D62828","#E16262","#F3C4C4","#738E9B","#45687A","#2E556A","#174259","#001F2F"];
@@ -84,9 +89,35 @@ var opacityScale = d3.scale.linear()
 	.range([0, 1]);
 
 //Set scale for radius of circles
+//new function to find minimum and maximum stellar radius across the entire data set -James
+function return_radius_minmax(planets){
+	var currentMinimum = 1000000;
+	var currentMaximum = 0;
+	var currentRadius;
+
+	for(i=0; i<planets.length; i++){
+		currentRadius = planets[i].koi_srad;
+
+		if(currentRadius < currentMinimum){
+			currentMinimum = currentRadius;
+		}
+
+		if(currentRadius > currentMaximum){
+			currentMaximum = currentRadius;
+		}
+
+	}
+	return [currentMinimum, currentMaximum];
+	
+	}
+
+radMin = return_radius_minmax(planets)[0] //get minimum and maximum radii -James
+radMax = return_radius_minmax(planets)[1]
 var rScale = d3.scale.linear()
-	.range([1, 20])
-	.domain([0, d3.max(planets, function(d) { return d.Radius; })]);	
+	//.range([1, 20])
+	//.domain([0, d3.max(planets, function(d) { return d.Radius; })]);	
+	.domain([radMin, radMax])
+	.range([5, 60]; //set domain and range according to minimum and maximum found above -James
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
@@ -142,11 +173,29 @@ var planets = scene.selectAll(".planet")
 
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.append('shape')
-            	.call(makeSolid, function(d) {return colorScale(d.koi_steff)})
-            	//.call(makeSolid, 'white')
+            	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
             	.append('sphere')
-            	//.attr('radius', 5.0); //draw spheres to represent points
-            	.attr('radius', function(d) {return 5*d.koi_srad;}); //draw spheres to represent points
+            	.attr('radius', function(d) {return rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+
+//new function to switch camera position to Earth sky view -Caroline & Catherine
+//note: Catherine & Caroline had different numbers for view_pos, view_or, and centerOfRotation, so I reproduced both versions here! -Emily
+function earthView() { 
+				//var view_pos = [-1677.11173, 2131.25139, -5981.29509]; //Catherine's version
+				var view_pos = [-67.28213, 546.76677, 553.49863]; //Caroline's version
+				var fov = 1.0;
+				//var view_or = [0.72929, 0.67504, -0.11162, 3.87833]; //Catherine's version
+				var view_or = [0.80990, 0.58521, -0.03993, 3.54568]; //Caroline's version
+
+
+				viewpoint.attr("position", view_pos.join(" "))
+				  .attr("orientation", view_or.join(" "))
+				  .attr("fieldOfView", fov)
+				  //.attr('centerOfRotation', "0 0 0"); //Catherine's version
+				  .attr('centerOfRotation', "-18.345760512980718 500.9411560290405 706.9935215264597"); //Caroline's version
+
+				 planets.attr('radius', function(d) {return d.koi_srad;}); //draw spheres to represent points
+
+				}
 
 
 
