@@ -53,7 +53,8 @@ d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
 
 //starts camera at ideal viewpoint
 var scene = x3d.append("scene");
-var view_pos = [-37902.27708, -31717.63386, -17253.83076]; //new view_pos and fov -Chris
+var view_pos = [-71481.90522, -19085.21779, -64575.32094];
+//var view_pos = [-37902.27708, -31717.63386, -17253.83076]; //new view_pos and fov -Chris
 var fov = 0.1;
 var view_or = [0.87137, -0.35927, -0.33412, 2.68349];
 //var zN = 3600;
@@ -117,7 +118,7 @@ var rScale = d3.scale.linear()
 	//.range([1, 20])
 	//.domain([0, d3.max(planets, function(d) { return d.Radius; })]);	
 	.domain([radMin, radMax])
-	.range([5, 60]; //set domain and range according to minimum and maximum found above -James
+	.range([5, 60]); //set domain and range according to minimum and maximum found above -James
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
