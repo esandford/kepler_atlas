@@ -83,7 +83,6 @@ var opacityScale = d3.scale.linear()
 	.domain([0, 1000])
 	.range([0, 1]);
 
-
 function return_minmax(planets){
 	var currentMinimum = 1000000;
 	var currentMaximum = 0;
@@ -105,17 +104,14 @@ function return_minmax(planets){
 	
 	}
 
-
 radMin = return_minmax(planets)[0]
 radMax = return_minmax(planets)[1]
-
 
 //Set scale for radius of circles
 var rScale = d3.scale.linear()
 	.range([5, 60])
 	.domain([radMin, radMax]);	
 	
-
 //scale x and y "axes"
 var xScale = d3.scale.linear()
     .domain([20, 500])
