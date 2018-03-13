@@ -1,4 +1,4 @@
-//the exclamation point allows us to call this function as soon as it's defined. it also
+ //the exclamation point allows us to call this function as soon as it's defined. it also
 //makes the function return True by default.
 //example:
 // function(t,n){return;}() returns a syntax error
@@ -12,31 +12,31 @@
 	//condition ? value-if-true : value-if-false
 
 	//without nested ternary:
-	//var size_of_x;
-	//if(x == 0){
-    //	size_of_x = "none";
-	//}
-	//else if(x < 5){
-    //	size_of_x = "small";
-	//}
-	//else if (x > 5 && x < 10){
-    //	size_of_x = "medium";
-	//}
-	//else {
-    //	size_of_x = "big";
+	// var size_of_x;
+	// if(x == 0){
+ //    	size_of_x = "none";
+	// }
+	// else if(x < 5){
+ //    	size_of_x = "small";
+	// }
+	// else if (x > 5 && x < 10){
+ //    	size_of_x = "medium";
+	// }
+	// else {
+ //    	size_of_x = "big";
 	//}
 
 	//now, with nested ternary:
-	//var size_of_x =
-  	//	(x == 0) 			  ? "none"   :
-  	//	(x < 5) 			  ? "small"  :
-  	//	((x > 5) && (x < 10)) ? "medium" :
-    //       		                "big"    ;
+	// var size_of_x =
+ //  		(x == 0) 			  ? "none"   :
+ //  		(x < 5) 			  ? "small"  :
+ //  		((x > 5) && (x < 10)) ? "medium" :
+ //          		                "big"    ;
     
-    //console.log(typeof exports); //undefined
-    //console.log(typeof module); //undefined
-    //console.log(typeof define); //undefined
-    //console.log(define["exports"], n)
+ //    console.log(typeof exports); //undefined
+ //    console.log(typeof module); //undefined
+ //    console.log(typeof define); //undefined
+ //    console.log(define["exports"], n)
 
     ("object" == typeof exports && "undefined" != typeof module) ? n(exports)             : 
     ("function" == typeof define && define.amd) 				 ? define(["exports"], n) : 
