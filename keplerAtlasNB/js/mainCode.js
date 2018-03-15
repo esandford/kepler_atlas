@@ -115,8 +115,8 @@ function return_radius_minmax(planets){
 radMin = return_radius_minmax(planets)[0] //get minimum and maximum radii -James
 radMax = return_radius_minmax(planets)[1]
 var rScale = d3.scale.linear()
-	//.range([1, 20])
-	//.domain([0, d3.max(planets, function(d) { return d.Radius; })]);	
+	// .range([1, 20])
+	// .domain([0, d3.max(planets, function(d) { return d.Radius; })]);	
 	.domain([radMin, radMax])
 	.range([5, 60]); //set domain and range according to minimum and maximum found above -James
 
