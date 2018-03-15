@@ -51,21 +51,12 @@ d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
   .attr("width", x)
   .attr("height", y);
 
-<<<<<<< HEAD
-var scene = x3d.append("scene");   
-var view_pos = [-37902.27708, -31717.63386, -17253.83076];
-var fov = 0.1;
-var view_or = [0.89635, -0.26416, -0.35606, 2.18083];
-=======
 //starts camera at ideal viewpoint
 var scene = x3d.append("scene");
 var view_pos = [-71481.90522, -19085.21779, -64575.32094];
 //var view_pos = [-37902.27708, -31717.63386, -17253.83076]; //new view_pos and fov -Chris
 var fov = 0.1;
 var view_or = [0.87137, -0.35927, -0.33412, 2.68349];
->>>>>>> origin/dev
-//var zN = 3600;
-//var zF = 10000;
 
 var viewpoint = scene.append("viewpoint")
   .attr("id", 'dvp')
@@ -183,10 +174,6 @@ var planets = scene.selectAll(".planet")
             	.append('shape')
             	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
             	.append('sphere')
-<<<<<<< HEAD
-            	//.attr('radius', 5.0); //draw spheres to represent points
-            	.attr('radius', function(d) {return rScale(d.koi_srad)}); //draw spheres to represent points
-=======
             	.attr('radius', function(d) {return rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
 //new function to switch camera position to Earth sky view -Caroline & Catherine
@@ -208,7 +195,6 @@ function earthView() {
 				 planets.attr('radius', function(d) {return d.koi_srad;}); //draw spheres to represent points
 
 				}
->>>>>>> origin/dev
 
 
 
