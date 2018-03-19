@@ -65,9 +65,7 @@ var fov = 0.05; 	// Preferred minimum viewing angle from this viewpoint in radia
 var view_or = [1., 0., 0., 0.]; //relative to default (0, 0, 1, 0)
 //var zN = 0; 		//near plane
 //var zF = 150000;	//far plane
-
-//zNear="76012.58865" zFar="161712.41469 (galaxy view)
-//zNear="4.23295" zFar="42329.51895" (Earth view)
+		
 
 var viewpoint = scene.append("viewpoint")
   .attr("id", 'dvp')
@@ -152,22 +150,22 @@ function return_radius_minmax(planets){
 
 radMin = return_radius_minmax(planets)[0] //get minimum and maximum radii -James
 radMax = return_radius_minmax(planets)[1]
+// console.log(radMin) 0.104
+// console.log(radMax) 59.864
 var rScale = d3.scale.linear()
-	//.range([1, 20])
-	//.domain([0, d3.max(planets, function(d) { return d.Radius; })]);	
 	.domain([radMin, radMax])
-	.range([5, 60]); //set domain and range according to minimum and maximum found above -James
+	.range([5, 30]); //set domain and range according to minimum and maximum found above -James
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
-    .domain([0, 10000])
-    .range([0,1000]);
+    .domain([0, 15000])
+    .range([0,15000]);
 var yScale = d3.scale.linear()
-    .domain([0, 10000])
-    .range([0,1000])
+    .domain([0, 15000])
+    .range([0,15000])
 var zScale = d3.scale.linear()
-    .domain([0, 10000])
-    .range([0,1000]);
+    .domain([0, 15000])
+    .range([0,15000]);
 
 //Format with 2 decimals
 var formatSI = d3.format(".2f");
@@ -212,7 +210,7 @@ var planets = scene.selectAll(".planet")
             	.append('shape')
             	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
             	.append('sphere')
-            	.attr('radius', function(d) {return rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+            	.attr('radius', function(d) {return 1.5*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
 //new function to switch camera position to Earth sky view -Caroline & Catherine
 function earthView() {
@@ -228,6 +226,18 @@ function earthView() {
   				  .attr('zFar', zF);
 
 				 planets.attr('radius', function(d) {return 0.15*rScale(d.koi_srad);}) //draw spheres to represent points
+
+				}
+function galaxyView() {
+	
+				var view_pos = [0., 500., 50000.];
+				var view_or = [1., 0., 0., 0.];
+				
+				viewpoint
+				.attr("position", view_pos.join(" "))
+				.attr("orientation", view_or.join(" "))
+				  
+				 planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //draw spheres to represent points
 
 				}
 
