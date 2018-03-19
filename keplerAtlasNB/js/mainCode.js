@@ -156,18 +156,18 @@ var rScale = d3.scale.linear()
 	//.range([1, 20])
 	//.domain([0, d3.max(planets, function(d) { return d.Radius; })]);	
 	.domain([radMin, radMax])
-	.range([5, 60]); //set domain and range according to minimum and maximum found above -James
+	.range([1, 60]); //set domain and range according to minimum and maximum found above -James
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
-    .domain([0, 10000])
-    .range([0,1000]);
+    .domain([0, 15000])
+    .range([0,15000]);
 var yScale = d3.scale.linear()
-    .domain([0, 10000])
-    .range([0,1000])
+    .domain([0, 15000])
+    .range([0,15000])
 var zScale = d3.scale.linear()
-    .domain([0, 10000])
-    .range([0,1000]);
+    .domain([0, 15000])
+    .range([0,15000]);
 
 //Format with 2 decimals
 var formatSI = d3.format(".2f");
@@ -220,14 +220,30 @@ function earthView() {
 				var view_pos = [-981.05453, -4844.91558, -1078.06203]
 				var view_or = [0.98405, 0.02277, -0.17642, 1.82544];
 				var zN = 0.;
-				var zF = 10000.;
+				var zF = 2000.;
 				
 				viewpoint.attr("position", view_pos.join(" "))
 				  .attr("orientation", view_or.join(" "))
 				  .attr('zNear', zN)
   				  .attr('zFar', zF);
 
-				 planets.attr('radius', function(d) {return 0.15*rScale(d.koi_srad);}) //draw spheres to represent points
+				 planets.attr('radius', function(d) {return 0.15 * rScale(d.koi_srad) ;}) //draw spheres to represent points
+
+				}
+
+function galaxyView() {
+	
+				var view_pos = [0.00000, 500.00000, 50000.00000]
+				var view_or = [0.00000, 0.00000, 0.00000, 0.00000];
+				//var zN = 0.;
+				//var zF = 2000.;
+				
+				viewpoint.attr("position", view_pos.join(" "))
+				  .attr("orientation", view_or.join(" "))
+				  .attr('zNear', zN)
+  				  .attr('zFar', zF);
+
+				 planets.attr('radius', function(d) {return .5 * rScale(d.koi_srad) ;}) //draw spheres to represent points
 
 				}
 
