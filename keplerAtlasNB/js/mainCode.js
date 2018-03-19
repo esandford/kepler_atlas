@@ -160,14 +160,14 @@ var rScale = d3.scale.linear()
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
-    .domain([0, 10000])
-    .range([0,1000]);
+    .domain([0, 15000])
+    .range([0,15000]);
 var yScale = d3.scale.linear()
-    .domain([0, 10000])
-    .range([0,1000])
+    .domain([0, 15000])
+    .range([0,15000])
 var zScale = d3.scale.linear()
-    .domain([0, 10000])
-    .range([0,1000]);
+    .domain([0, 15000])
+    .range([0,15000]);
 
 //Format with 2 decimals
 var formatSI = d3.format(".2f");
