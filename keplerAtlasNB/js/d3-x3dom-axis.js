@@ -4,6 +4,7 @@
 // function(t,n){return;}() returns a syntax error
 //but
 // !function(t,n){return;} returns True
+
 ! function(t, n) {
 	//console.log("t is " + t); //t is [object Window]
 	//console.log("n is " + n); //n is function defined below
@@ -12,26 +13,26 @@
 	//condition ? value-if-true : value-if-false
 
 	//without nested ternary:
-	//var size_of_x;
-	//if(x == 0){
-    //	size_of_x = "none";
-	//}
-	//else if(x < 5){
-    //	size_of_x = "small";
-	//}
-	//else if (x > 5 && x < 10){
-    //	size_of_x = "medium";
-	//}
-	//else {
-    //	size_of_x = "big";
-	//}
+	/*var size_of_x;
+	if(x == 0){
+    	size_of_x = "none";
+	}
+	else if(x < 5){
+    	size_of_x = "small";
+	}
+	else if (x > 5 && x < 10){
+    	size_of_x = "medium";
+	}
+	else {
+    	size_of_x = "big";
+	}*/
 
 	//now, with nested ternary:
-	//var size_of_x =
-  	//	(x == 0) 			  ? "none"   :
-  	//	(x < 5) 			  ? "small"  :
-  	//	((x > 5) && (x < 10)) ? "medium" :
-    //       		                "big"    ;
+	/*var size_of_x =
+  		(x == 0) 			  ? "none"   :
+  		(x < 5) 			  ? "small"  :
+  		((x > 5) && (x < 10)) ? "medium" :
+           		                "big"    ;*/
     
     //console.log(typeof exports); //undefined
     //console.log(typeof module); //undefined
@@ -47,9 +48,9 @@
 		"use strict";
 
 		function n(t, n, e) {
-			console.log("t is " + t); //t is x, t is y, t is y, t is z
-			console.log("n is " + n); //n is z, n is z, n is x, n is x
-			console.log("e is " + e); //e is function r(t){return i(+t)} (always)
+			//console.log("t is " + t); //t is x, t is y, t is y, t is z
+			//console.log("n is " + n); //n is z, n is z, n is x, n is x
+			//console.log("e is " + e); //e is function r(t){return i(+t)} (always)
 		    function l(a) {
 			function l(t) {
 			    var n;
