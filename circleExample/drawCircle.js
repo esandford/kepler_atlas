@@ -109,6 +109,6 @@ var drawnCircles = scene.selectAll(".circle") 	//creates a selection, which is c
 					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
 					.call(makeSolid, 'black') 			//set the color
             		.append('Circle2D')					//make the shape a 2D circle
-					.attr('radius', 50)				//set the radius
+					.attr('radius', function(d){return d.circleradius;})				//set the radius
 					.attr('subdivision',100) 			//set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
-
+          

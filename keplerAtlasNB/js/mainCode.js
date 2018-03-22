@@ -77,33 +77,33 @@ var viewpoint = scene.append("viewpoint")
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 
-var xax = d3.scale.linear().range([0, 200]);
-var yax = d3.scale.linear().range([0, 200]);
-var zax = d3.scale.linear().range([0, 200]);
+// var xax = d3.scale.linear().range([0, 200]);
+// var yax = d3.scale.linear().range([0, 200]);
+// var zax = d3.scale.linear().range([0, 200]);
 
-var xAxis = d3_x3dom_axis.x3domAxis('x', 'z', xax).tickSize(zax.range()[1] - zax.range()[0]).tickPadding(yax.range()[0]);
-var yAxis = d3_x3dom_axis.x3domAxis('y', 'z', yax).tickSize(zax.range()[1] - zax.range()[0]);
-var yAxis2 = d3_x3dom_axis.x3domAxis('y', 'x', yax).tickSize(xax.range()[1] - xax.range()[0]).tickFormat(function(d){return ''});
-var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', zax).tickSize(xax.range()[1] - xax.range()[0]);
-scene.append('group')
-    .attr('class', 'xAxis')
-    .call(xAxis)
-    .select('.domain').call(makeSolid, 'blue'); //parallel lines in z vs x plane
+// var xAxis = d3_x3dom_axis.x3domAxis('x', 'z', xax).tickSize(zax.range()[1] - zax.range()[0]).tickPadding(yax.range()[0]);
+// var yAxis = d3_x3dom_axis.x3domAxis('y', 'z', yax).tickSize(zax.range()[1] - zax.range()[0]);
+// var yAxis2 = d3_x3dom_axis.x3domAxis('y', 'x', yax).tickSize(xax.range()[1] - xax.range()[0]).tickFormat(function(d){return ''});
+// var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', zax).tickSize(xax.range()[1] - xax.range()[0]);
+// scene.append('group')
+//     .attr('class', 'xAxis')
+//     .call(xAxis)
+//     .select('.domain').call(makeSolid, 'blue'); //parallel lines in z vs x plane
         
-scene.append('group')
-    .attr('class', 'yAxis')
-    .call(yAxis)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs z plane
+// scene.append('group')
+//     .attr('class', 'yAxis')
+//     .call(yAxis)
+//     .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs z plane
   
-scene.append('group')
-    .attr('class', 'yAxis')
-    .call(yAxis2)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs x plane
+// scene.append('group')
+//     .attr('class', 'yAxis')
+//     .call(yAxis2)
+//     .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs x plane
   
-scene.append('group')
-    .attr('class', 'zAxis')
-    .call(zAxis)
-    ;//.select('.domain'); //parallel lines in x vs z plane
+// scene.append('group')
+//     .attr('class', 'zAxis')
+//     .call(zAxis)
+//     ;//.select('.domain'); //parallel lines in x vs z plane
 
 //Create a container for everything with the centre in the middle
 //var container = svg.append("g").attr("class","container")
@@ -247,7 +247,7 @@ function galaxyView() {
 				.attr("position", view_pos.join(" "))
 				.attr("orientation", view_or.join(" "))
 				
-				planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
+				planets.attr('radius', function(d) {return .5*rScale(d.koi_srad);}) //james 
 				//planets.attr('radius', function(d) {return 0.5*rScale(d.koi_srad);}) //caroline
 
 				}
