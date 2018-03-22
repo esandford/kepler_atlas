@@ -220,11 +220,12 @@ function earthView() {
 				//var zN = 0.;
 				//var zF = 10000.;
 				var fov = 0.25;
-				var view_pos = [0.05*-10944,0.05*-49698, 0.05*-9479]
+				//var view_pos = [0.01*-10944,0.01*-49698, 0.01*-9479]
+				var view_pos = [-100, -500, -95]
 				var view_or = [0.9840, 0.02277, -0.17642, 1.82544]
-				var zN = 0.;
+				var zN = -1000.;
 				//var zF = 1000.;
-				var zF = 2000.; //caroline
+				var zF = 10000.; //caroline
 
 				viewpoint.attr("position", view_pos.join(" "))
 				  .attr("orientation", view_or.join(" "))
@@ -232,7 +233,7 @@ function earthView() {
   				  .attr('zFar', zF)
   				  .attr("fieldOfView", fov);
 
-				planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james
+				planets.attr('radius', function(d) {return 0.05*rScale(d.koi_srad);}) //james
 				//planets.attr('radius', function(d) {return 0.15 * rScale(d.koi_srad) ;}) //caroline
 
 				}
