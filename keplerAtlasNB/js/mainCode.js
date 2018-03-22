@@ -53,12 +53,18 @@ d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
 
 //starts camera at ideal viewpoint
 var scene = x3d.append("scene");
-var view_pos = [-71481.90522, -19085.21779, -64575.32094];
+
+var view_pos = [0., 500., 50000.]; //x, y, z relative to origin (0, 0, 0)
 //var view_pos = [-37902.27708, -31717.63386, -17253.83076]; //new view_pos and fov -Chris
-var fov = 0.1;
-var view_or = [0.87137, -0.35927, -0.33412, 2.68349];
-//var zN = 3600;
-//var zF = 10000;
+var fov = 0.05; 	// Preferred minimum viewing angle from this viewpoint in radians. 
+				// Small field of view roughly corresponds to a telephoto lens, 
+				// large field of view roughly corresponds to a wide-angle lens. 
+				// Hint: modifying Viewpoint distance to object may be better for zooming. 
+				// Warning: fieldOfView may not be correct for different window sizes and aspect ratios. 
+
+var view_or = [1., 0., 0., 0.]; //relative to default (0, 0, 1, 0)
+//var zN = 0; 		//near plane
+//var zF = 150000;	//far plane
 
 var viewpoint = scene.append("viewpoint")
   .attr("id", 'dvp')
@@ -69,6 +75,35 @@ var viewpoint = scene.append("viewpoint")
   //.attr('zNear', zN)
   //.attr('zFar', zF)
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
+
+
+var xax = d3.scale.linear().range([0, 200]);
+var yax = d3.scale.linear().range([0, 200]);
+var zax = d3.scale.linear().range([0, 200]);
+
+var xAxis = d3_x3dom_axis.x3domAxis('x', 'z', xax).tickSize(zax.range()[1] - zax.range()[0]).tickPadding(yax.range()[0]);
+var yAxis = d3_x3dom_axis.x3domAxis('y', 'z', yax).tickSize(zax.range()[1] - zax.range()[0]);
+var yAxis2 = d3_x3dom_axis.x3domAxis('y', 'x', yax).tickSize(xax.range()[1] - xax.range()[0]).tickFormat(function(d){return ''});
+var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', zax).tickSize(xax.range()[1] - xax.range()[0]);
+scene.append('group')
+    .attr('class', 'xAxis')
+    .call(xAxis)
+    .select('.domain').call(makeSolid, 'blue'); //parallel lines in z vs x plane
+        
+scene.append('group')
+    .attr('class', 'yAxis')
+    .call(yAxis)
+    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs z plane
+  
+scene.append('group')
+    .attr('class', 'yAxis')
+    .call(yAxis2)
+    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs x plane
+  
+scene.append('group')
+    .attr('class', 'zAxis')
+    .call(zAxis)
+    ;//.select('.domain'); //parallel lines in x vs z plane
 
 //Create a container for everything with the centre in the middle
 //var container = svg.append("g").attr("class","container")
@@ -115,23 +150,22 @@ function return_radius_minmax(planets){
 radMin = return_radius_minmax(planets)[0] //get minimum and maximum radii -James
 radMax = return_radius_minmax(planets)[1]
 var rScale = d3.scale.linear()
-	// .range([1, 20])
-	// .domain([0, d3.max(planets, function(d) { return d.Radius; })]);	
+	//.range([1, 20]) //set domain and range according to minimum and maximum found above -James
+	//.domain([0, d3.max(planets, function(d) { return d.Radius; })]); 	
 	.domain([radMin, radMax])
-	.range([5, 60]); //set domain and range according to minimum and maximum found above -James
+	.range([5, 30]); //james
+	//.range([1, 60]); //caroline
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
-    .domain([20, 500])
-    //.range([-250, x]);
-    .range([0,x]);
+    .domain([0, 15000])
+    .range([0,15000]);
 var yScale = d3.scale.linear()
-    .domain([-700, 700])
-    //.range([y, 0]);
-    .range([y,0])
+    .domain([0, 15000])
+    .range([0,15000])
 var zScale = d3.scale.linear()
-    .domain([-50, 50])
-    .range([0,y]);
+    .domain([0, 15000])
+    .range([0,15000]);
 
 //Format with 2 decimals
 var formatSI = d3.format(".2f");
@@ -176,28 +210,47 @@ var planets = scene.selectAll(".planet")
             	.append('shape')
             	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
             	.append('sphere')
-            	.attr('radius', function(d) {return rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+            	.attr('radius', function(d) {return 0.5*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
 //new function to switch camera position to Earth sky view -Caroline & Catherine
-//note: Catherine & Caroline had different numbers for view_pos, view_or, and centerOfRotation, so I reproduced both versions here! -Emily
-function earthView() { 
-				//var view_pos = [-1677.11173, 2131.25139, -5981.29509]; //Catherine's version
-				var view_pos = [-67.28213, 546.76677, 553.49863]; //Caroline's version
-				var fov = 1.0;
-				//var view_or = [0.72929, 0.67504, -0.11162, 3.87833]; //Catherine's version
-				var view_or = [0.80990, 0.58521, -0.03993, 3.54568]; //Caroline's version
-
+function earthView() {
+				
+				//var view_pos = [-981.05453, -4844.91558, -1078.06203]
+				//var view_or = [0.98405, 0.02277, -0.17642, 1.82544];
+				//var zN = 0.;
+				//var zF = 10000.;
+				var fov = 0.25;
+				var view_pos = [0.05*-10944,0.05*-49698, 0.05*-9479]
+				var view_or = [0.9840, 0.02277, -0.17642, 1.82544]
+				var zN = 0.;
+				//var zF = 1000.;
+				var zF = 2000.; //caroline
 
 				viewpoint.attr("position", view_pos.join(" "))
 				  .attr("orientation", view_or.join(" "))
-				  .attr("fieldOfView", fov)
-				  //.attr('centerOfRotation', "0 0 0"); //Catherine's version
-				  .attr('centerOfRotation', "-18.345760512980718 500.9411560290405 706.9935215264597"); //Caroline's version
+				  .attr('zNear', zN)
+  				  .attr('zFar', zF)
+  				  .attr("fieldOfView", fov);
 
-				 planets.attr('radius', function(d) {return d.koi_srad;}); //draw spheres to represent points
+				planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james
+				//planets.attr('radius', function(d) {return 0.15 * rScale(d.koi_srad) ;}) //caroline
 
 				}
 
+function galaxyView() {
+	
+				var view_pos = [0., 500., 50000.];
+				var view_or = [1., 0., 0., 0.]; //james
+				//var view_or = [0., 0., 0., 0.]; //caroline
+				
+				viewpoint
+				.attr("position", view_pos.join(" "))
+				.attr("orientation", view_or.join(" "))
+				
+				planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
+				//planets.attr('radius', function(d) {return 0.5*rScale(d.koi_srad);}) //caroline
+
+				}
 
 
 /*var planetContainer = container.append("g").attr("class","planetContainer");
