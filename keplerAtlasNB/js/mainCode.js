@@ -246,6 +246,18 @@ function galaxyView() {
 
 				}
 
+var cylinders = [{"height":30, "radius":2000}];
+
+var drawn_cylinders = scene.selectAll(".cylinder") 	
+					.data(cylinders)				
+					.enter()					
+					.append('transform')		
+					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
+					.call(makeSolid, 'gray') 			//set the color
+            		.append('cylinder')					//make the shape a 2D circle
+					.attr('radius', function(d){return d.radius;})	//set the radius
+					.attr('height', function(d){return d.height})
+					.attr('diffuseColor', .6)
 
 /*var planetContainer = container.append("g").attr("class","planetContainer");
 var planets = planetContainer.selectAll("g.planet")
