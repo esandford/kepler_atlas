@@ -124,6 +124,33 @@ var opacityScale = d3.scale.linear()
 	.domain([0, 1000])
 	.range([0, 1]);
 
+function return_vmagnitude_minmax(planets){
+	var currentMinimum = 1000000;
+	var currentMaximum = 0;
+	var currentVmagnitude;
+
+	for(i=0; i<brightstars.length; i++){
+		currentVmag = brightstars[i].Vmagnitude;
+
+		if(currentVmag< currentMinimum){
+			currentMinimum = currentVmag;
+		}
+
+		if(currentVmag > currentMaximum){
+			currentMaximum = currentVmag;
+		}
+
+	}
+	return [currentMinimum, currentMaximum];
+	
+	}
+vmagMin = return_vmagnitude_minmax(brightstars)[0]
+vmagMax = return_vmagnitude_minmax(brightstars)[1]
+
+var vmagScale = d3.scale.linear()	
+	.domain([vmagMin, vmagMax])
+	.range([6000, 3000]);
+
 //Set scale for radius of circles
 //new function to find minimum and maximum stellar radius across the entire data set -James
 function return_radius_minmax(planets){
@@ -189,6 +216,23 @@ var gradientChoice = "Temp";
 // 				.style("stroke", "white")
 // 				.style("stroke-opacity", 0);	
 
+//Drawing BSC	
+var brightstars = scene.selectAll(".brightstars")
+				.data(brightstars)
+            	.enter()
+            	.append('transform')
+            	.attr('class', 'point')
+            	.attr('translation', function(d){ 
+            		var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.RA, xyzinputdec=d.dec);
+					var x = xyz[0];
+					var y = xyz[1];
+					var z = xyz[2];
+
+            		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
+            	.append('shape')
+            	.call(makeSolid, function(d) {return "Gold"})
+            	.append('sphere')
+            	.attr('radius', function(d) {return 1});
 
 //Drawing the planets			
 var planets = scene.selectAll(".planet")
@@ -245,8 +289,6 @@ function galaxyView() {
 				//planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
 
 				}
-
-
 /*var planetContainer = container.append("g").attr("class","planetContainer");
 var planets = planetContainer.selectAll("g.planet")
 				.data(planets).enter()
