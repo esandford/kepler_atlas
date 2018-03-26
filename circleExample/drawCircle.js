@@ -93,11 +93,11 @@ scene.append('group')
 // draw a circle!
 
 //declare a list of circles. currently only contains one circle
-var circles = [{"xcenter":10, "ycenter":10, "zcenter":10, "rotaxis_xcoord":0 ,"rotaxis_ycoord":1, "rotaxis_zcoord":0, "rot_angle":0.5236}] //this rotation angle = 30 degrees, in radians.
+var spheres_and_circles = [{"sphereradius":10,"circleradius":50,"xcenter":10, "ycenter":10, "zcenter":10, "rotaxis_xcoord":0 ,"rotaxis_ycoord":1, "rotaxis_zcoord":0, "rot_angle":0.5236}] //this rotation angle = 30 degrees, in radians.
 
 //draw them in the x3dom scene!
-var drawnCircles = scene.selectAll(".circle") 	//creates a selection, which is currently empty
-					.data(circles)				//join "circles" list
+var drawn_spheres_and_circles = scene.selectAll(".sphereandcircle") 	//creates a selection, which is currently empty
+					.data(spheres_and_circles)				//join "circles" list
 					.enter()					//enter "circles" into empty selection. the selection now contains all of "circles", and everything after this loops over each circle in turn
 					.append('transform')		//for each circle, append a "transform" object
 					.attr('translation', function(d){    //specify that this "transform" will impose a translation of the circle's spatial position
@@ -109,6 +109,10 @@ var drawnCircles = scene.selectAll(".circle") 	//creates a selection, which is c
 					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
 					.call(makeSolid, 'black') 			//set the color
             		.append('Circle2D')					//make the shape a 2D circle
-					.attr('radius', function(d){return d.circleradius;})				//set the radius
+					.attr('radius', function(d){return d.circleradius;})	//set the radius
 					.attr('subdivision',100) 			//set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
-          
+					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
+					.call(makeSolid, 'red') 			//set the color
+            		.append('sphere')					//make the shape a 2D circle
+					.attr('radius', function(d){return d.sphereradius;})	//set the radius
+					
