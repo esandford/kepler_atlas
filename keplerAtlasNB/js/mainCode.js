@@ -77,33 +77,33 @@ var viewpoint = scene.append("viewpoint")
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 
-var xax = d3.scale.linear().range([0, 200]);
-var yax = d3.scale.linear().range([0, 200]);
-var zax = d3.scale.linear().range([0, 200]);
+// var xax = d3.scale.linear().range([0, 200]);
+// var yax = d3.scale.linear().range([0, 200]);
+// var zax = d3.scale.linear().range([0, 200]);
 
-var xAxis = d3_x3dom_axis.x3domAxis('x', 'z', xax).tickSize(zax.range()[1] - zax.range()[0]).tickPadding(yax.range()[0]);
-var yAxis = d3_x3dom_axis.x3domAxis('y', 'z', yax).tickSize(zax.range()[1] - zax.range()[0]);
-var yAxis2 = d3_x3dom_axis.x3domAxis('y', 'x', yax).tickSize(xax.range()[1] - xax.range()[0]).tickFormat(function(d){return ''});
-var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', zax).tickSize(xax.range()[1] - xax.range()[0]);
-scene.append('group')
-    .attr('class', 'xAxis')
-    .call(xAxis)
-    .select('.domain').call(makeSolid, 'blue'); //parallel lines in z vs x plane
+// var xAxis = d3_x3dom_axis.x3domAxis('x', 'z', xax).tickSize(zax.range()[1] - zax.range()[0]).tickPadding(yax.range()[0]);
+// var yAxis = d3_x3dom_axis.x3domAxis('y', 'z', yax).tickSize(zax.range()[1] - zax.range()[0]);
+// var yAxis2 = d3_x3dom_axis.x3domAxis('y', 'x', yax).tickSize(xax.range()[1] - xax.range()[0]).tickFormat(function(d){return ''});
+// var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', zax).tickSize(xax.range()[1] - xax.range()[0]);
+// scene.append('group')
+//     .attr('class', 'xAxis')
+//     .call(xAxis)
+//     .select('.domain').call(makeSolid, 'blue'); //parallel lines in z vs x plane
         
-scene.append('group')
-    .attr('class', 'yAxis')
-    .call(yAxis)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs z plane
+// scene.append('group')
+//     .attr('class', 'yAxis')
+//     .call(yAxis)
+//     .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs z plane
   
-scene.append('group')
-    .attr('class', 'yAxis')
-    .call(yAxis2)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs x plane
+// scene.append('group')
+//     .attr('class', 'yAxis')
+//     .call(yAxis2)
+//     .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs x plane
   
-scene.append('group')
-    .attr('class', 'zAxis')
-    .call(zAxis)
-    ;//.select('.domain'); //parallel lines in x vs z plane
+// scene.append('group')
+//     .attr('class', 'zAxis')
+//     .call(zAxis)
+//     ;//.select('.domain'); //parallel lines in x vs z plane
 
 //Create a container for everything with the centre in the middle
 //var container = svg.append("g").attr("class","container")
@@ -153,8 +153,8 @@ var rScale = d3.scale.linear()
 	//.range([1, 20]) //set domain and range according to minimum and maximum found above -James
 	//.domain([0, d3.max(planets, function(d) { return d.Radius; })]); 	
 	.domain([radMin, radMax])
-	.range([5, 30]); //james
-	//.range([1, 60]); //caroline
+	//.range([5, 30]); //james
+	.range([3, 50]); //caroline
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
@@ -210,7 +210,7 @@ var planets = scene.selectAll(".planet")
             	.append('shape')
             	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
             	.append('sphere')
-            	.attr('radius', function(d) {return 0.15*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+            	.attr('radius', function(d) {return 0.5*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
 //new function to switch camera position to Earth sky view -Caroline & Catherine
 function earthView() {
@@ -220,9 +220,9 @@ function earthView() {
 				//var zN = 0.;
 				//var zF = 10000.;
 				var fov = 0.25;
-				var view_pos = [0.05*-10944,0.05*-49698, 0.05*-9479]
-				var view_or = [0.9840, 0.02277, -0.17642, 1.82544]
-				var zN = 0.;
+				var view_pos = [-100, -500, -95]
+				var view_or = [0.93577, -0.34201, 0.08583, 1.76526]
+				var zN = -2000;
 				//var zF = 1000.;
 				var zF = 2000.; //caroline
 
@@ -232,7 +232,7 @@ function earthView() {
   				  .attr('zFar', zF)
   				  .attr("fieldOfView", fov);
 
-				planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james
+				planets.attr('radius', function(d) {return .5*rScale(d.koi_srad);}) //james
 				//planets.attr('radius', function(d) {return 0.15 * rScale(d.koi_srad) ;}) //caroline
 
 				}
@@ -241,13 +241,13 @@ function galaxyView() {
 	
 				var view_pos = [0., 500., 50000.];
 				var view_or = [1., 0., 0., 0.]; //james
-				//var view_or = [0., 0., 0., 0.]; //caroline
+				//http://169.254.81.109:8080var view_or = [0., 0., 0., 0.]; //caroline
 				
 				viewpoint
 				.attr("position", view_pos.join(" "))
 				.attr("orientation", view_or.join(" "))
 				
-				planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
+				planets.attr('radius', function(d) {return .5*rScale(d.koi_srad);}) //james 
 				//planets.attr('radius', function(d) {return 0.5*rScale(d.koi_srad);}) //caroline
 
 				}
