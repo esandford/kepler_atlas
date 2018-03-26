@@ -209,6 +209,20 @@ var planets = scene.selectAll(".planet")
             	.append('sphere')
             	.attr('radius', function(d) {return 0.5*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
+
+var cylinders = [{"height":70, "radius":2000}];
+
+var drawn_cylinders = scene.selectAll(".cylinder") 	
+					.data(cylinders)				
+					.enter()					
+					.append('transform')		
+					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
+					.call(makeSolid, 'blue') 			//set the color
+            		.append('cylinder')				//make the shape a 2D circle
+					.attr('radius', function(d){return d.radius;})	//set the radius
+					.attr('height', function(d){return d.height})
+
+
 //new function to switch camera position to Earth sky view -Caroline & Catherine
 function earthView() {
 				var fov = 0.25;
