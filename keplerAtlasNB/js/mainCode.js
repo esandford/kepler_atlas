@@ -207,7 +207,7 @@ var planets = scene.selectAll(".planet")
             	.append('shape')
             	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
             	.append('sphere')
-            	.attr('radius', function(d) {return 0.5*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+            	.attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
 //new function to switch camera position to Earth sky view -Caroline & Catherine
 function earthView() {
@@ -223,7 +223,7 @@ function earthView() {
   				  .attr('zFar', zF)
   				  .attr("fieldOfView", fov);
 
-				//planets.attr('radius', function(d) {return 0.5*rScale(d.koi_srad);})
+				//planets.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
 
 				}
 
