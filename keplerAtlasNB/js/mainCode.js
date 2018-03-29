@@ -153,6 +153,34 @@ var rScale = d3.scale.linear()
 	.domain([radMin, radMax])
 	.range([5, 30]); //james
 
+//set scale for size of Bright Star Catalog stars -James & Chris
+function return_vmagnitude_minmax(brightstars){
+	var currentMinimum = 1000000;
+	var currentMaximum = 0;
+	var currentVmagnitude;
+
+	for(i=0; i<brightstars.length; i++){
+		currentVmag = brightstars[i].Vmagnitude;
+
+		if(currentVmag< currentMinimum){
+			currentMinimum = currentVmag;
+		}
+
+		if(currentVmag > currentMaximum){
+			currentMaximum = currentVmag;
+		}
+
+	}
+	return [currentMinimum, currentMaximum];
+	
+	}
+vmagMin = return_vmagnitude_minmax(brightstars)[0]
+vmagMax = return_vmagnitude_minmax(brightstars)[1]
+
+var vmagScale = d3.scale.linear()	
+	.domain([vmagMin, vmagMax])
+	.range([6000, 3000]);
+
 //scale x and y "axes"
 var xScale = d3.scale.linear()
     .domain([0, 15000])
@@ -208,6 +236,42 @@ var planets = scene.selectAll(".planet")
             	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
             	.append('sphere')
             	.attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+
+//Drawing BSC	
+var brightstars = scene.selectAll(".brightstars")
+				.data(brightstars)
+            	.enter()
+            	.append('transform')
+            	.attr('class', 'point')
+            	.attr('translation', function(d){ 
+            		var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.RA, xyzinputdec=d.dec);
+					var x = xyz[0];
+					var y = xyz[1];
+					var z = xyz[2];
+
+            		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
+            	.append('shape')
+            	.call(makeSolid, function(d) {return "Gold"})
+            	.append('sphere')
+            	.attr('radius', function(d) {return 1});
+
+
+//add cylinder to the site - Catherine & Caroline
+//note: we need to rotate this so that the cylinder lies in the xy-plane insead pf the xz-plane! -Emily
+var cylinders = [{"height":70, "radius":2000}]; //Catherine
+//var cylinders = [{"height":30, "radius":2000}]; //Caroline
+
+
+var drawn_cylinders = scene.selectAll(".cylinder") 	
+					.data(cylinders)				
+					.enter()					
+					.append('shape')					//for each cylinder, append an as-yet-unspecified shape to be drawn on our 3D canvas
+					.call(makeSolid, 'blue') 			//set the color
+            		.append('cylinder')				//make the shape a 3D cylinder
+					.attr('radius', function(d){return d.radius;})	//set the radius
+					.attr('height', function(d){return d.height;}) // set the height
+					.attr('diffuseColor',0.6) //attempt to make transparent
+
 
 //new function to switch camera position to Earth sky view -Caroline & Catherine
 function earthView() {
