@@ -11,11 +11,11 @@ var
 
 //a function that x3dom uses to attach an "appearance" and "color" to a data selection.
 //If you subsequently append a shape to that selection, x3dom will render the shape in 3D with this appearance/color. -ES
-var makeSolid = function(selection, color) {
-            selection
-                .append("appearance")
+var makeSolid = function(selection, color, opacity) {
+            selection.append("appearance")
                 .append("material")
-                .attr("diffuseColor", color || "black");
+                .attr("diffuseColor", color || "black")
+                .attr("transparency", function(){return 1 - opacity;})
             return selection;
         };
 
@@ -88,17 +88,17 @@ var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', zax).tickSize(xax.range()[1] - xax
 scene.append('group')
     .attr('class', 'xAxis')
     .call(xAxis)
-    .select('.domain').call(makeSolid, 'blue'); //parallel lines in z vs x plane
+    .select('.domain').call(makeSolid, 'blue', 1.0); //parallel lines in z vs x plane
         
 scene.append('group')
     .attr('class', 'yAxis')
     .call(yAxis)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs z plane
+    .select('.domain').call(makeSolid, 'red', 1.0); //parallel lines in y vs z plane
   
 scene.append('group')
     .attr('class', 'yAxis')
     .call(yAxis2)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs x plane
+    .select('.domain').call(makeSolid, 'red', 1.0); //parallel lines in y vs x plane
   
 scene.append('group')
     .attr('class', 'zAxis')
@@ -233,7 +233,7 @@ var planets = scene.selectAll(".planet")
 
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.append('shape')
-            	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
+            	.call(makeSolid, color=function(d){return colorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
             	.append('sphere')
             	.attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
@@ -251,26 +251,28 @@ var brightstars = scene.selectAll(".brightstars")
 
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.append('shape')
-            	.call(makeSolid, function(d) {return "Gold"})
+            	.call(makeSolid, color='gold', opacity=1)
             	.append('sphere')
             	.attr('radius', function(d) {return 1});
 
 
 //add cylinder to the site - Catherine & Caroline
 //note: we need to rotate this so that the cylinder lies in the xy-plane insead pf the xz-plane! -Emily
-var cylinders = [{"height":70, "radius":2000}]; //Catherine
-//var cylinders = [{"height":30, "radius":2000}]; //Caroline
-
+var cylinders = [{"height":70, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}]; //Catherine
 
 var drawn_cylinders = scene.selectAll(".cylinder") 	
 					.data(cylinders)				
 					.enter()					
-					.append('shape')					//for each cylinder, append an as-yet-unspecified shape to be drawn on our 3D canvas
-					.call(makeSolid, 'blue') 			//set the color
-            		.append('cylinder')				//make the shape a 3D cylinder
+					.append('transform')
+					.attr('rotation', function(d){    //specify that this "transform" will impose a rotation of the circle
+						return d.rotaxis_xcoord + ' ' + d.rotaxis_ycoord + ' ' + d.rotaxis_zcoord + ' ' + d.rot_angle;
+					})
+					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
+					.call(makeSolid, color='blue', opacity=0.5) 			//set the color
+          			.append('cylinder')					//make the shape a 2D circle
 					.attr('radius', function(d){return d.radius;})	//set the radius
-					.attr('height', function(d){return d.height;}) // set the height
-					.attr('diffuseColor',0.6) //attempt to make transparent
+					.attr('height', function(d){return d.height})
+					.attr('subdivision',3)
 
 
 //new function to switch camera position to Earth sky view -Caroline & Catherine
@@ -309,46 +311,3 @@ function galaxyView() {
 				//planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
 
 				}
-
-
-/*var planetContainer = container.append("g").attr("class","planetContainer");
-var planets = planetContainer.selectAll("g.planet")
-				.data(planets).enter()
-				//.append("g")
-				//.attr("class", "planetWrap")					
-				.append("circle")
-				.attr("class", "planet")
-				// .attr("r", function(d) {return radiusSizer*d.Radius;})//rScale(d.Radius);})
-				// .attr("cx", function(d) {return d.x;})											//doesn't work because we don't have the data to plot
-				// .attr("cy", function(d) {return d.y;})
-				.attr("r",  function(d) {return d.koi_srad;}) //set radius to d.koi_srad
-				.attr("cx", function(d) {
-					var x = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[0]
-					//console.log(x);
-					return xScale(x);}) 	//"d" = the planet I'm currently on, in the implicit for-loop
-				.attr("cy", function(d) {
-					var y = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[1];
-					//console.log(y);
-					return yScale(y);})
-				.style("fill", function(d) {return colorScale(d.koi_steff)}) //d.koi_steff
-				// .style("fill", function(d){return "url(#gradientRadial-" + d.ID + ")";}) 		//no more d.ID
-					// .style("opacity", function(d) {
-					// 	var z = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[2];
-					// 	// console.log(z)
-					// 	return opacityScale(z);})
-				.style("opacity", .6)
-				.style("stroke-opacity", 0)//depend on z 
-				.style("stroke-width", "3px")
-				.style("stroke", "white")
-				// .on("mouseover", function(d, i) {		/relies on showEllipse function in helperFunctions.js
-				// 	stopTooltip = false					
-				// 	showTooltip(d);
-				// 	showEllipse(d, i, 0.8);
-				// })
-				// .on("mouseout", function(d, i) {
-				// 	showEllipse(d, i, 0);
-				// });
-
-//Remove tooltip when clicking anywhere in body
-d3.select("svg")
-	.on("click", function(d) {stopTooltip = true;});*/
