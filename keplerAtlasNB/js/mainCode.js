@@ -11,11 +11,12 @@ var
 
 //a function that x3dom uses to attach an "appearance" and "color" to a data selection.
 //If you subsequently append a shape to that selection, x3dom will render the shape in 3D with this appearance/color. -ES
-var makeSolid = function(selection, color) {
+var makeSolid = function(selection, color, opacity) {
             selection
                 .append("appearance")
                 .append("material")
-                .attr("diffuseColor", color || "black");
+                .attr("diffuseColor", color || "black")
+                .attr("transparency", function(){return 1 - opacity;})
             return selection;
         };
 
@@ -77,32 +78,32 @@ var viewpoint = scene.append("viewpoint")
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 
-var xax = d3.scale.linear().range([0, 200]);
-var yax = d3.scale.linear().range([0, 200]);
-var zax = d3.scale.linear().range([0, 200]);
+// var xax = d3.scale.linear().range([0, 200]);
+// var yax = d3.scale.linear().range([0, 200]);
+// var zax = d3.scale.linear().range([0, 200]);
 
-var xAxis = d3_x3dom_axis.x3domAxis('x', 'z', xax).tickSize(zax.range()[1] - zax.range()[0]).tickPadding(yax.range()[0]);
-var yAxis = d3_x3dom_axis.x3domAxis('y', 'z', yax).tickSize(zax.range()[1] - zax.range()[0]);
-var yAxis2 = d3_x3dom_axis.x3domAxis('y', 'x', yax).tickSize(xax.range()[1] - xax.range()[0]).tickFormat(function(d){return ''});
-var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', zax).tickSize(xax.range()[1] - xax.range()[0]);
-scene.append('group')
-    .attr('class', 'xAxis')
-    .call(xAxis)
-    .select('.domain').call(makeSolid, 'blue'); //parallel lines in z vs x plane
+// var xAxis = d3_x3dom_axis.x3domAxis('x', 'z', xax).tickSize(zax.range()[1] - zax.range()[0]).tickPadding(yax.range()[0]);
+// var yAxis = d3_x3dom_axis.x3domAxis('y', 'z', yax).tickSize(zax.range()[1] - zax.range()[0]);
+// var yAxis2 = d3_x3dom_axis.x3domAxis('y', 'x', yax).tickSize(xax.range()[1] - xax.range()[0]).tickFormat(function(d){return ''});
+// var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', zax).tickSize(xax.range()[1] - xax.range()[0]);
+// scene.append('group')
+//     .attr('class', 'xAxis')
+//     .call(xAxis)
+//     .select('.domain').call(makeSolid, 'blue'); //parallel lines in z vs x plane
         
-scene.append('group')
-    .attr('class', 'yAxis')
-    .call(yAxis)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs z plane
+// scene.append('group')
+//     .attr('class', 'yAxis')
+//     .call(yAxis)
+//     .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs z plane
   
-scene.append('group')
-    .attr('class', 'yAxis')
-    .call(yAxis2)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs x plane
+// scene.append('group')
+//     .attr('class', 'yAxis')
+//     .call(yAxis2)
+//     .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs x plane
   
-scene.append('group')
-    .attr('class', 'zAxis')
-    .call(zAxis)
+// scene.append('group')
+//     .attr('class', 'zAxis')
+//     .call(zAxis)
     ;//.select('.domain'); //parallel lines in x vs z plane
 
 //Create a container for everything with the centre in the middle
@@ -152,6 +153,34 @@ radMax = return_radius_minmax(planets)[1]
 var rScale = d3.scale.linear()
 	.domain([radMin, radMax])
 	.range([5, 30]); //james
+
+//set scale for size of Bright Star Catalog stars -James & Chris
+function return_vmagnitude_minmax(brightstars){
+	var currentMinimum = 1000000;
+	var currentMaximum = 0;
+	var currentVmagnitude;
+
+	for(i=0; i<brightstars.length; i++){
+		currentVmag = brightstars[i].Vmagnitude;
+
+		if(currentVmag< currentMinimum){
+			currentMinimum = currentVmag;
+		}
+
+		if(currentVmag > currentMaximum){
+			currentMaximum = currentVmag;
+		}
+
+	}
+	return [currentMinimum, currentMaximum];
+	
+	}
+vmagMin = return_vmagnitude_minmax(brightstars)[0]
+vmagMax = return_vmagnitude_minmax(brightstars)[1]
+
+var vmagScale = d3.scale.linear()	
+	.domain([vmagMin, vmagMax])
+	.range([6000, 3000]);
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
@@ -205,22 +234,44 @@ var planets = scene.selectAll(".planet")
 
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.append('shape')
-            	.call(makeSolid, function(d) {return colorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
+            	.call(makeSolid, color=function(d) {return colorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
             	.append('sphere')
-            	.attr('radius', function(d) {return 0.5*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+            	.attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+
+//Drawing BSC	
+var brightstars = scene.selectAll(".brightstars")
+				.data(brightstars)
+            	.enter()
+            	.append('transform')
+            	.attr('class', 'point')
+            	.attr('translation', function(d){ 
+            		var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.RA, xyzinputdec=d.dec);
+					var x = xyz[0];
+					var y = xyz[1];
+					var z = xyz[2];
+
+            		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
+            	.append('shape')
+            	.call(makeSolid, color ='gold', opacity = 1)
+            	.append('sphere')
+            	.attr('radius', function(d) {return 1});
 
 
-var cylinders = [{"height":70, "radius":2000}];
+var cylinders = [{"height":70, "radius":2000, "rotaxis_xcoord":1,"rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
 
 var drawn_cylinders = scene.selectAll(".cylinder") 	
 					.data(cylinders)				
 					.enter()					
-					.append('transform')		
+					.append('transform')
+					.attr('rotation', function(d){    //specify that this "transform" will impose a rotation of the circle
+						return d.rotaxis_xcoord + ' ' + d.rotaxis_ycoord + ' ' + d.rotaxis_zcoord + ' ' + d.rot_angle; })		
 					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-					.call(makeSolid, 'blue') 			//set the color
+					.call(makeSolid, 'blue', 0.5) 			//set the color
             		.append('cylinder')				//make the shape a 2D circle
 					.attr('radius', function(d){return d.radius;})	//set the radius
 					.attr('height', function(d){return d.height})
+					.attr('subdivision',10);
+					
 
 
 //new function to switch camera position to Earth sky view -Caroline & Catherine
@@ -237,7 +288,7 @@ function earthView() {
   				  .attr('zFar', zF)
   				  .attr("fieldOfView", fov);
 
-				//planets.attr('radius', function(d) {return 0.5*rScale(d.koi_srad);})
+				//planets.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
 
 				}
 
