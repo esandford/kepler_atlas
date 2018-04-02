@@ -30,15 +30,7 @@ var resolution = 1, //sets behavior or animation orbit
 	speedUp = 400, //speed of planets
 	au = 149597871, //km
 	radiusSun = 695800, //km
-	radiusJupiter = 69911, //km
-	phi = 0, //rotation of ellipses
-	radiusSizer = 6, //Size increaser of radii of planets
-	planetOpacity = 0.6;
-
-//Create SVG
-/*var svg = d3.select("#planetarium").append("svg")
-	.attr("width", x)
-	.attr("height", y);*/
+	radiusJupiter = 69911; //km
 
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
@@ -77,7 +69,7 @@ var viewpoint = scene.append("viewpoint")
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 
-var xax = d3.scale.linear().range([0, 200]);
+/*var xax = d3.scale.linear().range([0, 200]);
 var yax = d3.scale.linear().range([0, 200]);
 var zax = d3.scale.linear().range([0, 200]);
 
@@ -104,141 +96,32 @@ scene.append('group')
     .attr('class', 'zAxis')
     .call(zAxis)
     ;//.select('.domain'); //parallel lines in x vs z plane
-
-//Create a container for everything with the centre in the middle
-//var container = svg.append("g").attr("class","container")
-//					.attr("transform", "translate(" + x/2 + "," + y/2 + ")")
-  
-///////////////////////////////////////////////////////////////////////////
-//////////////////////////// Create Scales ////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-
-
-//Create color gradient for planets based on the temperature of the star that they orbit
-var colors = ["#9C1E1E","#D62828","#E16262","#F3C4C4","#738E9B","#45687A","#2E556A","#174259","#001F2F"];
-var colorScale = d3.scale.linear()
-	 .domain([2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]) // Temperatures
-	 .range(colors);
-	
-var opacityScale = d3.scale.linear()	
-	.domain([0, 1000])
-	.range([0, 1]);
-
-//Set scale for radius of circles
-//new function to find minimum and maximum stellar radius across the entire data set -James
-function return_radius_minmax(planets){
-	var currentMinimum = 1000000;
-	var currentMaximum = 0;
-	var currentRadius;
-
-	for(i=0; i<planets.length; i++){
-		currentRadius = planets[i].koi_srad;
-
-		if(currentRadius < currentMinimum){
-			currentMinimum = currentRadius;
-		}
-
-		if(currentRadius > currentMaximum){
-			currentMaximum = currentRadius;
-		}
-
-	}
-	return [currentMinimum, currentMaximum];
-	
-	}
-
-radMin = return_radius_minmax(planets)[0] //get minimum and maximum radii -James
-radMax = return_radius_minmax(planets)[1]
-var rScale = d3.scale.linear()
-	.domain([radMin, radMax])
-	.range([5, 30]); //james
-
-//set scale for size of Bright Star Catalog stars -James & Chris
-function return_vmagnitude_minmax(brightstars){
-	var currentMinimum = 1000000;
-	var currentMaximum = 0;
-	var currentVmagnitude;
-
-	for(i=0; i<brightstars.length; i++){
-		currentVmag = brightstars[i].Vmagnitude;
-
-		if(currentVmag< currentMinimum){
-			currentMinimum = currentVmag;
-		}
-
-		if(currentVmag > currentMaximum){
-			currentMaximum = currentVmag;
-		}
-
-	}
-	return [currentMinimum, currentMaximum];
-	
-	}
-vmagMin = return_vmagnitude_minmax(brightstars)[0]
-vmagMax = return_vmagnitude_minmax(brightstars)[1]
-
-var vmagScale = d3.scale.linear()	
-	.domain([vmagMin, vmagMax])
-	.range([6000, 3000]);
-
-//scale x and y "axes"
-var xScale = d3.scale.linear()
-    .domain([0, 15000])
-    .range([0,15000]);
-var yScale = d3.scale.linear()
-    .domain([0, 15000])
-    .range([0,15000])
-var zScale = d3.scale.linear()
-    .domain([0, 15000])
-    .range([0,15000]);
-
-//Format with 2 decimals
-var formatSI = d3.format(".2f");
-
-//Create the gradients for the planet fill
-var gradientChoice = "Temp";
-// createGradients();
+*/
 
 ///////////////////////////////////////////////////////////////////////////
-/////////////////////////// Plot and move planets /////////////////////////
+/////////////////////////// Plot stars //////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-//Drawing a line for the orbit
-// var orbitsContainer = container.append("g").attr("class","orbitsContainer"); // append "g" to "container" and give it class "orbitsContainer"
-// var orbits = orbitsContainer.selectAll("g.orbit") //select everything of type g with class "orbit"
-// 				.data(planets).enter().append("ellipse") //attaches planets data to currently empty selection; enters data into selection; appends an ellipse for each planet
-// 				.attr("class", "orbit") //give the ellipse class "orbit"
-// 				.attr("cx", function(d) {return d.cx;}) //set x-position of center
-// 				.attr("cy", function(d) {return d.cy;}) //set y-position of center
-// 				.attr("rx", function(d) {return d.major;}) //set major axis
-// 				.attr("ry", function(d) {return d.minor;}) //set minor axis
-// 				.style("fill", "#3E5968")
-// 				.style("fill-opacity", 0)
-// 				.style("stroke", "white")
-// 				.style("stroke-opacity", 0);	
+//Draw the Kepler stars			
+var drawn_keplerstars = scene.selectAll(".keplerstar")
+							 .data(keplerstars)
+            				 .enter()
+            				 .append('transform')
+            				 .attr('class', 'point')
+            				 .attr('translation', function(d){ 
+            					 var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
+								 var x = xyz[0];
+								 var y = xyz[1];
+								 var z = xyz[2];
 
+            					 return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
+            				 .append('shape')
+            				 .call(makeSolid, color=function(d){return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
+            				 .append('sphere')
+            				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
-//Drawing the planets			
-var planets = scene.selectAll(".planet")
-				.data(planets)
-            	.enter()
-            	.append('transform')
-            	.attr('class', 'point')
-            	//.attr('translation', '0 0 1') //example of the syntax that "translation" expects
-            	.attr('translation', function(d){ 
-            		var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
-					var x = xyz[0];
-					var y = xyz[1];
-					var z = xyz[2];
-
-            		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
-            	.append('shape')
-            	.call(makeSolid, color=function(d){return colorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
-            	.append('sphere')
-            	.attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
-
-//Drawing BSC	
-var brightstars = scene.selectAll(".brightstars")
+//Draw the bright star catalog
+var drawn_brightstars = scene.selectAll(".brightstar")
 				.data(brightstars)
             	.enter()
             	.append('transform')
@@ -251,31 +134,30 @@ var brightstars = scene.selectAll(".brightstars")
 
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.append('shape')
-            	.call(makeSolid, color='gold', opacity=1)
+            	.call(makeSolid, color=function(d){return vmagcolorscale(d.Vmagnitude)}, opacity=0.8)
             	.append('sphere')
-            	.attr('radius', function(d) {return 1});
+            	.attr('radius', function(d) {return vmagRscale(d.Vmagnitude)});
 
 
-//add cylinder to the site - Catherine & Caroline
-//note: we need to rotate this so that the cylinder lies in the xy-plane insead pf the xz-plane! -Emily
-var cylinders = [{"height":70, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}]; //Catherine
+// draw a cylinder to represent the Milky Way disk
+var cylinder = [{"height":20, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
 
-var drawn_cylinders = scene.selectAll(".cylinder") 	
-					.data(cylinders)				
+var drawn_cylinder = scene.selectAll(".cylinder") 	
+					.data(cylinder)				
 					.enter()					
 					.append('transform')
 					.attr('rotation', function(d){    //specify that this "transform" will impose a rotation of the circle
 						return d.rotaxis_xcoord + ' ' + d.rotaxis_ycoord + ' ' + d.rotaxis_zcoord + ' ' + d.rot_angle;
 					})
 					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-					.call(makeSolid, color='blue', opacity=0.5) 			//set the color
+					.call(makeSolid, color='blue', opacity=0.4) 			//set the color
           			.append('cylinder')					//make the shape a 2D circle
 					.attr('radius', function(d){return d.radius;})	//set the radius
 					.attr('height', function(d){return d.height})
-					.attr('subdivision',3)
+					.attr('subdivision',40)
 
 
-//new function to switch camera position to Earth sky view -Caroline & Catherine
+// Enable switch to "Earth view," i.e. view from the Kepler satellite
 function earthView() {
 				var fov = 0.25;
 				var view_pos = [-117.67830, -491.90906, -114.90123]
@@ -289,10 +171,11 @@ function earthView() {
   				  .attr('zFar', zF)
   				  .attr("fieldOfView", fov);
 
-				//planets.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
+				//drawn_keplerstars.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
 
 				}
 
+// Enable switch back to "Galaxy view"
 function galaxyView() {
 	
 				var view_pos = [0., 500., 50000.];
@@ -308,6 +191,6 @@ function galaxyView() {
 				  .attr('zNear', zN)
   				  .attr('zFar', zF)
   				  
-				//planets.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
+				//drawn_keplerstars.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
 
 				}
