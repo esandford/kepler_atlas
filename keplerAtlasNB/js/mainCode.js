@@ -194,3 +194,4 @@ function galaxyView() {
 				//drawn_keplerstars.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
 
 				}
+			// sma, incl, ror, impact, teq
