@@ -111,12 +111,21 @@ var drawn_spheres_and_circles = scene.selectAll(".sphereandcircle") 	//creates a
             		.append('Circle2D')					//make the shape a 2D circle
 					.attr('radius', function(d){return d.circleradius;})	//set the radius
 					.attr('subdivision',100) 			//set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
+<<<<<<< HEAD
 					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
 					.call(makeSolid, 'red') 			//set the color
             		.append('sphere')					//make the shape a 2D circle
 					.attr('radius', function(d){return d.sphereradius;})	//set the radius
 
 var cylinders = [{"height":10, "radius":10}];
+=======
+					//.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
+					//.call(makeSolid, 'red') 			//set the color
+          //  		.append('sphere')					//make the shape a 2D circle
+					//.attr('radius', function(d){return d.sphereradius;})	//set the radius
+
+var cylinders = [{"height":10, "radius":10, "rotaxis_xcoord":1}];
+>>>>>>> origin/dev
 
 var drawn_cylinders = scene.selectAll(".cylinder") 	
 					.data(cylinders)				
@@ -124,7 +133,7 @@ var drawn_cylinders = scene.selectAll(".cylinder")
 					.append('transform')		
 					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
 					.call(makeSolid, 'black') 			//set the color
-            		.append('cylinder')					//make the shape a 2D circle
+          .append('cylinder')					//make the shape a 2D circle
 					.attr('radius', function(d){return d.radius;})	//set the radius
 					.attr('height', function(d){return d.height})
 
