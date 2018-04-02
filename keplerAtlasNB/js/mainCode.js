@@ -11,11 +11,11 @@ var
 
 //a function that x3dom uses to attach an "appearance" and "color" to a data selection.
 //If you subsequently append a shape to that selection, x3dom will render the shape in 3D with this appearance/color. -ES
-var makeSolid = function(selection, color) {
-            selection
-                .append("appearance")
+var makeSolid = function(selection, color, opacity) {
+            selection.append("appearance")
                 .append("material")
-                .attr("diffuseColor", color || "black");
+                .attr("diffuseColor", color || "black")
+                .attr("transparency", function(){return 1 - opacity;})
             return selection;
         };
 
@@ -30,11 +30,10 @@ var resolution = 1, //sets behavior or animation orbit
 	speedUp = 400, //speed of planets
 	au = 149597871, //km
 	radiusSun = 695800, //km
-	radiusJupiter = 69911, //km
-	phi = 0 //rotation of ellipses
+	radiusJupiter = 69911; //km
 
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
-var x3d = d3.select("#chartholder") 
+var x3d = d3.select("#chartholder")
             .attr("width", x + 'px')
             .attr("height", y +'px')
             .attr("showLog", 'true')
@@ -70,7 +69,7 @@ var viewpoint = scene.append("viewpoint")
   .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 
-var xax = d3.scale.linear().range([0, 200]);
+/*var xax = d3.scale.linear().range([0, 200]);
 var yax = d3.scale.linear().range([0, 200]);
 var zax = d3.scale.linear().range([0, 200]);
 
@@ -81,28 +80,48 @@ var zAxis = d3_x3dom_axis.x3domAxis('z', 'x', zax).tickSize(xax.range()[1] - xax
 scene.append('group')
     .attr('class', 'xAxis')
     .call(xAxis)
-    .select('.domain').call(makeSolid, 'blue'); //parallel lines in z vs x plane
+    .select('.domain').call(makeSolid, 'blue', 1.0); //parallel lines in z vs x plane
         
 scene.append('group')
     .attr('class', 'yAxis')
     .call(yAxis)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs z plane
+    .select('.domain').call(makeSolid, 'red', 1.0); //parallel lines in y vs z plane
   
 scene.append('group')
     .attr('class', 'yAxis')
     .call(yAxis2)
-    .select('.domain').call(makeSolid, 'red'); //parallel lines in y vs x plane
+    .select('.domain').call(makeSolid, 'red', 1.0); //parallel lines in y vs x plane
   
 scene.append('group')
     .attr('class', 'zAxis')
     .call(zAxis)
     ;//.select('.domain'); //parallel lines in x vs z plane
-  
-//Format with 2 decimals
-var formatSI = d3.format(".2f");
+*/
 
-//Drawing BSC	
-var brightstars = scene.selectAll(".brightstars")
+///////////////////////////////////////////////////////////////////////////
+/////////////////////////// Plot stars //////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+
+//Draw the Kepler stars			
+var drawn_keplerstars = scene.selectAll(".keplerstar")
+							 .data(keplerstars)
+            				 .enter()
+            				 .append('transform')
+            				 .attr('class', 'point')
+            				 .attr('translation', function(d){ 
+            					 var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
+								 var x = xyz[0];
+								 var y = xyz[1];
+								 var z = xyz[2];
+
+            					 return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
+            				 .append('shape')
+            				 .call(makeSolid, color=function(d){return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
+            				 .append('sphere')
+            				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+
+//Draw the bright star catalog
+var drawn_brightstars = scene.selectAll(".brightstar")
 				.data(brightstars)
             	.enter()
             	.append('transform')
@@ -115,47 +134,30 @@ var brightstars = scene.selectAll(".brightstars")
 
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.append('shape')
-            	.call(makeSolid, function(d) {return vmagcolorscale(d.Vmagnitude)})
+            	.call(makeSolid, color=function(d){return vmagcolorscale(d.Vmagnitude)}, opacity=0.8)
             	.append('sphere')
             	.attr('radius', function(d) {return vmagRscale(d.Vmagnitude)});
 
-//Drawing the planets			
-var keplerstars = scene.selectAll(".keplerstars")
-				.data(keplerstars)
-            	.enter()
-            	.append('transform')
-            	.attr('class', 'point')
-            	//.attr('translation', '0 0 1') //example of the syntax that "translation" expects
-            	.attr('translation', function(d){ 
-            		var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
-					var x = xyz[0];
-					var y = xyz[1];
-					var z = xyz[2];
 
-            		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
-            	.append('shape')
-            	.call(makeSolid, function(d) {return keplerstarscolorScale(d.koi_steff)}) //uses a function to return the STeff and apply our color scale to create differences 
-            	.append('sphere')
-            	.attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+// draw a cylinder to represent the Milky Way disk
+var cylinder = [{"height":20, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
 
-//add cylinder to the site - Catherine & Caroline
-//note: we need to rotate this so that the cylinder lies in the xy-plane insead pf the xz-plane! -Emily
-var cylinders = [{"height":70, "radius":2000}]; //Catherine
-//var cylinders = [{"height":30, "radius":2000}]; //Caroline
-
-
-var drawn_cylinders = scene.selectAll(".cylinder") 	
-					.data(cylinders)				
+var drawn_cylinder = scene.selectAll(".cylinder") 	
+					.data(cylinder)				
 					.enter()					
-					.append('shape')					//for each cylinder, append an as-yet-unspecified shape to be drawn on our 3D canvas
-					.call(makeSolid, 'blue') 			//set the color
-            		.append('cylinder')				//make the shape a 3D cylinder
+					.append('transform')
+					.attr('rotation', function(d){    //specify that this "transform" will impose a rotation of the circle
+						return d.rotaxis_xcoord + ' ' + d.rotaxis_ycoord + ' ' + d.rotaxis_zcoord + ' ' + d.rot_angle;
+					})
+					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
+					.call(makeSolid, color='blue', opacity=0.4) 			//set the color
+          			.append('cylinder')					//make the shape a 2D circle
 					.attr('radius', function(d){return d.radius;})	//set the radius
-					.attr('height', function(d){return d.height;}) // set the height
-					.attr('diffuseColor',0.6) //attempt to make transparent
+					.attr('height', function(d){return d.height})
+					.attr('subdivision',40)
 
 
-//new function to switch camera position to Earth sky view -Caroline & Catherine
+// Enable switch to "Earth view," i.e. view from the Kepler satellite
 function earthView() {
 				var fov = 0.25;
 				var view_pos = [-117.67830, -491.90906, -114.90123]
@@ -168,8 +170,12 @@ function earthView() {
 				  .attr('zNear', zN)
   				  .attr('zFar', zF)
   				  .attr("fieldOfView", fov);
+
+				//drawn_keplerstars.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
+
 				}
 
+// Enable switch back to "Galaxy view"
 function galaxyView() {
 	
 				var view_pos = [0., 500., 50000.];
@@ -184,4 +190,7 @@ function galaxyView() {
 				  .attr('centerOfRotation', "0 0 0")
 				  .attr('zNear', zN)
   				  .attr('zFar', zF)
+  				  
+				//drawn_keplerstars.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
+
 				}
