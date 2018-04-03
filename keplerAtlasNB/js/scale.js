@@ -41,6 +41,10 @@ var rScale = d3.scale.linear()
 	.domain([radMin, radMax])
 	.range([5, 30]); //james
 
+var pScale = d3.scale.linear()
+	.domain([0,5])
+	.range([5, 175]);
+
 //set scale for size of Bright Star Catalog stars -James & Chris
 function return_vmagnitude_minmax(brightstars){
 	var currentMinimum = 1000000;
@@ -62,7 +66,7 @@ function return_vmagnitude_minmax(brightstars){
 	return [currentMinimum, currentMaximum];
 	
 	}
-vmagMin = return_vmagnitude_minmax(brightstars)[0]
+/*vmagMin = return_vmagnitude_minmax(brightstars)[0]
 vmagMax = return_vmagnitude_minmax(brightstars)[1]
 
 var vmagRscale = d3.scale.linear()	
@@ -72,7 +76,7 @@ var vmagRscale = d3.scale.linear()
 var vmagcolors = ["#FFF585", "#FFFCEA", "#FFFEFD"];
 var vmagcolorscale = d3.scale.linear()
 	.domain([vmagMin, vmagMax])
-	.range(vmagcolors);
+	.range(vmagcolors);*/
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
