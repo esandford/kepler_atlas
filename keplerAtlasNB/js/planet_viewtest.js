@@ -1,11 +1,11 @@
 //Width and Height of the SVG
 var 
-	w = window,
-	d = document,
-	e = d.documentElement,
-	g = d.getElementsByTagName('body')[0],
-	x = ((w.innerWidth || e.clientWidth || g.clientWidth) - 50),
-	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 50);
+      w = window,
+      d = document,
+      e = d.documentElement,
+      g = d.getElementsByTagName('body')[0],
+      x = ((w.innerWidth || e.clientWidth || g.clientWidth) - 50),
+      y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 50);
 
 var makeSolid = function(selection, color, opacity) {
             selection.append("appearance")
@@ -14,14 +14,14 @@ var makeSolid = function(selection, color, opacity) {
                 .attr("transparency", function(){return 1 - opacity;})
             return selection;
         };
-var stopTooltip = false;	
+var stopTooltip = false;      
 //Planet orbit variables
 //The larger this is the more accurate the speed is
 var resolution = 1, //sets behavior or animation orbit
-	speedUp = 400, //speed of planets
-	au = 149597871, //km
-	radiusSun = 695800, //km
-	radiusJupiter = 69911; //km
+      speedUp = 400, //speed of planets
+      au = 149597871, //km
+      radiusSun = 695800, //km
+      radiusJupiter = 69911; //km
 
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
@@ -38,15 +38,15 @@ d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
 var scene = x3d.append("scene");
 var view_pos = [4012.04714, 1604.51702, 4508.39866]; //x, y, z relative to origin (0, 0, 0)
 //var view_pos = [-37902.27708, -31717.63386, -17253.83076]; //new view_pos and fov -Chris
-var fov = 0.05; 	// Preferred minimum viewing angle from this viewpoint in radians. 
-				// Small field of view roughly corresponds to a telephoto lens, 
-				// large field of view roughly corresponds to a wide-angle lens. 
-				// Hint: modifying Viewpoint distance to object may be better for zooming. 
-				// Warning: fieldOfView may not be correct for different window sizes and aspect ratios. 
+var fov = 0.05;   // Preferred minimum viewing angle from this viewpoint in radians. 
+                        // Small field of view roughly corresponds to a telephoto lens, 
+                        // large field of view roughly corresponds to a wide-angle lens. 
+                        // Hint: modifying Viewpoint distance to object may be better for zooming. 
+                        // Warning: fieldOfView may not be correct for different window sizes and aspect ratios. 
 
 var view_or = [-0.35747, 0.93387, 0.01010, 0.76136]; //relative to default (0, 0, 1, 0)
-var zN = 0; 		//near plane
-var zF = 150000;	//far plane
+var zN = 0;             //near plane
+var zF = 150000;  //far plane
 
 var viewpoint = scene.append("viewpoint")
   .attr("id", 'dvp')
@@ -80,7 +80,6 @@ scene.append('group')
     .attr('class', 'yAxis')
     .call(yAxis2)
     .select('.domain').call(makeSolid, 'red', 1.0); //parallel lines in y vs x plane
-  
 var drawn_star = scene.selectAll(".keplerstar")
 							 .data(keplerstars)
             				 .enter()
@@ -88,9 +87,9 @@ var drawn_star = scene.selectAll(".keplerstar")
             				 .attr('class', 'point')
             				 .attr('translation', '0 0 0')
             				 .append('shape')
-            				 .call(makeSolid, color="red", opacity = .6) //uses a function to return the STeff and apply our color scale to create differences 
+            				 .call(makeSolid, color=function(d){return keplerstarscolorScale(d.koi_steff)}, opacity = .8) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
-            				 .attr('radius', function(d) {return 2*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+            				 .attr('radius', function(d) {return rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
 var drawn_planet = scene.selectAll(".keplerstar")
 							 .data(keplerstars)
@@ -99,23 +98,9 @@ var drawn_planet = scene.selectAll(".keplerstar")
             				 .attr('class', 'point')
             				 .attr('translation', function(d){ 
             			
-            					 return 3000*d.koi_sma + ' ' + 0 + ' ' + 0;})
+            					 return smaScale(d.koi_sma) + ' ' + 0 + ' ' + 0;})
             				 .append('shape')
-            				 .call(makeSolid, color="blue", opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
+            				 .call(makeSolid, color=function(d){return keplerplanetcoloirScale(d.koi_teq)}, opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
-            				 .attr('radius', function(d) {return 2*rScale(d.koi_ror * d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
-
-/*var drawn_cylinder = scene.selectAll(".planet_data")     
-                              .data(keplerstars)                     
-                              .enter()                            
-                              .append('transform')
-                              .attr('rotation', function(d){    //specify that this "transform" will impose a rotation of the circle
-                                    return d.dist + ' ' + d.ra + ' ' + d.dec + ' ' + d.koi_incl;
-                              })
-                              .append('shape')
-                              .call(makeSolid, color='gold', opacity=0.4)                 
-                        .append('cylinder')
-                              .attr('radius', function(d){return d.koi_sma;})
-                              .attr('height', 10)
-                              .attr('subdivision',40) */
+            				 .attr('radius', function(d) {return rorScale(d.koi_ror*d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
