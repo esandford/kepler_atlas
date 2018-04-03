@@ -107,7 +107,9 @@ var drawn_planet = scene.selectAll(".keplerstar")
             			
             					 return 3000*d.koi_sma + ' ' + 0 + ' ' + 0;})
             				 .append('shape')
-            				 .call(makeSolid, color="blue", opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
+            				 .call(makeSolid, color="blue", opacity = 0.6) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
             				 .attr('radius', function(d) {return 2*rScale(d.koi_ror * d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
+//var keplerplanetcolors = ["#FAD8D7","#F5A5A3","#F49896","#F0726F","#EF6461"];
+//var keplerstarscolorScale = d3.scale.linear()
