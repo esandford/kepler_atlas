@@ -62,7 +62,7 @@ var rScale = d3.scale.linear()
 	return [currentMinimum, currentMaximum];
 	
 	}
-vmagMin = return_vmagnitude_minmax(brightstars)[0]
+/*vmagMin = return_vmagnitude_minmax(brightstars)[0]
 vmagMax = return_vmagnitude_minmax(brightstars)[1]
 
 var vmagRscale = d3.scale.linear()	
