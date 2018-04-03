@@ -109,7 +109,7 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
             				 .append('transform')
             				 .attr('class', 'point')
             				 .attr('translation', function(d){ 
-            					 var xyz = convertXYZ(distance=d.);
+            					 var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
 								 var x = xyz[0];
 								 var y = xyz[1];
 								 var z = xyz[2];
