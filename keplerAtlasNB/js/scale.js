@@ -54,7 +54,7 @@ function return_teq_minmax(keplerstars){
 teqMin = return_teq_minmax(keplerstars)[0]
 teqMax = return_teq_minmax(keplerstars)[1]
 var keplerplanetcolors = ["#FAD8D7","#F5A5A3","#F49896","#F0726F","#EF6461"];
-var keplerplanetscolorScale= d3.scale.linear()
+var keplerplanetcolorScale= d3.scale.linear()
 	.domain([teqMin, teqMax])
 	.range(keplerplanetcolors);
 	
@@ -143,6 +143,10 @@ radMax = return_radius_minmax(keplerstars)[1]
 var rScale = d3.scale.linear()
 	.domain([radMin, radMax])
 	.range([5, 30]); //james*/
+
+var pScale = d3.scale.linear()
+      .domain([0, 5])
+      .range([5, 200]); 
 
 //set scale for size of Bright Star Catalog stars -James & Chris
 /*function return_vmagnitude_minmax(brightstars){

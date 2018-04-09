@@ -108,7 +108,7 @@ var drawn_star = scene.selectAll(".keplerstar")
                       return (1 - opacity);})*/ //doesn't currently work
                      //.attr("transparency",0)
             				 .append('sphere')
-                     .attr('radius', function(d) {return 2*pScale(d.koi_srad)});
+                     .attr('radius', function(d) {return rorScale(d.koi_srad)});
 
 var drawn_planet = scene.selectAll(".keplerstar")
 							 .data(keplerstars)
