@@ -82,56 +82,58 @@ scene.append('group')
     .attr('class', 'yAxis')
     .call(yAxis2)
     .select('.domain').call(makeSolid, 'red', 1.0); //parallel lines in y vs x plane
+
+
   
 
-var drawn_star = scene.selectAll(".keplerstar")
-							 .data(keplerstars)
-            				 .enter()
-            				 .append('transform')
-            				 .attr('class', 'point')
-            				 .attr('translation', '0 0 0')
-            				 .append('shape')
-                     .call(makeSolid, color=function(d){return keplerstarscolorScale(d.koi_steff)}, opacity = .8) //uses a function to return the STeff and apply our color scale to create differences 
-                     //.append("appearance")
-                     //.append("material")
-                     //.attr("diffuseColor", "red")
-                     /*.attr("transparency", function(d){
-                        var opacity;
-                        if (d.kepoi_name.slice(-1) == 1){
-                          opacity = 0.8;
-                        }
-                        else{
-                          opacity = 0;
-                        }
-                        console.log(opacity);
-                        console.log(1-opacity);
-                      return (1 - opacity);})*/ //doesn't currently work
-                     //.attr("transparency",0)
-            				 .append('sphere')
-                     .attr('radius', function(d) {return 2*pScale(d.koi_srad)});
+// var drawn_star = scene.selectAll(".keplerstar")
+// 							 .data(keplerstars)
+//             				 .enter()
+//             				 .append('transform')
+//             				 .attr('class', 'point')
+//             				 .attr('translation', '0 0 0')
+//             				 .append('shape')
+//                      .call(makeSolid, color=function(d){return keplerstarscolorScale(d.koi_steff)}, opacity = .8) //uses a function to return the STeff and apply our color scale to create differences 
+//                      //.append("appearance")
+//                      //.append("material")
+//                      //.attr("diffuseColor", "red")
+//                      /*.attr("transparency", function(d){
+//                         var opacity;
+//                         if (d.kepoi_name.slice(-1) == 1){
+//                           opacity = 0.8;
+//                         }
+//                         else{
+//                           opacity = 0;
+//                         }
+//                         console.log(opacity);
+//                         console.log(1-opacity);
+//                       return (1 - opacity);})*/ //doesn't currently work
+//                      //.attr("transparency",0)
+//             				 .append('sphere')
+//                      .attr('radius', function(d) {return 0.01 * rorScale(d.koi_srad)});
 
-var drawn_planet = scene.selectAll(".keplerstar")
-							 .data(keplerstars)
-            				 .enter()
-            				 .append('transform')
-            				 .attr('class', 'point')
-            				 .attr('translation', function(d){return smaScale(d.koi_sma) + ' ' + 0 + ' ' + 0;})
-            				 .append('shape')
-                     .call(makeSolid, color=function(d){return keplerplanetcolorScale(d.koi_teq)}, opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
-            				 //.call(makeSolid, color="blue", opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
-            				 .append('sphere')
-            				 .attr('radius', function(d) {return rorScale(d.koi_ror * d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+// var drawn_planet = scene.selectAll(".keplerstar")
+// 							 .data(keplerstars)
+//             				 .enter()
+//             				 .append('transform')
+//             				 .attr('class', 'point')
+//             				 .attr('translation', function(d){return 20 * smaScale(d.koi_sma) + ' ' + 0 + ' ' + 0;})
+//             				 .append('shape')
+//                      .call(makeSolid, color=function(d){return keplerplanetcolorScale(d.koi_teq)}, opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
+//             				 //.call(makeSolid, color="blue", opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
+//             				 .append('sphere')
+//             				 .attr('radius', function(d) {return 0.01 * rorScale(d.koi_ror * d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
-var orbit = scene.selectAll(".orbits")   //creates a selection, which is currently empty
-          .data(keplerstars)        //join "circles" list
-          .enter()          //enter "circles" into empty selection. the selection now contains all of "circles", and everything after this loops over each circle in turn
-          .append('transform')    //for each circle, append a "transform" object
-          .attr('translation', '0 0 0')   //specify that this "transform" will impose a rotation of the circle
-          .attr('rotation', '1 0 0')
-          .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-          .call(makeSolid, color='black', opacity=1)       //set the color
-                .append('Circle2D')         //make the shape a 2D circle
-          .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
-          .attr('subdivision',100)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
+// var orbit = scene.selectAll(".orbits")   //creates a selection, which is currently empty
+//           .data(keplerstars)        //join "circles" list
+//           .enter()          //enter "circles" into empty selection. the selection now contains all of "circles", and everything after this loops over each circle in turn
+//           .append('transform')    //for each circle, append a "transform" object
+//           .attr('translation', '0 0 0')   //specify that this "transform" will impose a rotation of the circle
+//           .attr('rotation', '1 0 0')
+//           .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
+//           .call(makeSolid, color='black', opacity=1)       //set the color
+//                 .append('Circle2D')         //make the shape a 2D circle
+//           .attr('radius', function(d){return 20 * smaScale(d.koi_sma);})  //set the radius
+//           .attr('subdivision',100)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
 
 

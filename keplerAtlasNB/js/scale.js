@@ -148,10 +148,6 @@ var rScale = d3.scale.linear()
 	.domain([radMin, radMax])
 	.range([5, 30]); //james
 
-var pScale = d3.scale.linear()
-	.domain([0,5])
-	.range([5, 175]);
-
 //set scale for size of Bright Star Catalog stars -James & Chris
 function return_vmagnitude_minmax(brightstars){
 	var currentMinimum = 1000000;
