@@ -30,8 +30,8 @@ steffMax = return_steff_minmax(keplerstars)[1]
 var keplerstarscolors = ["#D86865","#F3C4C4","#DOEEFD","#99DAFB","#1B90CB"]; //color scale from James
 //var keplerstarscolors = ["#9C1E1E","#D62828","#E16262","#F3C4C4","#738E9B","#45687A","#2E556A","#174259","#001F2F"];
 var keplerstarscolorScale = d3.scale.linear()
-	 //.domain([2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]) // Temperatures
-	 .domain([steffMin, steffMax]) //james
+	 .domain([2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]) // Temperatures
+	 //.domain([steffMin, steffMax]) //james
 	 .range(keplerstarscolors);
 	
 var kepleropacityScale = d3.scale.linear()	
@@ -88,8 +88,10 @@ function return_sma_minmax(keplerstars){
 
 smaMin = return_sma_minmax(keplerstars)[0] //get minimum and maximum radii -James
 smaMax = return_sma_minmax(keplerstars)[1]
+//console.log(smaMin);
+//console.log(smaMax);
 var smaScale = d3.scale.linear()
-      .domain([smaMin, smaMax])
+      .domain([0, smaMax])
       .range([500, 5000]); //james
 
 function return_ror_minmax(keplerstars){
@@ -116,7 +118,7 @@ function return_ror_minmax(keplerstars){
 rorMin = return_ror_minmax(keplerstars)[0] //get minimum and maximum radii -James
 rorMax = return_ror_minmax(keplerstars)[1]
 var rorScale = d3.scale.linear()
-      .domain([rorMin, rorMax])
+      .domain([0, rorMax])
       .range([1, 100]); //james
 
 //Set scale for radius of circles
@@ -145,7 +147,7 @@ function return_radius_minmax(keplerstars){
 radMin = return_radius_minmax(keplerstars)[0] //get minimum and maximum radii -James
 radMax = return_radius_minmax(keplerstars)[1]
 var rScale = d3.scale.linear()
-	.domain([radMin, radMax])
+	.domain([0, radMax])
 	.range([5, 30]); //james
 
 //set scale for size of Bright Star Catalog stars -James & Chris
@@ -170,10 +172,10 @@ function return_vmagnitude_minmax(brightstars){
 	
 	}
 
-
+//caroline & catherine: planet size
 var pScale = d3.scale.linear()
 	.domain([0, 5])
-	.range([5, 200]); //james
+	.range([5, 200]); 
 
 /*vmagMin = return_vmagnitude_minmax(brightstars)[0]
 vmagMax = return_vmagnitude_minmax(brightstars)[1]
