@@ -183,6 +183,6 @@ var orbit = scene.selectAll(".orbits")   //creates a selection, which is current
                   .call(makeSolid, color='black', opacity=1)       //set the color
                         .append('Circle2D')         //make the shape a 2D circle
                   .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
-                  .attr('subdivision',100)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
+                  .attr('subdivision',500)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
 
 
