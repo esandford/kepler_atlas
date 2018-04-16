@@ -31,6 +31,7 @@ var resolution = 1, //sets behavior or animation orbit
 	au = 149597871, //km
 	radiusSun = 695800, //km
 	radiusJupiter = 69911; //km
+	phi=0;
 
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
@@ -116,7 +117,10 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
 
             					 return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             				 .append('shape')
-            				 .call(makeSolid, color=function(d){return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
+            				 .call(makeSolid, color=function(d){
+            				 	//console.log(d.koi_steff);
+            				 	//console.log(keplerstarscolorScale(d.koi_steff));
+            				 return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
             				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
