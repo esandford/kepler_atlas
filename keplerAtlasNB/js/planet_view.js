@@ -18,7 +18,7 @@ var stopTooltip = false;
 //Planet orbit variables
 //The larger this is the more accurate the speed is
 var resolution = 1, //sets behavior or animation orbit
-	speedUp = 400, //speed of planets
+	speedUp = 1000, //speed of planets
 	au = 149597871, //km
 	radiusSun = 695800, //km
 	radiusJupiter = 69911; //km
@@ -122,6 +122,7 @@ var orbit = scene.selectAll(".orbits")   //creates a selection, which is current
 
 //set the scale for drawing the star, planets, and orbits according to the size of the system
 var system_kepID = 10797460;
+
 var scales_arr = [];
 var solarRad_to_AU = 0.00465046726;
 var to_draw = [];
@@ -132,6 +133,8 @@ for(i=0;i<keplerstars_short.length;i++){
     scales_arr.push(keplerstars_short[i].koi_srad * solarRad_to_AU);
     scales_arr.push(keplerstars_short[i].koi_srad * keplerstars_short[i].koi_ror * solarRad_to_AU);
     scales_arr.push(keplerstars_short[i].koi_sma);
+    //for the animation, below
+    keplerstars_short[i].theta = 0;
   };
 };
 
@@ -145,35 +148,36 @@ var smaScale = d3.scale.linear()
                   .domain([smaMin, smaMax])
                   .range([1, max_to_min_ratio]);
 
-for(i=0;i<6;i++){
-  console.log(smaScale(scales_arr[i]));
-}
+//for(i=0;i<6;i++){
+//  console.log(smaScale(scales_arr[i]));
+//}
 
 // all correct ratios
 var drawn_star = scene.selectAll(".keplerstar")
                         .data(to_draw)
                          .enter()
                          .append('transform')
-                         .attr('class', 'point')
                          .attr('translation', '0 0 0')
                          .append('shape')
                          .call(makeSolid, color=function(d){return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
                          .append('sphere')
-                         .attr('radius', function(d) {return smaScale(d.koi_srad*solarRad_to_AU)});
+                         .attr('radius', function(d) {return smaScale(d.koi_srad*solarRad_to_AU)})
+                         .attr('class', 'keplerstar')
 
-var drawn_planet = scene.selectAll(".keplerstar")
+var drawn_planet = scene.selectAll(".planet")
                           .data(to_draw)
                            .enter()
                            .append('transform')
-                           .attr('class', 'point')
                            .attr('translation', function(d){return smaScale(d.koi_sma) + ' ' + 0 + ' ' + 0;})
+                           .attr('class','planetpos')
                            .append('shape')
                            .call(makeSolid, color=function(d){return keplerplanetcolorScale(d.koi_teq)}, opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
                            //.call(makeSolid, color="blue", opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
                            .append('sphere')
                            .attr('radius', function(d){return smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU);})//draw spheres to represent points, using a function to return the radius and apply the radius scale
+                           .attr('class', 'planet')
 
-var orbit = scene.selectAll(".orbits")   //creates a selection, which is currently empty
+var orbit = scene.selectAll(".orbit")   //creates a selection, which is currently empty
                   .data(to_draw)        //join "circles" list
                   .enter()          //enter "circles" into empty selection. the selection now contains all of "circles", and everything after this loops over each circle in turn
                   .append('transform')    //for each circle, append a "transform" object
@@ -183,6 +187,55 @@ var orbit = scene.selectAll(".orbits")   //creates a selection, which is current
                   .call(makeSolid, color='black', opacity=1)       //set the color
                         .append('Circle2D')         //make the shape a 2D circle
                   .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
-                  .attr('subdivision',500)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
+                  .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
+                  .attr('class', 'orbit')
 
 
+//Turn degrees into radians
+function toRadians (angle) { return angle * (Math.PI / 180);}
+function toDegrees (angle) { return angle * (180 / Math.PI);}
+
+//Calculate the new x or y position per planet
+function locate() {
+  return function(d){
+    var k = 360 / (d.koi_period * resolution * speedUp);
+    for (var i = 0; i < resolution; i++) {
+      d.theta += k;
+    }
+    
+    if (d.theta > 360) {d.theta -= 360;}
+
+    var newX = d.koi_sma * Math.cos(toRadians(d.theta)); //AU
+    var newY = d.koi_sma * Math.sin(toRadians(d.theta)); //AU
+    
+    //console.log(smaScale(newX) + ' ' +smaScale(newY) + ' ' + 0);
+    //console.log(Math.pow(Math.pow(smaScale(newX),2) + Math.pow(smaScale(newY),2),0.5))
+    return smaScale(newX) + ' ' +smaScale(newY) + ' ' + 0;};
+  };
+
+//Change x and y location of each planet
+d3.timer(function() {
+    scene.selectAll(".planetpos")
+            .attr('translation', locate());
+});
+/*scene.selectAll(".planetpos")
+      //.append('transform')
+      .attr('translation', function(d){
+        console.log("am I being called?")
+        return smaScale(d.koi_sma)*Math.cos(toRadians(1)) + ' ' + smaScale(d.koi_sma)*Math.sin(toRadians(1)) + ' ' + 0;})
+*/
+/*scene.selectAll(".planet")
+      .data(to_draw)
+      .enter()
+      .append('transform')
+      .attr('translation', function(d){
+        console.log(d.koi_sma)
+        console.log(smaScale(d.koi_sma)*Math.cos(toRadians(1)) + ' ' + smaScale(d.koi_sma)*Math.sin(toRadians(1)) + ' ' + 0)
+        return smaScale(d.koi_sma)*Math.cos(toRadians(1)) + ' ' + smaScale(d.koi_sma)*Math.sin(toRadians(1)) + ' ' + 0;})
+      .append('shape')
+      .call(makeSolid, color=function(d){return keplerplanetcolorScale(d.koi_teq)}, opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
+      .append('sphere')
+      .attr('radius', function(d){return smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU);})//draw spheres to represent points, using a function to return the radius and apply the radius scale
+      */              
+                           
+              
