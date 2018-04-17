@@ -27,8 +27,8 @@ function return_steff_minmax(keplerstars){
 steffMin = return_steff_minmax(keplerstars)[0]
 steffMax = return_steff_minmax(keplerstars)[1]      
 
-var keplerstarscolors = ["#D86865","#F3C4C4","#DOEEFD","#99DAFB","#1B90CB"]; //color scale from James
-//var keplerstarscolors = ["#9C1E1E","#D62828","#E16262","#F3C4C4","#738E9B","#45687A","#2E556A","#174259","#001F2F"];
+//var keplerstarscolors = ["#D86865","#F3C4C4","#DOEEFD","#99DAFB","#1B90CB"]; //color scale from James
+var keplerstarscolors = ["#9C1E1E","#D62828","#E16262","#F3C4C4","#738E9B","#45687A","#2E556A","#174259","#001F2F"];
 var keplerstarscolorScale = d3.scale.linear()
 	 .domain([2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]) // Temperatures
 	 //.domain([steffMin, steffMax]) //james
@@ -177,7 +177,7 @@ var pScale = d3.scale.linear()
 	.domain([0, 5])
 	.range([5, 200]); 
 
-/*vmagMin = return_vmagnitude_minmax(brightstars)[0]
+vmagMin = return_vmagnitude_minmax(brightstars)[0]
 vmagMax = return_vmagnitude_minmax(brightstars)[1]
 
 var vmagRscale = d3.scale.linear()	
@@ -187,7 +187,7 @@ var vmagRscale = d3.scale.linear()
 var vmagcolors = ["#FFF585", "#FFFCEA", "#FFFEFD"];
 var vmagcolorscale = d3.scale.linear()
 	.domain([vmagMin, vmagMax])
-	.range(vmagcolors);*/
+	.range(vmagcolors);
 
 //scale x and y "axes"
 var xScale = d3.scale.linear()
