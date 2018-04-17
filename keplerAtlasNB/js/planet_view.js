@@ -208,8 +208,6 @@ function locate() {
     var newX = d.koi_sma * Math.cos(toRadians(d.theta)); //AU
     var newY = d.koi_sma * Math.sin(toRadians(d.theta)); //AU
     
-    //console.log(smaScale(newX) + ' ' +smaScale(newY) + ' ' + 0);
-    //console.log(Math.pow(Math.pow(smaScale(newX),2) + Math.pow(smaScale(newY),2),0.5))
     return smaScale(newX) + ' ' +smaScale(newY) + ' ' + 0;};
   };
 
@@ -218,24 +216,4 @@ d3.timer(function() {
     scene.selectAll(".planetpos")
             .attr('translation', locate());
 });
-/*scene.selectAll(".planetpos")
-      //.append('transform')
-      .attr('translation', function(d){
-        console.log("am I being called?")
-        return smaScale(d.koi_sma)*Math.cos(toRadians(1)) + ' ' + smaScale(d.koi_sma)*Math.sin(toRadians(1)) + ' ' + 0;})
-*/
-/*scene.selectAll(".planet")
-      .data(to_draw)
-      .enter()
-      .append('transform')
-      .attr('translation', function(d){
-        console.log(d.koi_sma)
-        console.log(smaScale(d.koi_sma)*Math.cos(toRadians(1)) + ' ' + smaScale(d.koi_sma)*Math.sin(toRadians(1)) + ' ' + 0)
-        return smaScale(d.koi_sma)*Math.cos(toRadians(1)) + ' ' + smaScale(d.koi_sma)*Math.sin(toRadians(1)) + ' ' + 0;})
-      .append('shape')
-      .call(makeSolid, color=function(d){return keplerplanetcolorScale(d.koi_teq)}, opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
-      .append('sphere')
-      .attr('radius', function(d){return smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU);})//draw spheres to represent points, using a function to return the radius and apply the radius scale
-      */              
-                           
               
