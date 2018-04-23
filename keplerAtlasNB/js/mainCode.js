@@ -122,7 +122,12 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
             				 	//console.log(keplerstarscolorScale(d.koi_steff));
             				 return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
-            				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+            				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}) //draw spheres to represent points, using a function to return the radius and apply the radius scale
+                     .on("mouseover", function(d, i) {
+                        stopTooltip = false         
+                        showTooltip(d);
+                        showEllipse(d, i, 0.8);
+                      })
 
 //Draw the bright star catalog
 var drawn_brightstars = scene.selectAll(".brightstar")
@@ -198,5 +203,6 @@ function galaxyView() {
 				//drawn_keplerstars.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
 
 				}
-
+d3.select(".x3dom-canvas")
+  .on("click", function(d) {stopTooltip = true;});
 

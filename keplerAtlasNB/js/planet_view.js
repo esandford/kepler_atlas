@@ -177,6 +177,17 @@ var drawn_planet = scene.selectAll(".planet")
                            .attr('radius', function(d){return smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU);})//draw spheres to represent points, using a function to return the radius and apply the radius scale
                            .attr('class', 'planet')
 
+var drawn_zone = scene.selectAll(".zone")
+                          .data(to_draw)
+                          .enter()
+                          .append('shape')
+                          .call(makeSolid, color= 'cyan', opacity=1)
+                          .append('Disk2D')
+                          .attr('innerradius', 200)
+                          .attr('outerradius', 400)
+                          .attr('subdivision', 30)
+                          .attr('class', 'zone')
+
 var orbit = scene.selectAll(".orbit")   //creates a selection, which is currently empty
                   .data(to_draw)        //join "circles" list
                   .enter()          //enter "circles" into empty selection. the selection now contains all of "circles", and everything after this loops over each circle in turn
