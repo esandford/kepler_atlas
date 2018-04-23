@@ -181,7 +181,7 @@ var drawn_zone = scene.selectAll(".zone")
                           .data(to_draw)
                           .enter()
                           .append('shape')
-                          .call(makeSolid, color= 'cyan', opacity=1)
+                          .call(makeSolid, color= 'lightskyblue', opacity=1)
                           .append('Disk2D')
                           .attr('innerradius', 200)
                           .attr('outerradius', 400)
@@ -195,7 +195,7 @@ var orbit = scene.selectAll(".orbit")   //creates a selection, which is currentl
                   .attr('translation', '0 0 0')   //specify that this "transform" will impose a rotation of the circle
                   .attr('rotation', '1 0 0')
                   .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-                  .call(makeSolid, color='black', opacity=1)       //set the color
+                  .call(makeSolid, color='white', opacity=1)       //set the color
                         .append('Circle2D')         //make the shape a 2D circle
                   .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
                   .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
@@ -219,8 +219,6 @@ function locate() {
     var newX = d.koi_sma * Math.cos(toRadians(d.theta)); //AU
     var newY = d.koi_sma * Math.sin(toRadians(d.theta)); //AU
     
-    //console.log(smaScale(newX) + ' ' +smaScale(newY) + ' ' + 0);
-    //console.log(Math.pow(Math.pow(smaScale(newX),2) + Math.pow(smaScale(newY),2),0.5))
     return smaScale(newX) + ' ' +smaScale(newY) + ' ' + 0;};
   };
 
@@ -229,24 +227,4 @@ d3.timer(function() {
     scene.selectAll(".planetpos")
             .attr('translation', locate());
 });
-/*scene.selectAll(".planetpos")
-      //.append('transform')
-      .attr('translation', function(d){
-        console.log("am I being called?")
-        return smaScale(d.koi_sma)*Math.cos(toRadians(1)) + ' ' + smaScale(d.koi_sma)*Math.sin(toRadians(1)) + ' ' + 0;})
-*/
-/*scene.selectAll(".planet")
-      .data(to_draw)
-      .enter()
-      .append('transform')
-      .attr('translation', function(d){
-        console.log(d.koi_sma)
-        console.log(smaScale(d.koi_sma)*Math.cos(toRadians(1)) + ' ' + smaScale(d.koi_sma)*Math.sin(toRadians(1)) + ' ' + 0)
-        return smaScale(d.koi_sma)*Math.cos(toRadians(1)) + ' ' + smaScale(d.koi_sma)*Math.sin(toRadians(1)) + ' ' + 0;})
-      .append('shape')
-      .call(makeSolid, color=function(d){return keplerplanetcolorScale(d.koi_teq)}, opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
-      .append('sphere')
-      .attr('radius', function(d){return smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU);})//draw spheres to represent points, using a function to return the radius and apply the radius scale
-      */              
-                           
               

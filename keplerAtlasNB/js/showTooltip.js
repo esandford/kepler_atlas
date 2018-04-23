@@ -1,9 +1,6 @@
 //Show the tooltip on hover
 function showTooltip(d) {	
-
-	//Show how to close tooltip
-	d3.select("#tooltipInfo").style("visibility", "visible");
-	
+	console.log("is this being called?");
 	//Make a different offset for really small planets
 	//var Offset = (rScale(d.Radius)/2 < 2) ? 3 : rScale(d.Radius)/2;
 	var xOffset = ((10*d.Radius)/2 < 3) ? 6 : (10*d.Radius)/2;
@@ -33,8 +30,6 @@ function showTooltip(d) {
 		//Breaks from the timer function when stopTooltip is changed to true
 		//by another function
 		if (stopTooltip == true) { 
-			//Hide tooltip info again
-			d3.select("#tooltipInfo").style("visibility", "hidden");
 			//Hide tooltip
 			d3.select("#tooltip").transition().duration(300)
 				.style('opacity',0)
@@ -51,4 +46,4 @@ function showTooltip(d) {
 	d3.select("#tooltip-eccen").html("Eccentricity of orbit: " + d.e);
 	d3.select("#tooltip-radius").html("Radius of planet: " + formatSI(d.Radius * 11.209 ) + " Earth radii");
 	d3.select("#tooltip-dist").html("Approx. distance to its Star: " + formatSI(d.major/3000) + " au");
-}
+}//showTooltip	

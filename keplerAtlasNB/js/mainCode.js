@@ -108,9 +108,9 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
 							 .data(keplerstars)
             				 .enter()
             				 .append('transform')
-            				 .attr('class', 'point')
+            				 .attr('class', 'keplerstar')
             				 .attr('translation', function(d){ 
-            					 var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
+            					var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
 								 var x = xyz[0];
 								 var y = xyz[1];
 								 var z = xyz[2];
@@ -118,17 +118,10 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
             					 return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             				 .append('shape')
             				 .call(makeSolid, color=function(d){
-            				 	//console.log(d.koi_steff);
-            				 	//console.log(keplerstarscolorScale(d.koi_steff));
             				 return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
             				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}) //draw spheres to represent points, using a function to return the radius and apply the radius scale
-                     .on("mouseover", function(d, i) {
-                        stopTooltip = false         
-                        showTooltip(d);
-                        showEllipse(d, i, 0.8);
-                      })
-
+            				 
 //Draw the bright star catalog
 var drawn_brightstars = scene.selectAll(".brightstar")
 				.data(brightstars)
@@ -159,7 +152,7 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 						return d.rotaxis_xcoord + ' ' + d.rotaxis_ycoord + ' ' + d.rotaxis_zcoord + ' ' + d.rot_angle;
 					})
 					.append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-					.call(makeSolid, color='blue', opacity=0.4) 			//set the color
+					.call(makeSolid, color='silver', opacity=0.5) 			//set the color
           			.append('cylinder')					//make the shape a 2D circle
 					.attr('radius', function(d){return d.radius;})	//set the radius
 					.attr('height', function(d){return d.height})
@@ -203,6 +196,19 @@ function galaxyView() {
 				//drawn_keplerstars.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
 
 				}
-d3.select(".x3dom-canvas")
-  .on("click", function(d) {stopTooltip = true;});
+
+var all_keplerstars = document.getElementsByClassName("keplerstar");
+
+for (i=0; i < all_keplerstars.length; i++) {
+    all_keplerstars[i].onclick = function(d){
+        //console.log(d.hitObject.__data__);
+        stopTooltip = false;				
+		showTooltip(d.hitObject.__data__);
+    }
+};
+
+
+//Remove tooltip when clicking anywhere in body
+d3.select('.x3dom-canvas')
+	.on("click", function(d) {stopTooltip = true;});
 
