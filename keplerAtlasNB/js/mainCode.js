@@ -33,6 +33,8 @@ var resolution = 1, //sets behavior or animation orbit
 	radiusJupiter = 69911; //km
 	phi=0;
 
+var formatSI = d3.format(".2f");
+
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
 			.attr("class","x3dom-canvas")
@@ -202,19 +204,18 @@ function galaxyView() {
 
 				}
 
-/*var sceneVar = document.getElementsByClassName("x3dom-scene")[0];
-
-sceneVar.onclick = function(){
-	//remove the tooltip
-	stopTooltip = true;
-}*/
+function getRelativeCoords(event) {
+	return { x: event.offsetX, y: event.offsetY};
+}
 
 var all_keplerstars = document.getElementsByClassName("keplerstar");
 
 for (i=0; i < all_keplerstars.length; i++) {
     all_keplerstars[i].onclick = function(d){
+        
+        coords = getRelativeCoords(event);
         stopTooltip = false;
-		showTooltip(d.hitObject.__data__);
+		showTooltip(d.hitObject.__data__, coords);
     }
 };
 

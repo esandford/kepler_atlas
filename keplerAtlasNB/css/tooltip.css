@@ -1,6 +1,6 @@
 #tooltip-Container {
   position: absolute;
-  bottom: 0;
+  bottom: -20;
   width: 230px;
   left: -115px; /* 230/2*/
   font-size: 12px;
