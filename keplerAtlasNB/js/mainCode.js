@@ -35,6 +35,7 @@ var resolution = 1, //sets behavior or animation orbit
 
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
+			.attr("class","x3dom-canvas")
             .attr("width", x + 'px')
             .attr("height", y +'px')
             .attr("showLog", 'true')
@@ -45,7 +46,8 @@ d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
   .attr("height", y);
 
 //starts camera at ideal viewpoint
-var scene = x3d.append("scene");
+var scene = x3d.append("scene")
+				.attr("class","x3dom-scene");
 
 var view_pos = [0., 500., 50000.]; //x, y, z relative to origin (0, 0, 0)
 //var view_pos = [-37902.27708, -31717.63386, -17253.83076]; //new view_pos and fov -Chris
@@ -115,6 +117,10 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
 								 var y = xyz[1];
 								 var z = xyz[2];
 
+								 d.x = xScale(x);
+								 d.y = yScale(y);
+								 d.z = zScale(z);
+
             					 return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             				 .append('shape')
             				 .call(makeSolid, color=function(d){
@@ -133,7 +139,6 @@ var drawn_brightstars = scene.selectAll(".brightstar")
 					var x = xyz[0];
 					var y = xyz[1];
 					var z = xyz[2];
-
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.append('shape')
             	.call(makeSolid, color=function(d){return vmagcolorscale(d.Vmagnitude)}, opacity=0.8)
@@ -197,18 +202,25 @@ function galaxyView() {
 
 				}
 
+/*var sceneVar = document.getElementsByClassName("x3dom-scene")[0];
+
+sceneVar.onclick = function(){
+	//remove the tooltip
+	stopTooltip = true;
+}*/
+
 var all_keplerstars = document.getElementsByClassName("keplerstar");
 
 for (i=0; i < all_keplerstars.length; i++) {
     all_keplerstars[i].onclick = function(d){
-        //console.log(d.hitObject.__data__);
-        stopTooltip = false;				
+        stopTooltip = false;
 		showTooltip(d.hitObject.__data__);
     }
 };
 
 
+
 //Remove tooltip when clicking anywhere in body
-d3.select('.x3dom-canvas')
-	.on("click", function(d) {stopTooltip = true;});
+//d3.select('.x3dom-scene')
+//	.on("click", function(d) {stopTooltip = true;});
 
