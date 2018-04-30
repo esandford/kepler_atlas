@@ -38,8 +38,17 @@ function showTooltip(d) {
 		}
 	});
 
+	var display_name;
+
+	if(d.kepler_name=="--"){
+		display_name = d.kepoi_name;
+		} 
+	else {
+		display_name = d.kepler_name;
+	}
+
 	//Change the texts inside the tooltip
-	d3.select("#tooltip .tooltip-planet").text(d.kepler_name);
+	d3.select("#tooltip .tooltip-planet").text(display_name);
 	d3.select("#tooltip .tooltip-year").html("Discovered in: " + d.discovered);
 	//d3.select("#tooltip-class").html("Temperature of star: " + d.temp + " Kelvin");
 	d3.select("#tooltip-period").html("Orbital period: " + formatSI(d.period) + " days");

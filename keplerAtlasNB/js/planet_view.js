@@ -163,9 +163,12 @@ var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is cu
                   .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
                   .call(makeSolid, color='black', opacity=1)       //set the color
                         .append('Circle2D')         //make the shape a 2D circle
-                  .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
+                  .attr('radius', function(d){
+                    console.log(smaScale(d.koi_sma));
+                  return smaScale(d.koi_sma);})  //set the radius
                   .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
                   .attr('class', 'orbit')
+
 
 var drawn_zone = scene.selectAll(".zone")
                           .data(to_draw)
@@ -173,15 +176,30 @@ var drawn_zone = scene.selectAll(".zone")
                           .append('shape')
                           .call(makeSolid, color= 'lightskyblue', opacity=1)
                           .append('Disk2D')
-                          .attr('innerradius', 200)
-                          .attr('outerradius', 400)
+                          .attr('innerradius', function(d){
+                            var a = ((Math.pow(d.koi_steff, 2))/(Math.pow(273, 2))) * ((d.koi_srad*solarRad_to_AU)/2)
+                            var aScaled = smaScale(a);
+                            console.log(aScaled)
+                            console.log(a)
+                            return aScaled;
+                          })
+                          .attr('outerradius', function(d){
+                            var a = ((Math.pow(d.koi_steff, 2))/(Math.pow(373, 2))) * ((d.koi_srad*solarRad_to_AU)/2)
+                            var aScaled = smaScale(a);
+                            console.log(aScaled)
+                            console.log(a)
+                            return aScaled;
+                          })
                           .attr('subdivision', 30)
                           .attr('class', 'zone')
-
+var solarRad_to_AU = 0.00465046726;
 
 //Turn degrees into radians
 function toRadians (angle) { return angle * (Math.PI / 180);}
 function toDegrees (angle) { return angle * (180 / Math.PI);}
+
+
+
 
 //Calculate the new x or y position per planet
 function locate() {
