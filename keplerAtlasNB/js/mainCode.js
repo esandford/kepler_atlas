@@ -119,17 +119,13 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
 								 var y = xyz[1];
 								 var z = xyz[2];
 
-								 d.x = xScale(x);
-								 d.y = yScale(y);
-								 d.z = zScale(z);
-
             					 return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             				 .append('shape')
             				 .call(makeSolid, color=function(d){
             				 return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
             				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}) //draw spheres to represent points, using a function to return the radius and apply the radius scale
-            				 
+
 //Draw the bright star catalog
 var drawn_brightstars = scene.selectAll(".brightstar")
 				.data(brightstars)
@@ -205,23 +201,16 @@ function galaxyView() {
 				}
 
 function getRelativeCoords(event) {
-	return { x: event.offsetX, y: event.offsetY};
+    return { x: event.offsetX, y: event.offsetY };
 }
 
 var all_keplerstars = document.getElementsByClassName("keplerstar");
 
 for (i=0; i < all_keplerstars.length; i++) {
     all_keplerstars[i].onclick = function(d){
-        
-        coords = getRelativeCoords(event);
-        stopTooltip = false;
-		showTooltip(d.hitObject.__data__, coords);
+
+    	coords = getRelativeCoords(event);
+      stopTooltip = false;
+		  showTooltip(d.hitObject.__data__, coords);
     }
 };
-
-
-
-//Remove tooltip when clicking anywhere in body
-//d3.select('.x3dom-scene')
-//	.on("click", function(d) {stopTooltip = true;});
-

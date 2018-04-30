@@ -2,7 +2,7 @@
 function showTooltip(d, coords) {	
 	
 	var xpos = coords.x;
-	var ypos = coords.y; 
+	var ypos = coords.y;
 
 	d3.select("#tooltip")
 		.style('top',ypos+"px")
@@ -14,6 +14,16 @@ function showTooltip(d, coords) {
 	//returns true (when the user clicks)
 	d3.timer(function(elapsed) {
 
+	  //xpos = d.x + x/2 - xOffset + 3;
+	  //ypos = d.y + y/2 - yOffset - 5;
+	  
+	  //Keep changing the location of the tooltip
+	  //d3.select("#tooltip")
+		//.style('top',ypos+"px")
+		//.style('left',xpos+"px");
+	
+	  //Breaks from the timer function when stopTooltip is changed to true
+	  //by another function
 	  if (elapsed > 200) {
 	  	if (stopTooltip == true) { 
 			//Hide tooltip
@@ -23,8 +33,17 @@ function showTooltip(d, coords) {
 		}
 	});
 
+	var display_name;
+
+	if (d.kepler_name=="--"){
+		display_name = d.kepoi_name;
+	}
+	else {
+		display_name = d.kepler_name;
+	}
+
 	//Change the texts inside the tooltip
-	d3.select("#tooltip .tooltip-planet").text(d.kepler_name);
+	d3.select("#tooltip .tooltip-planet").text(display_name);
 	d3.select("#tooltip-temperature")	.html("Temperature of star: " + d.koi_steff + " Kelvin");
 	d3.select("#tooltip-radius")		.html("Radius of star: " + formatSI(d.koi_srad) + " Solar radii");
 	d3.select("#tooltip-depth")			.html("Stellar light lost:" + formatSI(d.koi_depth) + " PPM");
@@ -32,7 +51,5 @@ function showTooltip(d, coords) {
 	d3.select("#tooltip-ratio")			.html("Planet-Star Radius Ratio:" + formatSI(d.koi_ror) + " AU");
 	d3.select("#tooltip-count")			.html("Number of planets:" + formatSI(d.koi_count));
 	d3.select("#tooltip-mass")			.html("Mass of star:" + formatSI(d.koi_smass) + " Solar mass");
-	
-
 
 }//showTooltip	
