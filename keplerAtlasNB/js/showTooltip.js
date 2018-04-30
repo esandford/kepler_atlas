@@ -1,14 +1,9 @@
 //Show the tooltip on hover
-function showTooltip(d) {	
-	//console.log("is this being called?");
-	//Make a different offset for really small planets
-	var xOffset = ((10*d.koi_srad)/2 < 3) ? 6 : (10*d.koi_srad)/2;
-	var yOffset = ((10*d.koi_srad)/2 < 3) ? 0 : (10*d.koi_srad)/2;
-
-	//Set first location of tooltip and change opacity
-	var xpos = d.x + x/2 - xOffset + 3;
-	var ypos = d.y + y/2 - yOffset - 5;
+function showTooltip(d, coords) {	
 	
+	var xpos = coords.x;
+	var ypos = coords.y;
+
 	d3.select("#tooltip")
 		.style('top',ypos+"px")
 		.style('left',xpos+"px")
@@ -40,19 +35,21 @@ function showTooltip(d) {
 
 	var display_name;
 
-	if(d.kepler_name=="--"){
+	if (d.kepler_name=="--"){
 		display_name = d.kepoi_name;
-		} 
+	}
 	else {
 		display_name = d.kepler_name;
 	}
 
 	//Change the texts inside the tooltip
 	d3.select("#tooltip .tooltip-planet").text(display_name);
-	d3.select("#tooltip .tooltip-year").html("Discovered in: " + d.discovered);
-	//d3.select("#tooltip-class").html("Temperature of star: " + d.temp + " Kelvin");
-	d3.select("#tooltip-period").html("Orbital period: " + formatSI(d.period) + " days");
-	d3.select("#tooltip-eccen").html("Eccentricity of orbit: " + d.e);
-	d3.select("#tooltip-radius").html("Radius of planet: " + formatSI(d.Radius * 11.209 ) + " Earth radii");
-	d3.select("#tooltip-dist").html("Approx. distance to its Star: " + formatSI(d.major/3000) + " au");
+	d3.select("#tooltip-temperature")	.html("Temperature of star: " + d.koi_steff + " Kelvin");
+	d3.select("#tooltip-radius")		.html("Radius of star: " + formatSI(d.koi_srad) + " Solar radii");
+	d3.select("#tooltip-depth")			.html("Stellar light lost:" + formatSI(d.koi_depth) + " PPM");
+	d3.select("#tooltip-duration")		.html("Duration of planet transit:" + formatSI(d.koi_duration) + " hours");
+	d3.select("#tooltip-ratio")			.html("Planet-Star Radius Ratio:" + formatSI(d.koi_ror) + " AU");
+	d3.select("#tooltip-count")			.html("Number of planets:" + formatSI(d.koi_count));
+	d3.select("#tooltip-mass")			.html("Mass of star:" + formatSI(d.koi_smass) + " Solar mass");
+
 }//showTooltip	
