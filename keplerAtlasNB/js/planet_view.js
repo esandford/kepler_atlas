@@ -167,8 +167,6 @@ var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is cu
                   .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
                   .attr('class', 'orbit')
 
-
-
 var drawn_zone = scene.selectAll(".zone")
                           .data(to_draw)
                           .enter()
@@ -179,7 +177,6 @@ var drawn_zone = scene.selectAll(".zone")
                           .attr('outerradius', function(d){return (Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2)})
                           .attr('subdivision', 30)
                           .attr('class', 'zone')
-
 
 //Turn degrees into radians
 function toRadians (angle) { return angle * (Math.PI / 180);}

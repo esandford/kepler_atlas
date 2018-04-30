@@ -2,10 +2,13 @@
 <html>
   <!-- <body background="img/galaxy.jpg"> -->
   <body>
-  <head profile="http://www.w3.org/2005/10/profile"> <!-- favicon -->
-	<link rel="icon" type="image/x-icon" href="http://www.noteaproductions.com/art/SC%20photos/planets/Planet___Alaerin_by_Stock7000.jpg">
-    <meta charset="utf-8" />
+  <head profile="http://www.w3.org/2005/10/profile"> 
+  	<title>Kepler Atlas</title>
+  	<meta charset="utf-8"/>
 
+  	<!-- favicon -->
+	<link rel="icon" type="image/x-icon" href="http://www.noteaproductions.com/art/SC%20photos/planets/Planet___Alaerin_by_Stock7000.jpg">
+    
     <!-- d3 library -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script type="text/javascript" src="http://d3js.org/d3.v4.0.0-alpha.28.min.js"></script>
@@ -25,9 +28,11 @@
 	<link type="text/css" rel="stylesheet" href="css/tooltip.css"/>
 	<link type="text/css" rel="stylesheet" href="css/infoBox.css"/>
 
-  </head>
-  <body>
 
+
+  </head>
+  
+  <body>
 	<!-- create a box to hold the "planetarium", i.e. the planets animation -->
     <div id="planetarium"></div>
 
@@ -49,7 +54,7 @@
 			<div id="tooltip-count" 		class="tooltip-info"></div>
 			<div id="tooltip-mass" 			class="tooltip-info"></div>			
 			<div id="tooltip-class" 		class="tooltip-info"></div>
-			<button onclick="PlanetView()">Planet View</button>
+			<button onclick="planetView()">Planet View</button>
 			<div class="tooltip-tail"></div>
 		</div>
 	</div>
@@ -57,6 +62,7 @@
 	<!-- Load in javascript code -->
 
 	<script src="js/d3-x3dom-axis.js"></script> <!-- for viewpoint debugging -->
+	
 	<script src="js/KOIarchive_stellar.js"></script>
 	<script src="js/bsc.js"></script>
 	<script src="js/planet_data.js"></script> 
@@ -65,6 +71,7 @@
 	<script src="js/galacticCoords.js"></script>
 	<script src="js/scale.js"></script>
     <script src="js/mainCode.js"></script>
+    <script src="js/zoom.js"></script> 
     <!-- <script src="js/planet_view.js"></script> -->
 
     <button onclick="earthView()">Earth View</button>
@@ -74,69 +81,5 @@
     <!-- <button onclick="planetdistanceView()">Scaled Distance</button> -->
     
     <!-- need to nest planetsizeView and planetdistanceView into planetView, and in addition resetView button was suggested for better, more mainstreamed functionality--> 
-
-
-	<!-- catherine-->
-	<style>
-
-	.onoffswitch {
-	    position: relative; width: 90px;
-	    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
-	}
-	.onoffswitch-checkbox {
-	    display: none;
-	}
-	.onoffswitch-label {
-	    display: block; overflow: hidden; cursor: pointer;
-	    border: 2px solid #999999; border-radius: 20px;
-	}
-	.onoffswitch-inner {
-	    display: block; width: 200%; margin-left: -100%;
-	    transition: margin 0.3s ease-in 0s;
-	}
-	.onoffswitch-inner:before, .onoffswitch-inner:after {
-	    display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
-	    font-size: 13px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
-	    box-sizing: border-box;
-	}
-	.onoffswitch-inner:before {
-	    content: "Galaxy";
-	    padding-left: 7px;
-	    background-color: #34A7C1; color: #FFFFFF;
-	}
-	.onoffswitch-inner:after {
-	    content: "Earth";
-	    padding-right: 7px;
-	    background-color: #EEEEEE; color: #999999;
-	    text-align: right;
-	}
-	/*.onoffswitch-switch {
-	    display: block; width: 18px; margin: 6px;
-	    background: #FFFFFF;
-	    position: absolute; top: 0; bottom: 0;
-	    right: 56px;
-	    border: 2px solid #999999; border-radius: 20px;
-	    transition: all 0.3s ease-in 0s; 
-	}
-	*/.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-	    margin-left: 0;
-	}
-	.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-	    right: 0px; 
-	}
-
-	</style>
-
-	<div class="onoffswitch">
-		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
-		<label class="onoffswitch-label" for="myonoffswitch">
-		    <span class="onoffswitch-inner"></span>
-		    <span class="onoffswitch-switch"></span>
-		</label>
-	</div>
-
-
-
   </body>
-
 </html>

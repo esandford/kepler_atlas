@@ -10,19 +10,6 @@ body {
 	cursor: default;
 }		
 
-.bigButton {
-  font-family: Oswald;
-  font-size: 18px;
-  font-weight: 300;
-  color: white;
-  text-align: center;
-  vertical-align: middle;
-  border: 1px solid;
-  border-color: white;
-  cursor: pointer;	
-  visibility: auto;
-}
-
 #start {
   top: 200px;
   left: 18px;
