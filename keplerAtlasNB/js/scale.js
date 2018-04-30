@@ -27,7 +27,7 @@ function return_steff_minmax(keplerstars){
 steffMin = return_steff_minmax(keplerstars)[0]
 steffMax = return_steff_minmax(keplerstars)[1]      
 
-//var keplerstarscolors = ["#D86865","#F3C4C4","#DOEEFD","#99DAFB","#1B90CB"]; //color scale from James
+//var keplerstarscolors = ["#D86865","#F3C4C4","#D0EEFD","#99DAFB","#1B90CB"]; //color scale from James
 var keplerstarscolors = ["#9C1E1E","#D62828","#E16262","#F3C4C4","#738E9B","#45687A","#2E556A","#174259","#001F2F"];
 var keplerstarscolorScale = d3.scale.linear()
 	 .domain([2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]) // Temperatures
