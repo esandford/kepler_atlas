@@ -199,6 +199,21 @@ function galaxyView() {
 				//drawn_keplerstars.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
 
 				}
+function scaledView() {
+
+				var view_pos = [0., 1., 0.];
+				var view_or = [1., 0., 0., 0.]; 
+				var fov = 0.05;
+				var zN = 0; 
+				var zF = 150000;
+
+				viewpoint.attr("position", view_pos.join(" "))
+				  .attr("orientation", view_or.join(" "))
+				  .attr("fieldOfView", fov)
+				  .attr('centerOfRotation', "0 0 0")
+				  .attr('zNear', zN)
+  				  .attr('zFar', zF)
+}
 
 function getRelativeCoords(event) {
     return { x: event.offsetX, y: event.offsetY };
