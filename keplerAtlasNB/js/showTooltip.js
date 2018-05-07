@@ -24,12 +24,10 @@ function showTooltip(d, coords) {
 	
 	  //Breaks from the timer function when stopTooltip is changed to true
 	  //by another function
-	  if (elapsed > 200) {
-	  	if (stopTooltip == true) { 
-			//Hide tooltip
-			d3.select("#tooltip").transition().duration(300)
-				.style('opacity',0)
-			}
+	  if (stopTooltip == true) { 
+		//Hide tooltip
+		d3.select("#tooltip").transition().duration(25)
+			.style('opacity',0)
 		}
 	});
 
@@ -51,5 +49,5 @@ function showTooltip(d, coords) {
 	d3.select("#tooltip-ratio")			.html("Planet-Star Radius Ratio:" + formatSI(d.koi_ror) + " AU");
 	d3.select("#tooltip-count")			.html("Number of planets:" + formatSI(d.koi_count));
 	d3.select("#tooltip-mass")			.html("Mass of star:" + formatSI(d.koi_smass) + " Solar mass");
-
+	d3.select("#tooltip-button")		.html("<button onclick=planetView("+d.kepid+")>Planet View</button>");
 }//showTooltip	
