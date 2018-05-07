@@ -49,5 +49,5 @@ function showTooltip(d, coords) {
 	d3.select("#tooltip-ratio")			.html("Planet-Star Radius Ratio:" + formatSI(d.koi_ror) + " AU");
 	d3.select("#tooltip-count")			.html("Number of planets:" + formatSI(d.koi_count));
 	d3.select("#tooltip-mass")			.html("Mass of star:" + formatSI(d.koi_smass) + " Solar mass");
-	d3.select("#tooltip-button")		.html("<button onclick=planetView(d.kepid)>Planet View</button>");
+	d3.select("#tooltip-button")		.html("<button onclick=planetView("+d.kepid+")>Planet View</button>");
 }//showTooltip	
