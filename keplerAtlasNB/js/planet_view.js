@@ -161,7 +161,7 @@ var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is cu
                   .attr('translation', '0 0 0')   //specify that this "transform" will impose a rotation of the circle
                   .attr('rotation', '1 0 0')
                   .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-                  .call(makeSolid, color='black', opacity=1)       //set the color
+                  .call(makeSolid, color='white', opacity=1)       //set the color
                         .append('Circle2D')         //make the shape a 2D circle
                   .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
                   .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
@@ -198,7 +198,7 @@ function locate() {
     
     return smaScale(newX) + ' ' +smaScale(newY) + ' ' + 0;};
   };
-
+      //hi
 //Change x and y location of each planet
 d3.timer(function() {
     scene.selectAll(".planetpos")
