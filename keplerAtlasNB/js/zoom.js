@@ -1,3 +1,7 @@
+var margin = {top: -5, right: -5, bottom: -5, left: -5},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+    
 var zoom = d3.behavior.zoom()
     .scaleExtent([1, 10])
     .on("zoom", zoomed);
