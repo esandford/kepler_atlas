@@ -159,7 +159,6 @@ var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is cu
                   .enter()          //enter "circles" into empty selection. the selection now contains all of "circles", and everything after this loops over each circle in turn
                   .append('transform')    //for each circle, append a "transform" object
                   .attr('translation', '0 0 0')   //specify that this "transform" will impose a rotation of the circle
-                  .attr('rotation', '1 0 0')
                   .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
                   .call(makeSolid, color='black', opacity=1)       //set the color
                         .append('Circle2D')         //make the shape a 2D circle
@@ -167,16 +166,32 @@ var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is cu
                   .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
                   .attr('class', 'orbit')
 
+
+
 var drawn_zone = scene.selectAll(".zone")
                           .data(to_draw)
                           .enter()
                           .append('shape')
                           .call(makeSolid, color= 'lightskyblue', opacity=1)
                           .append('Disk2D')
-                          .attr('innerradius', function(d){return (Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2)})
-                          .attr('outerradius', function(d){return (Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2)})
+                          .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('subdivision', 30)
                           .attr('class', 'zone')
+
+var drawn_zoneUpsideDown = scene.selectAll(".zoneUD")
+                          .data(to_draw)
+                          .enter()
+                          .append('transform')    
+                          .attr('rotation', '1 0 0 3.14159') //flip over
+                          .append('shape')
+                          .call(makeSolid, color= 'lightskyblue', opacity=1)
+                          .append('Disk2D')
+                          .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('subdivision', 30)
+                          .attr('class', 'zoneUD')
+
 
 //Turn degrees into radians
 function toRadians (angle) { return angle * (Math.PI / 180);}
