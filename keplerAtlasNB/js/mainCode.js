@@ -56,6 +56,7 @@ var scene = x3d.append("scene")
 				        .attr("class","x3dom-scene")
                 .attr("id","theScene");
 //starts camera at ideal viewpoint
+var view = 'galaxy';
 var view_pos = [0., 500., 50000.]; //x, y, z relative to origin (0, 0, 0)
 //var view_pos = [-37902.27708, -31717.63386, -17253.83076]; //new view_pos and fov -Chris
 var fov = 0.05; 	// Preferred minimum viewing angle from this viewpoint in radians. 
@@ -144,6 +145,7 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 
 // Enable switch to "Earth view," i.e. view from the Kepler satellite
 function earthView() {
+        view = 'earth';
         stopTooltip=false;
 				var fov = 0.25;
 				var view_pos = [-117.67830, -491.90906, -114.90123]
@@ -164,6 +166,7 @@ function earthView() {
 
 // Enable switch back to "Galaxy view"
 function galaxyView() {
+        view = 'galaxy';
 	      stopTooltip=false;
 				var view_pos = [0., 500., 50000.];
 				var view_or = [1., 0., 0., 0.]; 
