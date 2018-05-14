@@ -10,7 +10,7 @@ var
 var makeSolid = function(selection, color, opacity) {
             selection.append("appearance")
                 .append("material")
-                .attr("diffuseColor", color || "black")
+                .attr("diffuseColor", color || "white")
                 .attr("transparency", function(){return 1 - opacity;})
             return selection;
         };
@@ -27,8 +27,8 @@ var resolution = 1, //sets behavior or animation orbit
 var x3d = d3.select("#chartholder")
             .attr("width", x + 'px')
             .attr("height", y +'px')
-            .attr("showLog", 'true')
-            .attr("showStat", 'true');
+            .attr("showLog", 'false')
+            .attr("showStat", 'false');
 
 d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
   .attr("width", x)
@@ -161,7 +161,14 @@ var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is cu
                   .attr('translation', '0 0 0')   //specify that this "transform" will impose a rotation of the circle
                   .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
                   .call(makeSolid, color='white', opacity=1)       //set the color
-                        .append('Circle2D')         //make the shape a 2D circle
+                 // .append('appearance')
+                  //.append('material')
+                  //.attr('emissiveColor', 'white')
+                  //.attr('diffuseColor', 'white')
+                  //.attr('transparency', function(){
+                  //  console.log(opacity);
+                  //  return 1 - opacity;})
+                  .append('Circle2D')         //make the shape a 2D circle
                   .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
                   .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
                   .attr('class', 'orbit')

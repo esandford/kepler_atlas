@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
-<body background="img/galaxy.jpg">
+  	<title>Kepler Atlas</title>
+<head>
+	 <head profile="http://www.w3.org/2005/10/profile">
+	<link rel="icon" type="image/x-icon" href="https://images.theconversation.com/files/69250/original/image-20150116-5165-1djhhn9.png?ixlib=rb-1.1.0&q=45&auto=format&w=926&fit=clip">
+</head>
+<body background="star3.jpg">
   <body>
   <head profile="http://www.w3.org/2005/10/profile"> <!-- favicon -->
 	<link rel="icon" type="image/x-icon" href="http://www.noteaproductions.com/art/SC%20photos/planets/Planet___Alaerin_by_Stock7000.jpg">
@@ -16,8 +21,8 @@
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
 
 	<!-- X3DOM 3D visualization library -->
-	<script type="text/javascript" src="http://x3dom.org/download/1.7.2/x3dom-full.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://x3dom.org/download/1.7/x3dom.css" />
+	<link rel="stylesheet" type="text/css" href="http://x3dom.org/release/x3dom.css" />
+	<script type="text/javascript" src="http://x3dom.org/release/x3dom-full.js"></script>
     <script type="text/javascript" src="https://x3dom.org/release/components/Geometry2D.js"></script> 
 
 	<!-- custom css -->
@@ -51,7 +56,7 @@
 	</div>
 	<script src="js/d3-x3dom-axis.js"></script> <!-- for viewpoint debugging -->
 	<script src="js/KOIarchive_stellar.js"></script>
-
+	<script src="js/bsc.js"></script>
 	<script src="js/planet_data.js"></script> 
 
 	<script src="js/galacticCoords.js"></script>
@@ -62,8 +67,8 @@
   
 
     <!-- james & caroline -->
-    <button onclick="planetsizeView()">Scaled Sizing</button> 
-    <button onclick="planetdistanceView()">Scaled Distance</button><!-- need to nest planetsizeView and planetdistanceView into planetView, and in addition resetView button was suggested for better, more mainstreamed functionality--> 
+    <!-- <button onclick="planetsizeView()">Scaled Sizing</button> 
+    <button onclick="planetdistanceView()">Scaled Distance</button> --><!-- need to nest planetsizeView and planetdistanceView into planetView, and in addition resetView button was suggested for better, more mainstreamed functionality--> 
 
 
 

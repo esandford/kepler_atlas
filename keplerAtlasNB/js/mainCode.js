@@ -44,8 +44,8 @@ var x3d = d3.select("#chartholder")
 			.attr("class","x3dom-canvas")
             .attr("width", x + 'px')
             .attr("height", y +'px')
-            .attr("showLog", 'true')
-            .attr("showStat", 'true');
+            .attr("showLog", 'false')
+            .attr("showStat", 'false');
 
 d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
   .attr("width", x)
