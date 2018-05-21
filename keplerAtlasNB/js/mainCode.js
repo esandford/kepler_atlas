@@ -47,14 +47,11 @@ var x3d = d3.select("#chartholder")
             .attr("showLog", 'true')
             .attr("showStat", 'true');
 
-d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
-  .attr("width", x)
-  .attr("height", y);
-
 //create the scene
 var scene = x3d.append("scene")
 				        .attr("class","x3dom-scene")
                 .attr("id","theScene");
+
 //starts camera at ideal viewpoint
 var view = 'galaxy';
 var view_pos = [0., 500., 50000.]; //x, y, z relative to origin (0, 0, 0)
@@ -77,7 +74,7 @@ var viewpoint = scene.append("viewpoint")
   .attr('centerOfRotation', "0 0 0")
   .attr('zNear', zN)
   .attr('zFar', zF)
-  .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
+  //.attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////////// Plot stars //////////////////////////////////
@@ -141,6 +138,7 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 					.attr('radius', function(d){return d.radius;})	//set the radius
 					.attr('height', function(d){return d.height})
 					.attr('subdivision',40)
+
 
 
 // Enable switch to "Earth view," i.e. view from the Kepler satellite
@@ -400,3 +398,4 @@ function planetView(system_kepID){
             .attr('translation', locate());
   });
 };
+
