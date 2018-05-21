@@ -70,7 +70,7 @@ var zN = 0; 		//near plane
 var zF = 150000;	//far plane
 
 var viewpoint = scene.append("viewpoint")
-  .attr("id", 'dvp')
+  .attr("id", "vp")
   .attr("position", view_pos.join(" "))
   .attr("orientation", view_or.join(" "))
   .attr("fieldOfView", fov)
@@ -161,7 +161,12 @@ function earthView() {
             .attr('centerOfRotation', "0 0 0");
 
 				//drawn_keplerstars.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
-
+        var x3dElem  = document.getElementById('chartholder');
+        console.log(x3dElem);
+        var vMatInv  = x3dElem.runtime.viewMatrix().inverse();
+        var vMat = x3dElem.runtime.viewMatrix()
+        console.log(vMat);
+        console.log(vMatInv);
 				}
 
 // Enable switch back to "Galaxy view"
