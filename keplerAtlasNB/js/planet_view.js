@@ -25,14 +25,10 @@ var resolution = 1, //sets behavior or animation orbit
 
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
-            .attr("width", x + 'px')
-            .attr("height", y +'px')
-            .attr("showLog", 'true')
-            .attr("showStat", 'true');
-
-d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
-  .attr("width", x)
-  .attr("height", y);
+            .attr("width", x + "px")
+            .attr("height", y + "px")
+            .attr("showLog", "false")
+            .attr("showStat", "false");
 
 //starts camera at ideal viewpoint
 var scene = x3d.append("scene");
@@ -162,6 +158,13 @@ var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is cu
                   .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
                   .call(makeSolid, color='black', opacity=1)       //set the color
                         .append('Circle2D')         //make the shape a 2D circle
+                  //.append('appearance')
+                  //.append('material')
+                  //.attr('emissiveColor', 'white')
+                  //.attr('diffuseColor', 'white')
+                  //.attr('transparency', function(){
+                  //  console.log(opacity);
+                  //  return 1 - opacity;})
                   .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
                   .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
                   .attr('class', 'orbit')

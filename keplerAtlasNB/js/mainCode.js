@@ -42,19 +42,16 @@ function toDegrees (angle) { return angle * (180 / Math.PI);}
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
 			.attr("class","x3dom-canvas")
-            .attr("width", x + 'px')
-            .attr("height", y +'px')
-            .attr("showLog", 'true')
-            .attr("showStat", 'true');
-
-d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
-  .attr("width", x)
-  .attr("height", y);
+            .attr("width", x + "px")
+            .attr("height", y + "px")
+            .attr("showLog", "false")
+            .attr("showStat", "false");
 
 //create the scene
 var scene = x3d.append("scene")
 				        .attr("class","x3dom-scene")
                 .attr("id","theScene");
+
 //starts camera at ideal viewpoint
 var view = 'galaxy';
 var view_pos = [0., 500., 50000.]; //x, y, z relative to origin (0, 0, 0)
@@ -70,14 +67,14 @@ var zN = 0; 		//near plane
 var zF = 150000;	//far plane
 
 var viewpoint = scene.append("viewpoint")
-  .attr("id", 'dvp')
+  .attr("id", "vp")
   .attr("position", view_pos.join(" "))
   .attr("orientation", view_or.join(" "))
   .attr("fieldOfView", fov)
   .attr('centerOfRotation', "0 0 0")
   .attr('zNear', zN)
   .attr('zFar', zF)
-  .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
+  //.attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////////// Plot stars //////////////////////////////////
@@ -143,6 +140,7 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 					.attr('subdivision',40)
 
 
+
 // Enable switch to "Earth view," i.e. view from the Kepler satellite
 function earthView() {
         view = 'earth';
@@ -161,7 +159,12 @@ function earthView() {
             .attr('centerOfRotation', "0 0 0");
 
 				//drawn_keplerstars.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
-
+        var x3dElem  = document.getElementById('chartholder');
+        console.log(x3dElem);
+        var vMatInv  = x3dElem.runtime.viewMatrix().inverse();
+        var vMat = x3dElem.runtime.viewMatrix()
+        console.log(vMat);
+        console.log(vMatInv);
 				}
 
 // Enable switch back to "Galaxy view"
@@ -410,3 +413,4 @@ function planetView(system_kepID){
             .attr('translation', locate());
   });
 };
+
