@@ -42,10 +42,10 @@ function toDegrees (angle) { return angle * (180 / Math.PI);}
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
 			.attr("class","x3dom-canvas")
-            .attr("width", x + 'px')
-            .attr("height", y +'px')
-            .attr("showLog", 'true')
-            .attr("showStat", 'true');
+            .attr("width", x + "px")
+            .attr("height", y + "px")
+            .attr("showLog", "false")
+            .attr("showStat", "false");
 
 //create the scene
 var scene = x3d.append("scene")
