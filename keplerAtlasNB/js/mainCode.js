@@ -115,9 +115,9 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
             				 .attr('class', 'keplerstar')
             				 .attr('translation', function(d){ 
             					var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
-								 var x = xyz[0];
-								 var y = xyz[1];
-								 var z = xyz[2];
+          								 var x = xyz[0];
+          								 var y = xyz[1];
+          								 var z = xyz[2];
 
             					 return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             				 .append('shape')
@@ -214,3 +214,105 @@ for (i=0; i < all_keplerstars.length; i++) {
 		  showTooltip(d.hitObject.__data__, coords);
     }
 };
+
+// function planetView() {
+
+
+
+// var view_or = [0.58043, 0.57246, 0.57913, 2.08821]
+// var zN = 0;     //near plane
+// var zF = 1500000; //far plane
+
+// var resolution = 1, //sets behavior or animation orbit
+//   speedUp = 1000, //speed of planets
+//   au = 149597871, //km
+//   radiusSun = 695800, //km
+//   radiusJupiter = 69911; //km
+
+// var stopTooltip = false;  
+
+//   viewpoint.attr("position", view_pos.join(" "))
+//           .attr("orientation", view_or.join(" "))
+//           .attr("fieldOfView", fov)
+//           .attr('centerOfRotation', "0 0 0")
+//           .attr('zNear', zN)
+//           .attr('zFar', zF)
+//           .attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
+
+
+// var drawn_star = scene.selectAll(".keplerstar")
+//                .data(to_draw)
+//                      .enter()
+//                      .append('transform')
+//                      .attr('class', 'point')
+//                      .attr('translation', '0 0 0')
+//                      .append('shape')
+//                      .call(makeSolid, color=function(d){return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
+//                      .append('sphere')
+//                      .attr('radius', function(d) {return rorScale(d.koi_srad)})
+//                      .attr('class', 'keplerstar')
+
+// var drawn_planet = scene.selectAll(".keplerstar")
+//                .data(to_draw)
+//                      .enter()
+//                      .append('transform')
+//                      .attr('class', 'point')
+//                      .attr('translation', function(d){return smaScale(d.koi_sma) + ' ' + 0 + ' ' + 0;})
+//                      .append('shape')
+//                      .call(makeSolid, color=function(d){return keplerplanetcolorScale(d.koi_teq)}, opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
+//                      //.call(makeSolid, color="blue", opacity = 1) //uses a function to return the STeff and apply our color scale to create differences 
+//                      .append('sphere')
+//                      .attr('radius', function(d){return rorScale(d.koi_ror * d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
+//                      .attr('class', 'planet')
+//                      .attr('class', 'orbit')
+
+
+// var orbit = scene.selectAll(".orbits")   //creates a selection, which is currently empty
+//           .data(to_draw)        //join "circles" list
+//           .enter()          //enter "circles" into empty selection. the selection now contains all of "circles", and everything after this loops over each circle in turn
+//           .append('transform')    //for each circle, append a "transform" object
+//           .attr('translation', '0 0 0')   //specify that this "transform" will impose a rotation of the circle
+//           .attr('rotation', '1 0 0')
+//           .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
+//           .call(makeSolid, color='black', opacity=1)       //set the color
+//                 .append('Circle2D')         //make the shape a 2D circle
+//           .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
+//           .attr('subdivision',100)
+
+
+// var drawn_zone = scene.selectAll(".zone")
+//                           .data(to_draw)
+//                           .enter()
+//                           .append('shape')
+//                           .call(makeSolid, color= 'lightskyblue', opacity=1)
+//                           .append('Disk2D')
+//                           .attr('innerradius', function(d){return (Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2)})
+//                           .attr('outerradius', function(d){return (Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2)})
+//                           .attr('subdivision', 30)
+//                           .attr('class', 'zone')
+
+// function toRadians (angle) { return angle * (Math.PI / 180);}
+// function toDegrees (angle) { return angle * (180 / Math.PI);}
+
+// //Calculate the new x or y position per planet
+// function locate() {
+//   return function(d){
+//     var k = 360 / (d.koi_period * resolution * speedUp);
+//     for (var i = 0; i < resolution; i++) {
+//       d.theta += k;
+//     }
+    
+//     if (d.theta > 360) {d.theta -= 360;}
+
+//     var newX = d.koi_sma * Math.cos(toRadians(d.theta)); //AU
+//     var newY = d.koi_sma * Math.sin(toRadians(d.theta)); //AU
+    
+//     return smaScale(newX) + ' ' +smaScale(newY) + ' ' + 0;};
+//   };
+
+// //Change x and y location of each planet
+// d3.timer(function() {
+//     scene.selectAll(".planetpos")
+//             .attr('translation', locate());
+// })     
+}

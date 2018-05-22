@@ -169,14 +169,32 @@ var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is cu
 
 
 
-var drawn_zone = scene.selectAll(".zone")
+var drawn_zoneUP = scene.selectAll(".zone")
                           .data(to_draw)
                           .enter()
+                          .append('transform')
+                          .attr('translation', '0 0 0')
+                          .attr('rotation', '0 0 0 0')
                           .append('shape')
                           .call(makeSolid, color= 'lightskyblue', opacity=1)
                           .append('Disk2D')
-                          .attr('innerradius', function(d){return (Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2)})
-                          .attr('outerradius', function(d){return (Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2)})
+                          .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          
+                          .attr('subdivision', 30)
+                          .attr('class', 'zone')
+
+var drawn_zoneDOWN = scene.selectAll(".zone1")
+                          .data(to_draw)
+                          .enter()
+                          .append('transform')
+                          .attr('translation', '0 0 0')
+                          .attr('rotation', '0 1 0 3.14159')
+                          .append('shape')
+                          .call(makeSolid, color= 'lightskyblue', opacity=1)
+                          .append('Disk2D')
+                          .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('subdivision', 30)
                           .attr('class', 'zone')
 
@@ -206,4 +224,6 @@ d3.timer(function() {
     scene.selectAll(".planetpos")
             .attr('translation', locate());
 });
+
+
               
