@@ -7,6 +7,8 @@ var
 	x = ((w.innerWidth || e.clientWidth || g.clientWidth) - 50),
 	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 50);
 
+
+
 var makeSolid = function(selection, color, opacity) {
             selection.append("appearance")
                 .append("material")
@@ -25,14 +27,10 @@ var resolution = 1, //sets behavior or animation orbit
 
 //In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
 var x3d = d3.select("#chartholder")
-            .attr("width", x + 'px')
-            .attr("height", y +'px')
-            .attr("showLog", 'true')
-            .attr("showStat", 'true');
-
-d3.select('.x3dom-canvas') //creates a canvas to hold the 3d objects
-  .attr("width", x)
-  .attr("height", y);
+            .attr("width", x + "px")
+            .attr("height", y + "px")
+            .attr("showLog", "false")
+            .attr("showStat", "false");
 
 //starts camera at ideal viewpoint
 var scene = x3d.append("scene");
@@ -159,44 +157,45 @@ var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is cu
                   .enter()          //enter "circles" into empty selection. the selection now contains all of "circles", and everything after this loops over each circle in turn
                   .append('transform')    //for each circle, append a "transform" object
                   .attr('translation', '0 0 0')   //specify that this "transform" will impose a rotation of the circle
-                  .attr('rotation', '1 0 0')
                   .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
                   .call(makeSolid, color='black', opacity=1)       //set the color
                         .append('Circle2D')         //make the shape a 2D circle
+                  //.append('appearance')
+                  //.append('material')
+                  //.attr('emissiveColor', 'white')
+                  //.attr('diffuseColor', 'white')
+                  //.attr('transparency', function(){
+                  //  console.log(opacity);
+                  //  return 1 - opacity;})
                   .attr('radius', function(d){return smaScale(d.koi_sma);})  //set the radius
                   .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
                   .attr('class', 'orbit')
 
 
 
-var drawn_zoneUP = scene.selectAll(".zone")
+var drawn_zone = scene.selectAll(".zone")
                           .data(to_draw)
                           .enter()
-                          .append('transform')
-                          .attr('translation', '0 0 0')
-                          .attr('rotation', '0 0 0 0')
                           .append('shape')
                           .call(makeSolid, color= 'lightskyblue', opacity=1)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
-                          
                           .attr('subdivision', 30)
                           .attr('class', 'zone')
 
-var drawn_zoneDOWN = scene.selectAll(".zone1")
+var drawn_zoneUpsideDown = scene.selectAll(".zoneUD")
                           .data(to_draw)
                           .enter()
-                          .append('transform')
-                          .attr('translation', '0 0 0')
-                          .attr('rotation', '0 1 0 3.14159')
+                          .append('transform')    
+                          .attr('rotation', '1 0 0 3.14159') //flip over
                           .append('shape')
                           .call(makeSolid, color= 'lightskyblue', opacity=1)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('subdivision', 30)
-                          .attr('class', 'zone')
+                          .attr('class', 'zoneUD')
 
 
 //Turn degrees into radians
@@ -224,6 +223,4 @@ d3.timer(function() {
     scene.selectAll(".planetpos")
             .attr('translation', locate());
 });
-
-
               

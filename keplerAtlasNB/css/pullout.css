@@ -1,0 +1,67 @@
+#pullout {
+  position: absolute;
+  top: 10px;
+  left: -230px;
+  width: 266px;
+  height: 280px;
+  background: #f5f5f5;
+  transition: all 0.5s ease;
+}
+
+#pullout.active {
+  left: 0;
+}
+
+#pullout-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 230px;
+  height: 280px;
+}
+
+#pullout-form {
+  width: 230px;
+  height: 280px;
+}
+
+#pullout-tab {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 280px;
+  background: #ff0000;
+  cursor: pointer;
+}
+
+#pullout .pullout-planet {
+  text-transform: uppercase;
+  font-family: 'Oswald', sans-serif;
+  text-align: left;
+  font-size: 16px;
+  color:#333333;
+  text-align:center;  
+}
+/*
+#pullout .pullout-year{
+  color:#666;
+  font-size: 11px;   
+  text-align:center; 
+  margin-bottom: 6px;  
+  font-style:italic;
+}
+#pullout .pullout-class {
+  color:#333333;
+  text-align: left;
+  font-size: 13px;
+  text-align:center;  
+  margin-bottom: 4px;
+}
+.pullout-info {
+  color:#333333;
+  font-size: 12px;  
+  text-align:center;  
+  overflow:hidden;
+  margin-bottom: 2px;
+}*/
