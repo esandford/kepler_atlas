@@ -400,7 +400,7 @@ function planetView(system_kepID){
                   .attr('id', function(d){return d.kepoi_name + "_orbit"})
                   .attr('translation', '10000 10000 11000')   //specify that this "transform" will impose a rotation of the circle
                   .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-                  .call(makeSolid, color='black', opacity=1)       //set the color
+                  .call(makeSolid, color= 'black', opacity=1)       //set the color
                   .append('Circle2D')         //make the shape a 2D circle
                   .attr('radius', function(d){return smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);})  //set the radius
                   //.attr('radius', function(d){return 30*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);})  //set the radius
