@@ -13,15 +13,6 @@ function showTooltip(d, coords) {
 	//Keep the tooltip moving with the planet, until stopTooltip 
 	//returns true (when the user clicks)
 	d3.timer(function(elapsed) {
-
-	  //xpos = d.x + x/2 - xOffset + 3;
-	  //ypos = d.y + y/2 - yOffset - 5;
-	  
-	  //Keep changing the location of the tooltip
-	  //d3.select("#tooltip")
-		//.style('top',ypos+"px")
-		//.style('left',xpos+"px");
-	
 	  //Breaks from the timer function when stopTooltip is changed to true
 	  //by another function
 	  if (stopTooltip == true) { 
