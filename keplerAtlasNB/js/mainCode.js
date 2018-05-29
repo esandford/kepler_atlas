@@ -255,7 +255,6 @@ function planetView(system_kepID){
   var to_draw = [];
   var scales_arr = [];
   var planetToDraw;
-  var drawn_planetHost;
   
   for(i=0;i<keplerstars.length;i++){
     if(keplerstars[i].kepid == system_kepID){
@@ -291,7 +290,7 @@ function planetView(system_kepID){
                   //.range([1, max_to_min_ratio]);
                   .range([1.5, x/1.5]);
 
-  drawn_planetHost = scene.selectAll(".planetHost")
+  var drawn_planetHost = scene.selectAll(".planetHost")
                         .data([to_draw[0]])
                          .enter()
                          .append('transform')
@@ -304,7 +303,7 @@ function planetView(system_kepID){
                          .attr('class', 'planetHost')
                          .append('shape')
                          .call(makeSolid, diffuseColor=function(d){
-                          return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1)
+                          return keplerstarscolorScale(d.koi_steff)}, emissiveColor='yellow', opacity=1)
                          .append('sphere');
                          
   var drawn_planet = scene.selectAll(".planet")
