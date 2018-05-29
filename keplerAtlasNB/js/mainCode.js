@@ -304,7 +304,7 @@ function planetView(system_kepID){
   smaScale = d3.scale.linear()
                   .domain([smaMin, smaMax])
                   //.range([1, max_to_min_ratio]);
-                  .range([1.5, x/1.5])
+                  .range([1.5, x/1.5]);
 
   drawn_planetHost = scene.selectAll(".planetHost")
                         .data([to_draw[0]])
@@ -359,11 +359,11 @@ function planetView(system_kepID){
                           .attr('class', 'zone')
                           .attr('translation', '10000 10000 11000')
                           .append('shape')
-                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='black', opacity=1)
+                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='darkcyan', opacity=0.8)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
-                          .attr('subdivision', 30)
+                          .attr('subdivision', 30);
                 
   var drawn_zoneUpsideDown = scene.selectAll(".zoneUD")
                           .data(to_draw)
@@ -373,11 +373,11 @@ function planetView(system_kepID){
                           .attr('translation', '10000 10000 11000')  
                           .attr('rotation', '1 0 0 3.14159') //flip over
                           .append('shape')
-                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='black', opacity=1)
+                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='darkcyan', opacity=0.8)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
-                          .attr('subdivision', 30)
+                          .attr('subdivision', 30);
   
   //Calculate the new x or y position per planet
   function locate() {
