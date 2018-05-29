@@ -7,6 +7,13 @@ var
 	x = ((w.innerWidth || e.clientWidth || g.clientWidth) - 50),
 	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 150);
 
+//pullout tab --Caroline
+document.getElementById('pullout').addEventListener('click', function() {
+console.log("got click");
+var pullout = document.getElementById('pullout');
+pullout.classList.toggle('active');
+});
+
 // window.onresize = updateWindow;	
 
 //a function that x3dom uses to attach an "appearance" and "color" to a data selection.
@@ -48,8 +55,8 @@ var x3d = d3.select("#chartholder")
 			.attr("class","x3dom-canvas")
             .attr("width", x + "px")
             .attr("height", y + "px")
-            .attr("showLog", "true")
-            .attr("showStat", "true");
+            .attr("showLog", "false")
+            .attr("showStat", "false");
 
 //create the scene
 var scene = x3d.append("scene")
