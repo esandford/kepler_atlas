@@ -13,15 +13,6 @@ function showTooltip(d, coords) {
 	//Keep the tooltip moving with the planet, until stopTooltip 
 	//returns true (when the user clicks)
 	d3.timer(function(elapsed) {
-
-	  //xpos = d.x + x/2 - xOffset + 3;
-	  //ypos = d.y + y/2 - yOffset - 5;
-	  
-	  //Keep changing the location of the tooltip
-	  //d3.select("#tooltip")
-		//.style('top',ypos+"px")
-		//.style('left',xpos+"px");
-	
 	  //Breaks from the timer function when stopTooltip is changed to true
 	  //by another function
 	  if (stopTooltip == true) { 
@@ -44,10 +35,10 @@ function showTooltip(d, coords) {
 	d3.select("#tooltip .tooltip-planet").text(display_name);
 	d3.select("#tooltip-temperature")	.html("Temperature of star: " + d.koi_steff + " Kelvin");
 	d3.select("#tooltip-radius")		.html("Radius of star: " + formatSI(d.koi_srad) + " Solar radii");
-	d3.select("#tooltip-depth")			.html("Stellar light lost:" + formatSI(d.koi_depth) + " PPM");
-	d3.select("#tooltip-duration")		.html("Duration of planet transit:" + formatSI(d.koi_duration) + " hours");
-	d3.select("#tooltip-ratio")			.html("Planet-Star Radius Ratio:" + formatSI(d.koi_ror) + " AU");
-	d3.select("#tooltip-count")			.html("Number of planets:" + formatSI(d.koi_count));
-	d3.select("#tooltip-mass")			.html("Mass of star:" + formatSI(d.koi_smass) + " Solar mass");
+	d3.select("#tooltip-depth")			.html("Stellar light lost: " + formatSI(d.koi_depth) + " PPM");
+	d3.select("#tooltip-duration")		.html("Duration of planet transit: " + formatSI(d.koi_duration) + " hours");
+	d3.select("#tooltip-ratio")			.html("Planet-Star Radius Ratio: " + formatSI(d.koi_ror) + " AU");
+	d3.select("#tooltip-count")			.html("Number of planets: " + d.nkoi);
+	d3.select("#tooltip-mass")			.html("Mass of star: " + formatSI(d.koi_smass) + " Solar mass");
 	d3.select("#tooltip-button")		.html("<button onclick=planetView("+d.kepid+")>Planet View</button>");
 }//showTooltip	
