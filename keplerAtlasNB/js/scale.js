@@ -189,7 +189,7 @@ var vmagcolorscale = d3.scale.linear()
 	.domain([vmagMin, vmagMax])
 	.range(vmagcolors);
 
-//scale x and y "axes"
+//scale x, y, and z "axes"
 var xScale = d3.scale.linear()
     .domain([0, 15000])
     .range([0,15000]);

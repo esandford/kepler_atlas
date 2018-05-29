@@ -7,6 +7,13 @@ var
 	x = ((w.innerWidth || e.clientWidth || g.clientWidth) - 50),
 	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 150);
 
+//pullout tab --Caroline
+document.getElementById('pullout').addEventListener('click', function() {
+console.log("got click");
+var pullout = document.getElementById('pullout');
+pullout.classList.toggle('active');
+});
+
 // window.onresize = updateWindow;	
 
 //a function that x3dom uses to attach an "appearance" and "color" to a data selection.
@@ -48,8 +55,8 @@ var x3d = d3.select("#chartholder")
 			.attr("class","x3dom-canvas")
             .attr("width", x + "px")
             .attr("height", y + "px")
-            .attr("showLog", "true")
-            .attr("showStat", "true");
+            .attr("showLog", "false")
+            .attr("showStat", "false");
 
 //create the scene
 var scene = x3d.append("scene")
@@ -109,7 +116,6 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
             				 return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
             				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}) //draw spheres to represent points, using a function to return the radius and apply the radius scale
-drawn_keplerstars.exit().remove()
 
 //Draw the bright star catalog
 /*var drawn_brightstars = scene.selectAll(".brightstar")
@@ -127,10 +133,7 @@ drawn_keplerstars.exit().remove()
             	.call(makeSolid, color=function(d){return vmagcolorscale(d.Vmagnitude)}, opacity=0.8)
               .append('sphere')
             	.attr('radius', function(d) {return vmagRscale(d.Vmagnitude)});
-drawn_brightstars.exit().remove()
-
 */
-
 
 // draw a cylinder to represent the Milky Way disk
 var cylinder = [{"height":20, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
@@ -149,14 +152,10 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 					.attr('radius', function(d){return d.radius;})	//set the radius
 					.attr('height', function(d){return d.height})
 					.attr('subdivision',40)
-drawn_cylinder.exit().remove()
-
 
 // Enable switch to "Earth view," i.e. view from the Kepler satellite
 function earthView() {
         console.log("beginning earthView");
-        console.log(sceneToRef);
-        console.log(sceneToRef.childNodes.length);
         view = 'earth';
         stopTooltip=false;
 				var fov = 0.25;
@@ -172,14 +171,6 @@ function earthView() {
   				  .attr("fieldOfView", fov)
             .attr('centerOfRotation', "0 0 0");
 
-        /*if(nPlanetViewDraws > 0){
-          timer.stop();
-          $('#theScene > .planetHost').remove();
-          $('#theScene > .planet').remove();
-          $('#theScene > .orbit').remove();
-          $('#theScene > .zone').remove();
-          $('#theScene > .zoneUD').remove();
-        }*/
 				//drawn_keplerstars.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
         
         //var x3dElem  = document.getElementById('chartholder');
@@ -193,8 +184,6 @@ function earthView() {
 // Enable switch back to "Galaxy view"
 function galaxyView() {
         console.log("beginning galaxyView");
-        console.log(sceneToRef);
-        console.log(sceneToRef.childNodes.length);
 
         view = 'galaxy';
 	      stopTooltip=false;
@@ -210,15 +199,6 @@ function galaxyView() {
 				    .attr('centerOfRotation', "0 0 0")
 				    .attr('zNear', zN)
   				  .attr('zFar', zF)
-  			
-        if(nPlanetViewDraws > 0){
-          timer.stop();
-          $('#theScene > .planetHost').remove();
-          $('#theScene > .planet').remove();
-          $('#theScene > .orbit').remove();
-          $('#theScene > .zone').remove();
-          $('#theScene > .zoneUD').remove();
-        }
 
 				//drawn_keplerstars.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
 
@@ -239,16 +219,9 @@ for (i=0; i < all_keplerstars.length; i++) {
 };
 
 function planetView(system_kepID){
-  //console.log(system_kepID);
-
-  //console.log(scene);
-  //console.log(scene._groups[0]);
-  //console.log(scene._groups[0][0]);
+  
   console.log("beginning planetView");
-  console.log(scene);
-  console.log(sceneToRef);
-  console.log(sceneToRef.childNodes.length);
-
+  
   //remove earlier-drawn planetary system ,if there is one
   if(nPlanetViewDraws > 0){
     $('#theScene > .planetHost').remove();
@@ -317,96 +290,51 @@ function planetView(system_kepID){
                   //.range([1, max_to_min_ratio]);
                   .range([1.5, x/1.5])
 
-  // all correct ratios
-  /*var drawn_planetHost = scene.selectAll(".planetHost")
-                        .data(to_draw)
-                         .enter()
-                         .append('transform')
-                         .attr('class', 'planetHost')
-                         .attr('translation', '10000 10000 11000')
-                         .attr('bboxSize', '10.5 10.5 10.5')
-                         .append('shape')
-                         .attr('bboxSize', '10.5 10.5 10.5')
-                         .call(makeSolid, color=function(d){
-                          console.log('drawn')
-                          return keplerstarscolorScale(d.koi_steff)}, opacity=1)
-                         .append('sphere')
-                         //.attr('radius', 2)
-                         .attr('radius', function(d){return smaScale(d.koi_srad*solarRad_to_AU);})
-                         .attr('subdivision', '10 10')
-                         //.attr('radius', function(d) {return 0.75*rorScale(d.koi_srad)})
-                         //.append('box')
-                         //.attr('size', function(d){
-                         // return smaScale(d.koi_srad*solarRad_to_AU) + ' ' + smaScale(d.koi_srad*solarRad_to_AU) + ' ' + smaScale(d.koi_srad*solarRad_to_AU)})
-  drawn_planetHost.exit().remove()*/
-
-  drawn_planetHost = scene.selectAll(".planetHost").exit().remove()
-  console.log(drawn_planetHost);
   drawn_planetHost = scene.selectAll(".planetHost")
                         .data([to_draw[0]])
                          .enter()
                          .append('transform')
                          .attr('class', 'planetHost')
                          .attr('translation', '10000 10000 11000')
-                         .attr('rotation', function(d){
-
-                          return '1 0 0 ' +  Math.random()*Math.PI})
+                         .attr('scale', function(d){
+                          var rad = smaScale(d.koi_srad*solarRad_to_AU);
+                          return rad + ' ' + rad + ' ' + rad;
+                         })
+                         .attr('class', 'planetHost')
                          .append('shape')
                          .call(makeSolid, color=function(d){
                           return keplerstarscolorScale(d.koi_steff)}, opacity=1)
-                         //.append('sphere')
-                         //.attr('radius', function(d){return smaScale(d.koi_srad*solarRad_to_AU);})
-                         //.attr('subdivision', function(d){
-                         // var min = Math.ceil(20);
-                         // var max = Math.floor(30);
-                         // var subd =  Math.floor(Math.random() * (max - min)) + min;
-                         // return subd + ' ' + subd;
-                         //})
-                         //.attr('radius', function(d) {return 0.75*rorScale(d.koi_srad)})
-                         .append('box')
-                         .attr('size', function(d){
-                          return smaScale(d.koi_srad*solarRad_to_AU) + ' ' + smaScale(d.koi_srad*solarRad_to_AU) + ' ' + smaScale(d.koi_srad*solarRad_to_AU)})
-  //drawn_planetHost.exit().remove()
-
-
-  console.log(drawn_planetHost)
+                         .append('sphere');
+                         
   var drawn_planet = scene.selectAll(".planet")
                           .data(to_draw)
                            .enter()
                            .append('transform')
                            .attr('translation', function(d){return 10000+smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU) + ' ' + 10000 + ' ' + 11000})
-                           .attr('bboxSize', '10.5 10.5 10.5')
+                           .attr('scale', function(d){
+                            var rad = smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU);
+                            return rad + ' ' + rad + ' ' +rad;
+                           })
                            .attr('class','planet')
                            .append('shape')
-                           .attr('bboxSize', '10.5 10.5 10.5')
                            .call(makeSolid, color=function(d){return keplerplanetcolorScale(d.koi_teq)}, opacity = 1) 
-                           //.append('sphere')
-                           //.attr('radius', '2')
-                           //.attr('radius', function(d){
-                           //    console.log(smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU))
-                           //    return smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU) + 1;})
-                           //.attr('subdivision', 40)
-                           //.attr('radius', function(d){return 0.75*rorScale(d.koi_ror * d.koi_srad)}); //draw spheres to represent points, using a function to return the radius and apply the radius scale
-                           .append('box')
-                           .attr('size', function(d){
-                            return smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU) + ' ' + smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU) + ' ' + smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU)})
-  drawn_planet.exit().remove()
+                           .append('sphere');
+                           
   
-  var drawn_orbit = scene.selectAll(".orbit")   //creates a selection, which is currently empty
-                  .data(to_draw)        //join "circles" list
-                  .enter()          //enter "circles" into empty selection. the selection now contains all of "circles", and everything after this loops over each circle in turn
-                  .append('transform')    //for each circle, append a "transform" object
+  var drawn_orbit = scene.selectAll(".orbit")  
+                  .data(to_draw)      
+                  .enter()          
+                  .append('transform')   
+                  .attr('translation', '10000 10000 11000') 
+                  .attr('scale', function(d){
+                    var rad = smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);
+                    return rad + ' ' + rad + ' ' + rad;
+                  }) 
                   .attr('class', 'orbit')
-                  .attr('id', function(d){return d.kepoi_name + "_orbit"})
-                  .attr('translation', '10000 10000 11000')   //specify that this "transform" will impose a rotation of the circle
-                  .append('shape')          //for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-                  .call(makeSolid, color= 'black', opacity=1)       //set the color
-                  .append('Circle2D')         //make the shape a 2D circle
-                  .attr('radius', function(d){return smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);})  //set the radius
-                  //.attr('radius', function(d){return 30*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);})  //set the radius
-                  .attr('subdivision',5000)      //set the"resolution" of the circle, i.e. how many line segments are drawn to make up the circle
-  
-  drawn_orbit.exit().remove()
+                  .append('shape')        
+                  .call(makeSolid, color='black', opacity=1)       
+                  .append('Circle2D')        
+                  .attr('subdivision',500);
   
   var drawn_zone = scene.selectAll(".zone")
                           .data(to_draw)
@@ -420,7 +348,6 @@ function planetView(system_kepID){
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('subdivision', 30)
-  drawn_zone.exit().remove()
                 
   var drawn_zoneUpsideDown = scene.selectAll(".zoneUD")
                           .data(to_draw)
@@ -435,7 +362,6 @@ function planetView(system_kepID){
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('subdivision', 30)
-  drawn_zoneUpsideDown.exit().remove()
   
   //Calculate the new x or y position per planet
   function locate() {
@@ -465,33 +391,6 @@ function planetView(system_kepID){
 
   //increment counter of planet view draws
   nPlanetViewDraws += 1;
-  
-  console.log("end of PlanetView");
-  console.log("planetHost")
-  for (var k = 0; k < sceneToRef.childNodes.length; k++){
-    if (sceneToRef.childNodes[k].className == "planetHost"){
-      console.log(sceneToRef.childNodes[k]);
-      console.log(sceneToRef.childNodes[k].parentNode);
-    }
-  }
-  /*
-  console.log("planet")
-  for (var l = 0; l < sceneToRef.childNodes.length; l++){
-    if (sceneToRef.childNodes[l].className == "planet"){
-      console.log(sceneToRef.childNodes[l]);
-      console.log(sceneToRef.childNodes[l].parentNode);
-    }
-  }
-
-  console.log("orbit")
-  for (var l = 0; l < sceneToRef.childNodes.length; l++){
-    if (sceneToRef.childNodes[l].className == "orbit"){
-      console.log(sceneToRef.childNodes[l]);
-      console.log(sceneToRef.childNodes[l].parentNode);
-    }
-  }
-  */
-  console.log(sceneToRef.childNodes.length);
 
 };
 
