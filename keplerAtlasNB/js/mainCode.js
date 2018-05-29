@@ -25,10 +25,11 @@ pullout.classList.toggle('active');
 
 //a function that x3dom uses to attach an "appearance" and "color" to a data selection.
 //If you subsequently append a shape to that selection, x3dom will render the shape in 3D with this appearance/color. -ES
-var makeSolid = function(selection, color, opacity) {
+var makeSolid = function(selection, diffuseColor, emissiveColor, opacity) {
             selection.append("appearance")
                 .append("material")
-                .attr("diffuseColor", color || "black")
+                .attr("diffuseColor", diffuseColor || "black")
+                .attr("emissiveColor", emissiveColor || "black")
                 .attr("transparency", function(){return 1 - opacity;})
             return selection;
         };
@@ -119,8 +120,8 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
             				    return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             				 .attr('class', 'keplerstar')
                      .append('shape')                
-            				 .call(makeSolid, color=function(d){
-            				 return keplerstarscolorScale(d.koi_steff)}, opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
+            				 .call(makeSolid, diffuseColor=function(d){
+            				 return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
             				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}) //draw spheres to represent points, using a function to return the radius and apply the radius scale
 
@@ -137,7 +138,7 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
             	.attr('class', 'brightstar')
               .append('shape')
-            	.call(makeSolid, color=function(d){return vmagcolorscale(d.Vmagnitude)}, opacity=0.8)
+            	.call(makeSolid, diffuseColor=function(d){return vmagcolorscale(d.Vmagnitude)}, emissiveColor='black',opacity=0.8)
               .append('sphere')
             	.attr('radius', function(d) {return vmagRscale(d.Vmagnitude)});
 */
@@ -154,7 +155,7 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 					})
 					.attr('class', 'MWdisk')
           .append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-					.call(makeSolid, color='blue', opacity=0.4) 			//set the color
+					.call(makeSolid, diffuseColor='blue', emissiveColor='black', opacity=0.4) 			//set the color
           			.append('cylinder')					//make the shape a 2D circle
 					.attr('radius', function(d){return d.radius;})	//set the radius
 					.attr('height', function(d){return d.height})
@@ -309,8 +310,8 @@ function planetView(system_kepID){
                          })
                          .attr('class', 'planetHost')
                          .append('shape')
-                         .call(makeSolid, color=function(d){
-                          return keplerstarscolorScale(d.koi_steff)}, opacity=1)
+                         .call(makeSolid, diffuseColor=function(d){
+                          return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1)
                          .append('sphere');
                          
   var drawn_planet = scene.selectAll(".planet")
@@ -324,7 +325,7 @@ function planetView(system_kepID){
                            })
                            .attr('class','planet')
                            .append('shape')
-                           .call(makeSolid, color=function(d){return keplerplanetcolorScale(d.koi_teq)}, opacity = 1) 
+                           .call(makeSolid, diffuseColor=function(d){return keplerplanetcolorScale(d.koi_teq)}, emissiveColor='black', opacity = 1) 
                            .append('sphere');
                            
   
@@ -339,7 +340,7 @@ function planetView(system_kepID){
                   }) 
                   .attr('class', 'orbit')
                   .append('shape')        
-                  .call(makeSolid, color='black', opacity=1)       
+                  .call(makeSolid, diffuseColor='white', emissiveColor='white', opacity=1)       
                   .append('Circle2D')        
                   .attr('subdivision',500);
   
@@ -350,7 +351,7 @@ function planetView(system_kepID){
                           .attr('class', 'zone')
                           .attr('translation', '10000 10000 11000')
                           .append('shape')
-                          .call(makeSolid, color= 'lightskyblue', opacity=1)
+                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='black', opacity=1)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
@@ -364,7 +365,7 @@ function planetView(system_kepID){
                           .attr('translation', '10000 10000 11000')  
                           .attr('rotation', '1 0 0 3.14159') //flip over
                           .append('shape')
-                          .call(makeSolid, color= 'lightskyblue', opacity=1)
+                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='black', opacity=1)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
