@@ -174,12 +174,19 @@ function earthView() {
 
 				//drawn_keplerstars.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
         
-        //var x3dElem  = document.getElementById('chartholder');
+        /*
+        var x3dElem  = document.getElementById('chartholder');
         //console.log(x3dElem);
-        //var vMatInv  = x3dElem.runtime.viewMatrix().inverse();
-        //var vMat = x3dElem.runtime.viewMatrix()
+        var vMatInv  = x3dElem.runtime.viewMatrix().inverse();
+        var vMat = x3dElem.runtime.viewMatrix()
         //console.log(vMat);
-        //console.log(vMatInv);
+        console.log(vMatInv);
+
+        var element, bindable;
+        element = document.getElementById('chartholder');
+        bindable = element.runtime.getActiveBindable('viewpoint');
+        //bindable.setAttribute('set_bind', 'false');
+        console.log(bindable);*/
 				}
 
 // Enable switch back to "Galaxy view"
@@ -255,7 +262,6 @@ function planetView(system_kepID){
   var to_draw = [];
   var scales_arr = [];
   var planetToDraw;
-  var drawn_planetHost;
   
   for(i=0;i<keplerstars.length;i++){
     if(keplerstars[i].kepid == system_kepID){
@@ -291,7 +297,7 @@ function planetView(system_kepID){
                   //.range([1, max_to_min_ratio]);
                   .range([1.5, x/1.5]);
 
-  drawn_planetHost = scene.selectAll(".planetHost")
+  var drawn_planetHost = scene.selectAll(".planetHost")
                         .data([to_draw[0]])
                          .enter()
                          .append('transform')
