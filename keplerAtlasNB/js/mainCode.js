@@ -8,11 +8,11 @@ var
 	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 150);
 
 //pullout tab --Caroline
-document.getElementById('pullout').addEventListener('click', function() {
-console.log("got click");
-var pullout = document.getElementById('pullout');
-pullout.classList.toggle('active');
-});
+// document.getElementById('pullout').addEventListener('click', function() {
+// console.log("got click");
+// var pullout = document.getElementById('pullout');
+// pullout.classList.toggle('active');
+// });
 
 // window.onresize = updateWindow;	
 
@@ -344,7 +344,10 @@ function planetView(system_kepID){
                           .attr('class', 'zone')
                           .attr('translation', '10000 10000 11000')
                           .append('shape')
-                          .call(makeSolid, diffuseColor= 'Red', emissiveColor='Black', opacity=0.4)
+                          .call(makeSolid, diffuseColor=function(d){
+                          	console.log("hi");
+                          	return '#85D63E';} , emissiveColor=function(d){return '#85D63E';}, opacity=0.4)
+
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
@@ -358,8 +361,10 @@ function planetView(system_kepID){
                           .attr('translation', '10000 10000 11000')  
                           .attr('rotation', '1 0 0 3.14159') //flip over
                           .append('shape')
-                          .call(makeSolid, diffuseColor= 'Red', emissiveColor='Black', opacity=0.4)
-                          .append('Disk2D')
+                          .call(makeSolid, diffuseColor=function(d){
+                          	console.log("hi");
+                          	return '#85D63E';} , emissiveColor=function(d){return '#85D63E';}, opacity=0.4)
+
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('subdivision', 30);
