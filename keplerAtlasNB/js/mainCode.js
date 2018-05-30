@@ -255,7 +255,7 @@ function planetView(system_kepID){
   var to_draw = [];
   var scales_arr = [];
   var planetToDraw;
-  var drawn_planetHost;
+
   
   for(i=0;i<keplerstars.length;i++){
     if(keplerstars[i].kepid == system_kepID){
@@ -291,7 +291,7 @@ function planetView(system_kepID){
                   //.range([1, max_to_min_ratio]);
                   .range([1.5, x/1.5]);
 
-  drawn_planetHost = scene.selectAll(".planetHost")
+  var drawn_planetHost = scene.selectAll(".planetHost")
                         .data([to_draw[0]])
                          .enter()
                          .append('transform')
@@ -344,7 +344,7 @@ function planetView(system_kepID){
                           .attr('class', 'zone')
                           .attr('translation', '10000 10000 11000')
                           .append('shape')
-                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='darkcyan', opacity=0.8)
+                          .call(makeSolid, diffuseColor= 'Red', emissiveColor='Black', opacity=0.4)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
@@ -358,7 +358,7 @@ function planetView(system_kepID){
                           .attr('translation', '10000 10000 11000')  
                           .attr('rotation', '1 0 0 3.14159') //flip over
                           .append('shape')
-                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='darkcyan', opacity=0.8)
+                          .call(makeSolid, diffuseColor= 'Red', emissiveColor='Black', opacity=0.4)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
