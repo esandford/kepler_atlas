@@ -1,6 +1,6 @@
 #pullout {
   position: absolute;
-  top: 10px;
+  top: 69px;
   left: -230px;
   width: 266px;
   height: 280px;
@@ -31,7 +31,7 @@
   right: 0;
   width: 36px;
   height: 280px;
-  background: #ff0000;
+  background: #2f46a3;
   cursor: pointer;
 }
 
@@ -43,26 +43,24 @@
   color:#333333;
   text-align:center;  
 }
-/*
-#pullout .pullout-year{
+#tooltip .tooltip-year{
   color:#666;
   font-size: 11px;   
   text-align:center; 
   margin-bottom: 6px;  
   font-style:italic;
 }
-#pullout .pullout-class {
+#tooltip .tooltip-class {
   color:#333333;
   text-align: left;
   font-size: 13px;
   text-align:center;  
   margin-bottom: 4px;
 }
-.pullout-info {
+.tooltip-info {
   color:#333333;
   font-size: 12px;  
   text-align:center;  
   overflow:hidden;
   margin-bottom: 2px;
-}*/
- No newline at end of file
+}

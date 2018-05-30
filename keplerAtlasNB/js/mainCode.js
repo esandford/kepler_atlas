@@ -9,16 +9,18 @@ var
 
 //pullout tab --Caroline
 document.getElementById('pullout').addEventListener('click', function() {
-console.log("got click");
-var pullout = document.getElementById('pullout');
-pullout.classList.toggle('active');
+  console.log("got click");
+  var pullout = document.getElementById('pullout');
+  pullout.classList.toggle('active');
 });
 
-document.getElementById('pullout').addEventListener('click', function() {
-console.log("got click");
-var pullout = document.getElementById('pullout');
-pullout.classList.toggle('active');
-});
+console.log("Hi!");
+
+function test() {
+  console.log("WORKING?????");
+  var pullout = document.getElementById('pullout');
+  pullout.classList.toggle('active');
+}
 
 
 // window.onresize = updateWindow;	
@@ -162,7 +164,7 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 					.attr('subdivision',40)
 
 // Enable switch to "Earth view," i.e. view from the Kepler satellite
-function earthView() {
+function earthView(d) {
         console.log("beginning earthView");
         view = 'earth';
         stopTooltip=false;
@@ -178,6 +180,19 @@ function earthView() {
   				  .attr('zFar', zF)
   				  .attr("fieldOfView", fov)
             .attr('centerOfRotation', "0 0 0");
+
+        d3.select("#pullout .pullout-planet").html("");
+        d3.select("#pullout-temperature") .html("To zoom through the atlas, scroll. ");
+        d3.select("#pullout-radius")    .html("To change your viewpoint, double-click on a location to view from. ");
+        d3.select("#pullout-depth")     .html("To change your perspective, click and drag. ");
+        d3.select("#pullout-duration")    .html("Press the R button to go back to originally chosen viewpoint.");
+        d3.select("#pullout-ratio")     .html("Click on a star to see more information and go to the Planet View.");
+        d3.select("#pullout-count")     .html("");
+        d3.select("#pullout-mass")      .html("");
+        d3.select("#pullout-button")    .html("");
+
+
+
 
 				//drawn_keplerstars.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
         
@@ -207,6 +222,17 @@ function galaxyView() {
 				    .attr('centerOfRotation', "0 0 0")
 				    .attr('zNear', zN)
   				  .attr('zFar', zF)
+
+        //Change the texts inside the pullout
+        
+        d3.select("#pullout-temperature") .html("To zoom through the atlas, scroll. ");
+        d3.select("#pullout-radius")    .html("To change your viewpoint, double-click on a location to view from. ");
+        d3.select("#pullout-depth")     .html("To change your perspective, click and drag. ");
+        d3.select("#pullout-duration")    .html("Press the R button to go back to originally chosen viewpoint.");
+        d3.select("#pullout-ratio")     .html("Click on a star to see more information and go to the Planet View.");
+        d3.select("#pullout-count")     .html("");
+        d3.select("#pullout-mass")      .html("");
+        d3.select("#pullout-button")    .html("");
 
 				//drawn_keplerstars.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
 
