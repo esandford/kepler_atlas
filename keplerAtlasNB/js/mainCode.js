@@ -215,6 +215,7 @@ for (i=0; i < all_keplerstars.length; i++) {
     all_keplerstars[i].onclick = function(d){
     	coords = getRelativeCoords(event);
       stopTooltip = false;
+      console.log(stopTooltip);
 		  showTooltip(d.hitObject.__data__, coords);
     }
 };

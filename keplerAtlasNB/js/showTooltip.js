@@ -1,3 +1,8 @@
+document.getElementById('closeButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    stopTooltip=true;
+}, false);
+
 //Show the tooltip on hover
 function showTooltip(d, coords) {	
 	
