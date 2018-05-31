@@ -12,8 +12,7 @@ var drag = d3.behavior.drag()
     .on("drag", dragged)
     .on("dragend", dragended);
 
-var slider = d3.select("body").append("p")
-  .attr("width", ((w.innerWidth || e.clientWidth || g.clientWidth) - 50))
+var slider = d3.select("#sliderBar")
   .append("input")
   .datum({})
   .attr("type", "range")
@@ -27,31 +26,8 @@ var svg = d3.select("body").append("svg")
     .attr("width", 10)
     .attr("height", 10)
   .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
+    //.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
     .call(zoom);
-
-var container = svg.append("g");
-
-container.append("g")
-    .attr("class", "x axis")
-  .selectAll("line")
-    .data(d3.range(0, width, 10))
-  .enter().append("line")
-    .attr("x1", function(d) { return d; })
-    .attr("y1", 0)
-    .attr("x2", function(d) { return d; })
-    .attr("y2", height);
-
-container.append("g")
-    .attr("class", "y axis")
-  .selectAll("line")
-    .data(d3.range(0, height, 10))
-  .enter().append("line")
-    .attr("x1", 0)
-    .attr("y1", function(d) { return d; })
-    .attr("x2", width)
-    .attr("y2", function(d) { return d; });
-
 
 function zoomed() {
   //we want to use the slider to zoom the viewpoint in and out relative to the current

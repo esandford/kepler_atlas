@@ -9,10 +9,21 @@ var
 
 //pullout tab --Caroline
 document.getElementById('pullout').addEventListener('click', function() {
-console.log("got click");
-var pullout = document.getElementById('pullout');
-pullout.classList.toggle('active');
-});
+  var pullout = document.getElementById('pullout');
+  pullout.classList.toggle('active');
+  });
+
+//change the text inside the pullout tab
+d3.select("#pullout .pullout-planet").html("");
+d3.select("#pullout-temperature") .html("To zoom through the atlas, scroll. ");
+d3.select("#pullout-radius")    .html("To change your viewpoint, double-click on a location to view from. ");
+d3.select("#pullout-depth")     .html("To change your perspective, click and drag. ");
+d3.select("#pullout-duration")    .html("Press the R button to go back to originally chosen viewpoint.");
+d3.select("#pullout-ratio")     .html("Click on a star to see more information and go to the Planet View.");
+d3.select("#pullout-count")     .html("");
+d3.select("#pullout-mass")      .html("");
+d3.select("#pullout-button")    .html("");
+
 
 // window.onresize = updateWindow;	
 
@@ -91,6 +102,55 @@ var viewpoint = scene.append("viewpoint")
   .attr('zFar', zF)
   //.attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
 
+
+// Make an arrow to point to the Galactic center.
+var zeroArr = [0];
+var arrow = scene.selectAll(".arrow")
+                  .data(zeroArr)
+                  .enter()
+                  .append("transform")
+                  .attr("class","arrow")
+                  .attr("translation", "500 0 0")
+                  .attr("rotation", "0 0 1 1.570795")
+                  .append("shape")
+                  .call(makeSolid, diffuseColor='white', emissiveColor='black', opacity=1)
+                  .append("cylinder")
+                  .attr("height", "70")
+                  .attr("radius", "3")
+                  .attr("top", "false");
+
+var arrowhead = scene.selectAll(".arrowhead")
+                  .data(zeroArr)
+                  .enter()
+                  .append("transform")
+                  .attr("class","arrowhead")
+                  .attr("translation", "535 0 0")
+                  .attr("rotation", "0 0 1 4.712385") //rotate by 3pi/2
+                  .append("shape")
+                  .call(makeSolid, diffuseColor='white', emissiveColor='black', opacity=1)
+                  .append("cone")
+                  .attr("bottomRadius", "12")
+                  .attr("height", "18");
+
+var arrowlabel = scene.selectAll(".arrowlabel")
+                  .data(zeroArr)
+                  .enter()
+                  .append("transform")
+                  .attr("class","arrowlabel")
+                  .attr("translation", "525 50 20")
+                  .append("billboard")
+                  .append("shape")
+                  .append("material")
+                  .attr("diffuseColor", "white")
+                  .attr("emissiveColor", "white")
+                  .attr("transparency", "0")
+                  .append("text")
+                  .attr("string", "To galactic center")
+                  .append("fontstyle")
+                  .attr("size","10")
+                  .attr("family", "sans")
+                  .attr("justify", "middle");
+
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////////// Plot stars //////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
@@ -100,6 +160,7 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
 							 .data(keplerstars)
             				 .enter()
             				 .append('transform')
+                     .attr('class', 'keplerstar')
             				 .attr('translation', function(d){ 
             				    var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
 								        var x = xyz[0];
@@ -111,25 +172,25 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
                         d.z = zScale(z);
 
             				    return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
-            				 .attr('class', 'keplerstar')
+            				 //.attr('scale', function(d) {return 0.25*rScale(d.koi_srad)}) //sizes of spheres; faster than setting radius attribute
                      .append('shape')                
             				 .call(makeSolid, diffuseColor=function(d){
             				 return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
             				 .append('sphere')
-            				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)}) //draw spheres to represent points, using a function to return the radius and apply the radius scale
+            				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)});
 
 //Draw the bright star catalog
 /*var drawn_brightstars = scene.selectAll(".brightstar")
 				.data(brightstars)
             	.enter()
             	.append('transform')
+              .attr('class', 'brightstar')
             	.attr('translation', function(d){ 
             		var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.RA, xyzinputdec=d.dec);
 					      var x = xyz[0];
 					      var y = xyz[1];
 					      var z = xyz[2];
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
-            	.attr('class', 'brightstar')
               .append('shape')
             	.call(makeSolid, diffuseColor=function(d){return vmagcolorscale(d.Vmagnitude)}, emissiveColor='black',opacity=0.8)
               .append('sphere')
@@ -137,7 +198,7 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
 */
 
 // draw a cylinder to represent the Milky Way disk
-var cylinder = [{"height":20, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
+var cylinder = [{"height":5, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
 
 var drawn_cylinder = scene.selectAll(".cylinder") 	
 					.data(cylinder)				
@@ -157,6 +218,19 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 // Enable switch to "Earth view," i.e. view from the Kepler satellite
 function earthView() {
         console.log("beginning earthView");
+
+        //change the text inside the pullout tab
+        d3.select("#pullout .pullout-planet").html("");
+        d3.select("#pullout-temperature") .html("To zoom through the atlas, scroll. ");
+        d3.select("#pullout-radius")    .html("To change your viewpoint, double-click on a location to view from. ");
+        d3.select("#pullout-depth")     .html("To change your perspective, click and drag. ");
+        d3.select("#pullout-duration")    .html("Press the R button to go back to originally chosen viewpoint.");
+        d3.select("#pullout-ratio")     .html("Click on a star to see more information and go to the Planet View.");
+        d3.select("#pullout-count")     .html("");
+        d3.select("#pullout-mass")      .html("");
+        d3.select("#pullout-button")    .html("");
+
+
         view = 'earth';
         stopTooltip=false;
 				var fov = 0.25;
@@ -192,6 +266,17 @@ function earthView() {
 // Enable switch back to "Galaxy view"
 function galaxyView() {
         console.log("beginning galaxyView");
+
+        //change the text inside the pullout tab
+        d3.select("#pullout .pullout-planet").html("");
+        d3.select("#pullout-temperature") .html("To zoom through the atlas, scroll. ");
+        d3.select("#pullout-radius")    .html("To change your viewpoint, double-click on a location to view from. ");
+        d3.select("#pullout-depth")     .html("To change your perspective, click and drag. ");
+        d3.select("#pullout-duration")    .html("Press the R button to go back to originally chosen viewpoint.");
+        d3.select("#pullout-ratio")     .html("Click on a star to see more information and go to the Planet View.");
+        d3.select("#pullout-count")     .html("");
+        d3.select("#pullout-mass")      .html("");
+        d3.select("#pullout-button")    .html("");
 
         view = 'galaxy';
 	      stopTooltip=false;
@@ -307,7 +392,6 @@ function planetView(system_kepID){
                           var rad = smaScale(d.koi_srad*solarRad_to_AU);
                           return rad + ' ' + rad + ' ' + rad;
                          })
-                         .attr('class', 'planetHost')
                          .append('shape')
                          .call(makeSolid, diffuseColor=function(d){
                           return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1)
@@ -343,28 +427,29 @@ function planetView(system_kepID){
                   .append('Circle2D')        
                   .attr('subdivision',500);
   
+
   var drawn_zone = scene.selectAll(".zone")
-                          .data(to_draw)
+                          .data([to_draw[0]])
                           .enter()
                           .append('transform')
                           .attr('class', 'zone')
                           .attr('translation', '10000 10000 11000')
                           .append('shape')
-                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='darkcyan', opacity=0.8)
+                          .call(makeSolid, diffuseColor='#85D63E', emissiveColor='#85D63E', opacity=0.5)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('subdivision', 30);
                 
   var drawn_zoneUpsideDown = scene.selectAll(".zoneUD")
-                          .data(to_draw)
+                          .data([to_draw[0]])
                           .enter()
                           .append('transform')
                           .attr('class', 'zoneUD')  
                           .attr('translation', '10000 10000 11000')  
                           .attr('rotation', '1 0 0 3.14159') //flip over
                           .append('shape')
-                          .call(makeSolid, diffuseColor= 'lightskyblue', emissiveColor='darkcyan', opacity=0.8)
+                          .call(makeSolid, diffuseColor='#85D63E', emissiveColor='#85D63E', opacity=0.5)
                           .append('Disk2D')
                           .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
                           .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
