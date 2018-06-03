@@ -99,8 +99,7 @@ var viewpoint = scene.append("viewpoint")
   .attr("fieldOfView", fov)
   .attr('centerOfRotation', "0 0 0")
   .attr('zNear', zN)
-  .attr('zFar', zF)
-  //.attr("description", "defaultX3DViewpointNode").attr("set_bind", "true");
+  .attr('zFar', zF);
 
 
 // Make an arrow to point to the Galactic center.
@@ -110,6 +109,7 @@ var arrow = scene.selectAll(".arrow")
                   .enter()
                   .append("transform")
                   .attr("class","arrow")
+                  .attr("id", "theArrow")
                   .attr("translation", "500 0 0")
                   .attr("rotation", "0 0 1 1.570795")
                   .append("shape")
@@ -124,6 +124,7 @@ var arrowhead = scene.selectAll(".arrowhead")
                   .enter()
                   .append("transform")
                   .attr("class","arrowhead")
+                  .attr("id", "theArrowhead")
                   .attr("translation", "535 0 0")
                   .attr("rotation", "0 0 1 4.712385") //rotate by 3pi/2
                   .append("shape")
@@ -137,15 +138,15 @@ var arrowlabel = scene.selectAll(".arrowlabel")
                   .enter()
                   .append("transform")
                   .attr("class","arrowlabel")
+                  .attr("id", "theArrowlabel")
                   .attr("translation", "525 50 20")
+                  .attr("scale", "5 5 5")
                   .append("billboard")
                   .append("shape")
-                  .append("material")
-                  .attr("diffuseColor", "white")
-                  .attr("emissiveColor", "white")
-                  .attr("transparency", "0")
+                  .call(makeSolid, diffuseColor='white', emissiveColor='black', opacity=1)
                   .append("text")
                   .attr("string", "To galactic center")
+                  .attr("solid", "false")
                   .append("fontstyle")
                   .attr("size","10")
                   .attr("family", "sans")
@@ -230,6 +231,10 @@ function earthView() {
         d3.select("#pullout-mass")      .html("");
         d3.select("#pullout-button")    .html("");
 
+        //change location of arrow and "to galactic center" label
+        d3.select("#theArrow").attr("translation", "73 -10 0").attr("scale", "0.3 0.3 0.3")
+        d3.select("#theArrowhead").attr("translation", "85 -10 0").attr("scale", "0.3 0.3 0.3")
+       //d3.select("#theArrowlabel").attr("translation", "60 -20 0").attr("scale", "0.5 0.5 0.5")
 
         view = 'earth';
         stopTooltip=false;
@@ -278,6 +283,10 @@ function galaxyView() {
         d3.select("#pullout-mass")      .html("");
         d3.select("#pullout-button")    .html("");
 
+        //change location of arrow and "to galactic center" label
+        d3.select("#theArrow").attr("translation", "500 0 0").attr("scale", "1 1 1")
+        d3.select("#theArrowhead").attr("translation", "535 0 0").attr("scale", "1 1 1")
+       
         view = 'galaxy';
 	      stopTooltip=false;
 				var view_pos = [0., 500., 50000.];
