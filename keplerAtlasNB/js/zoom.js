@@ -14,6 +14,7 @@ var drag = d3.behavior.drag()
 
 var slider = d3.select("#sliderBar")
   .append("input")
+  .attr("id", "sliderVal")
   .datum({})
   .attr("type", "range")
   .attr("value", zoom.scaleExtent()[0])
@@ -47,8 +48,7 @@ function zoomed() {
   
   var projMat= x3dElem.runtime.projectionMatrix();
   var projMatInv = x3dElem.runtime.projectionMatrix().inverse();
-  console.log(projMat);
-  console.log(projMatInv);
+  
   //galaxy view:
   //var view_pos = [0., 500., 50000.]; //x, y, z relative to origin (0, 0, 0)
   //var view_or = [1., 0., 0., 0.]
@@ -78,24 +78,20 @@ function zoomed() {
   //                  [-0.0  0.0   -0.0  1.0   ]]
 
   //so it's the last column of viewMatrix_inv that's relevant!!!
-
-
   var currentPos = [];
   currentPos.push(vMatInv._03);
   currentPos.push(vMatInv._13);
   currentPos.push(vMatInv._23);
 
-  console.log(currentPos);
-  //var currentPos = viewpoint.attr("position").split(" ");    //This works except that "viewpoint" isn't updated every time the camera moves--only when Earth View or Galaxy View buttons are clicked!
-  //console.log(currentPos);
   var currentCOR = viewpoint.attr("centerOfRotation").split(" ");
-  //console.log(currentPos);
-  console.log(currentCOR);
+
   var currentDist_x = currentPos[0] - currentCOR[0];
   var currentDist_y = currentPos[1] - currentCOR[1];
   var currentDist_z = currentPos[2] - currentCOR[2];
-  var currentDist = Math.pow((Math.pow(currentDist_x, 2) + Math.pow(currentDist_y, 2) + Math.pow(currentDist_z, 2)), 0.5)
+  var currentDist = Math.pow((Math.pow(currentDist_x, 2) + Math.pow(currentDist_y, 2) + Math.pow(currentDist_z, 2)), 0.5);
   
+  console.log("currentOrientation: ");
+  console.log(viewpoint.attr("orientation"));
   //calculate the old scaling factor
   var galaxyView_pos = [0., 500., 50000.];
   var earthView_pos = [-117.67830*4.5, -491.90906*4.5, -114.90123*4.5];
@@ -121,16 +117,7 @@ function zoomed() {
     currentDist = 0;
   }
 
-  //console.log("Current dist is: ")
-  //console.log(currentDist);
-
-  //console.log("Max dist is: ")
-  //console.log(maxDist)
-
-  //console.log("Dist ratio is: ")
-  //console.log(currentDist/maxDist);
-  //calculate the old distance scale
-  
+  //calculate the old distance scale  
   var current_scale = (currentDist/maxDist)*10 //number ranging from 0 (least zoomed) to 10 (most zoomed)
 
   //console.log("Current scale is: ")
@@ -157,14 +144,27 @@ function zoomed() {
   //move the camera!
   viewpoint.attr("position", newPos.join(" "));
 
-  var newOr = new SFRotation( x3dom.fields.SFVec3f(viewpoint.attr("centerOfRotation")).subtract(x3dom.fields.SFVec3f(viewpoint.attr("position"))), new x3dom.fields.SFVec3f(0, 0, -1) );
+  //also need to update the camera orientation if we've clicked and dragged to rotate
+  /*var dir = new x3dom.fields.SFVec3f(-1*currentDist_x, -1*currentDist_y, -1*currentDist_z);
+  var newOr = x3dom.fields.Quaternion.rotateToFrom(new x3dom.fields.SFVec3f(0, 0, -1), dir);
+  //console.log(qDir);
+  //var rot = qDir.toAxisAngle();
+        
+  //var t = document.getElementById('bar');
+  //t.setAttribute('rotation', rot[0].x+' '+rot[0].y+' '+rot[0].z+' '+rot[1]);
+  //t.setAttribute('translation', event.worldX+' '+event.worldY+' '+event.worldZ);
+  
+  //var newOr = new SFRotation( x3dom.fields.SFVec3f(viewpoint.attr("centerOfRotation")).subtract(x3dom.fields.SFVec3f(viewpoint.attr("position"))), new x3dom.fields.SFVec3f(0, 0, -1) );
   //var newOr = (new x3dom.fields.SFVec3f(viewpoint.attr("centerOfRotation")).subtract(new x3dom.fields.SFVec3f(viewpoint.attr("position"))), new x3dom.fields.SFVec3f(0, 0, -1) );
   console.log(newOr);
-  viewpoint.attr("orientation", newOr.join(" "))
+  var setNewOr = [newOr.x, newOr.y, newOr.z, newOr.w];
+  viewpoint.attr("orientation", setNewOr);*/
 
   //console.log(viewpoint.attr("position").split(" "))
   //give the slider the appropriate value, based on where it was dragged
   slider.property("value",  d3.event.scale);
+  
+  //d3.select("#sliderVal").attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y)
 }
 
 function dragstarted(d) {

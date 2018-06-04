@@ -219,6 +219,8 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 // Enable switch to "Earth view," i.e. view from the Kepler satellite
 function earthView() {
         console.log("beginning earthView");
+        console.log("currentOrientation: ");
+        console.log(viewpoint.attr("orientation"));
 
         //change the text inside the pullout tab
         d3.select("#pullout .pullout-planet").html("");
@@ -271,6 +273,8 @@ function earthView() {
 // Enable switch back to "Galaxy view"
 function galaxyView() {
         console.log("beginning galaxyView");
+        console.log("currentOrientation: ");
+        console.log(viewpoint.attr("orientation"));
 
         //change the text inside the pullout tab
         d3.select("#pullout .pullout-planet").html("");
