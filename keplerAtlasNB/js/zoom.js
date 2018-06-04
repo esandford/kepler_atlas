@@ -12,7 +12,8 @@ var drag = d3.behavior.drag()
     .on("drag", dragged)
     .on("dragend", dragended);
 
-var slider = d3.select("body").append("p").append("input")
+var slider = d3.select("#sliderBar")
+  .append("input")
   .datum({})
   .attr("type", "range")
   .attr("value", zoom.scaleExtent()[0])
@@ -25,31 +26,8 @@ var svg = d3.select("body").append("svg")
     .attr("width", 10)
     .attr("height", 10)
   .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
+    //.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
     .call(zoom);
-
-var container = svg.append("g");
-
-container.append("g")
-    .attr("class", "x axis")
-  .selectAll("line")
-    .data(d3.range(0, width, 10))
-  .enter().append("line")
-    .attr("x1", function(d) { return d; })
-    .attr("y1", 0)
-    .attr("x2", function(d) { return d; })
-    .attr("y2", height);
-
-container.append("g")
-    .attr("class", "y axis")
-  .selectAll("line")
-    .data(d3.range(0, height, 10))
-  .enter().append("line")
-    .attr("x1", 0)
-    .attr("y1", function(d) { return d; })
-    .attr("x2", width)
-    .attr("y2", function(d) { return d; });
-
 
 function zoomed() {
   //we want to use the slider to zoom the viewpoint in and out relative to the current
@@ -66,41 +44,53 @@ function zoomed() {
   //get the viewer's 3D local frame
   var x3dElem  = document.getElementById('chartholder');
   var vMatInv  = x3dElem.runtime.viewMatrix().inverse();
-
-  //galaxy view:
-  //viewMatrix[:,0] = (1, 0, 0, 0) 
-  //viewMatrix[:,1] = (0, 0.97, 0.97, 0)
-  //viewMatrix[:,2] = (0, 0.25, -0.25, 0)
-  //viewMatrix[:,3] = (0, -500, -50000, 1) 
   
-  //viewMatrix_inv[:,0] = (1, -0, 0, -0)
-  //viewMatrix_inv[:,1] = (-0, 1, -0, 0)
-  //viewMatrix_inv[:,2] = (0, -0, 1, -0)
-  //viewMatrix_inv[:,3] = (-0, 500, 50000, 1)
+  var projMat= x3dElem.runtime.projectionMatrix();
+  var projMatInv = x3dElem.runtime.projectionMatrix().inverse();
+  console.log(projMat);
+  console.log(projMatInv);
+  //galaxy view:
+  //var view_pos = [0., 500., 50000.]; //x, y, z relative to origin (0, 0, 0)
+  //var view_or = [1., 0., 0., 0.]
+
+  //viewMatrix = [[1.0 0.0 0.0 0.0 ]
+  //              [0.0 0.97 0.25  -500]
+  //              [0.0 0.97 -0.25 -50000]
+  //              [0.0 0.0   0.0   1.0]]
+
+  //viewMatrix_inv = [[1.0   0.0 0.0 0.0]
+  //                  [0.0 1.0 0.0 500.0]
+  //                  [0.0 0.0 1.0 50000.0]
+  //                  [0.0 0.0 0l0 1.0 ]]
 
   //earth view:
   //var view_pos = [-117.67830, -491.90906, -114.90123]
   //var view_or = [0.98242, 0.00872, -0.18650, 1.87139]
 
-  //viewMatrix[:,0] = (0.95, 0.19, -0.23, 0) 
-  //viewMatrix[:,1] = (-0.17, -0.30, -0.94, 0)
-  //viewMatrix[:,2] = (-0.25, 0.94, -0.25, 0)
-  //viewMatrix[:,3] = (1.95, -15.8, -518, 1) 
-
-  //viewMatrix_inv[:,0] = (0.95, -0.167, -0.246, -0)
-  //viewMatrix_inv[:,1] = (0.189, -0.296, 0.936, 0)
-  //viewMatrix_inv[:,2] = (-0.229, -0.94, -0.251, -0)
-  //viewMatrix_inv[:,3] = (-117.76, -491.9, -114.9, 1)
-
-  //var currentPos = [];
-  var currentPos  = vMatInv.multMatrixVec(new x3dom.fields.SFVec3f(0.0, 0.0, -1.0));
+  //viewMatrix = [[0.95 -0.17 -0.25 1.95 ]
+  //              [0.19 -0.30 0.94  -15.7]
+  //              [-0.23 -0.94 -0.25 -518]
+  //              [0.0    0.0   0.0   1.0]]
   
+  //viewMatrix_inv = [[0.95   0.19 -0.23 -117.8]
+  //                  [-0.17 -0.30 -0.94 -491.9]
+  //                  [-0.25 0.94 -0.25 -114.9 ]  
+  //                  [-0.0  0.0   -0.0  1.0   ]]
+
+  //so it's the last column of viewMatrix_inv that's relevant!!!
+
+
+  var currentPos = [];
+  currentPos.push(vMatInv._03);
+  currentPos.push(vMatInv._13);
+  currentPos.push(vMatInv._23);
+
   console.log(currentPos);
-  //console.log(currentPos.x);
-  //var currentPos = viewpoint.attr("position").split(" ");
+  //var currentPos = viewpoint.attr("position").split(" ");    //This works except that "viewpoint" isn't updated every time the camera moves--only when Earth View or Galaxy View buttons are clicked!
+  //console.log(currentPos);
   var currentCOR = viewpoint.attr("centerOfRotation").split(" ");
   //console.log(currentPos);
-  //console.log(currentCOR);
+  console.log(currentCOR);
   var currentDist_x = currentPos[0] - currentCOR[0];
   var currentDist_y = currentPos[1] - currentCOR[1];
   var currentDist_z = currentPos[2] - currentCOR[2];
@@ -160,12 +150,17 @@ function zoomed() {
   for (i=0; i<3; i++) {
     //console.log(currentPos[i]);
     //console.log(desired_scale/current_scale);
-    console.log(currentPos[i]*(desired_scale/current_scale));
+    //console.log(currentPos[i]*(desired_scale/current_scale));
     newPos.push(currentPos[i]*(desired_scale/current_scale));
   }
 
   //move the camera!
   viewpoint.attr("position", newPos.join(" "));
+
+  var newOr = new SFRotation( x3dom.fields.SFVec3f(viewpoint.attr("centerOfRotation")).subtract(x3dom.fields.SFVec3f(viewpoint.attr("position"))), new x3dom.fields.SFVec3f(0, 0, -1) );
+  //var newOr = (new x3dom.fields.SFVec3f(viewpoint.attr("centerOfRotation")).subtract(new x3dom.fields.SFVec3f(viewpoint.attr("position"))), new x3dom.fields.SFVec3f(0, 0, -1) );
+  console.log(newOr);
+  viewpoint.attr("orientation", newOr.join(" "))
 
   //console.log(viewpoint.attr("position").split(" "))
   //give the slider the appropriate value, based on where it was dragged

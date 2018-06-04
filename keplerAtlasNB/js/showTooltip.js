@@ -1,3 +1,9 @@
+//make the close button work
+document.getElementById('closeButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    stopTooltip=true;
+}, false);
+
 //Show the tooltip on hover
 function showTooltip(d, coords) {	
 	
@@ -33,12 +39,24 @@ function showTooltip(d, coords) {
 
 	//Change the texts inside the tooltip
 	d3.select("#tooltip .tooltip-planet").text(display_name);
-	d3.select("#tooltip-temperature")	.html("Temperature of star: " + d.koi_steff + " Kelvin");
+	d3.select("#tooltip-temperature")	.html("Temperature of star: " + d.koi_steff + " K");
 	d3.select("#tooltip-radius")		.html("Radius of star: " + formatSI(d.koi_srad) + " Solar radii");
-	d3.select("#tooltip-depth")			.html("Stellar light lost: " + formatSI(d.koi_depth) + " PPM");
-	d3.select("#tooltip-duration")		.html("Duration of planet transit: " + formatSI(d.koi_duration) + " hours");
+	d3.select("#tooltip-depth")			.html("Transit depth: " + formatSI(d.koi_depth) + " ppm");
+	d3.select("#tooltip-duration")		.html("Transit duration: " + formatSI(d.koi_duration) + " hours");
 	d3.select("#tooltip-ratio")			.html("Planet-Star Radius Ratio: " + formatSI(d.koi_ror) + " AU");
 	d3.select("#tooltip-count")			.html("Number of planets: " + d.nkoi);
 	d3.select("#tooltip-mass")			.html("Mass of star: " + formatSI(d.koi_smass) + " Solar mass");
 	d3.select("#tooltip-button")		.html("<button onclick=planetView("+d.kepid+")>Planet View</button>");
+
+	//Change the texts inside the pullout tab
+	d3.select("#pullout .pullout-planet").text(display_name);
+	d3.select("#pullout-temperature")	.html("Temperature of star: " + d.koi_steff + " K");
+	d3.select("#pullout-radius")		.html("Radius of star: " + formatSI(d.koi_srad) + " Solar radii");
+	d3.select("#pullout-depth")			.html("Transit depth: " + formatSI(d.koi_depth) + " ppm");
+	d3.select("#pullout-duration")		.html("Transit duration: " + formatSI(d.koi_duration) + " hours");
+	d3.select("#pullout-ratio")			.html("Planet-Star Radius Ratio: " + formatSI(d.koi_ror) + " AU");
+	d3.select("#pullout-count")			.html("Number of planets: " + d.nkoi);
+	d3.select("#pullout-mass")			.html("Mass of star: " + formatSI(d.koi_smass) + " Solar masses");
+	d3.select("#pullout-button")		.html("<button onclick=planetView("+d.kepid+")>Planet View</button>");
+
 }//showTooltip	

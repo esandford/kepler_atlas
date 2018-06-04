@@ -3,6 +3,7 @@
   <head profile="http://www.w3.org/2005/10/profile">
 	<link rel="icon" type="image/x-icon" href="https://images.theconversation.com/files/69250/original/image-20150116-5165-1djhhn9.png?ixlib=rb-1.1.0&q=45&auto=format&w=926&fit=clip">
   	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   </head>
     <body background="star3.jpg">
 
@@ -44,9 +45,8 @@
 	<!-- custom css -->
 	<link type="text/css" rel="stylesheet" href="css/style.css"/>
 	<link type="text/css" rel="stylesheet" href="css/tooltip.css"/>
-	<link type="text/css" rel="stylesheet" href="css/infoBox.css"/>
 	<link type="text/css" rel="stylesheet" href="css/pullout.css"/>
-
+	<link type="text/css" rel="stylesheet" href="css/slider.css"/>
 
   </head>
   <body>
@@ -55,6 +55,7 @@
   	<a id="logo-container" href="file:///Users/catherinetalig/Desktop/kepler_atlas/keplerAtlasNB/homepage/home.html#info"><img border="0" alt="W3Schools" src="https://upload.wikimedia.org/wikipedia/commons/2/22/Earth_Western_Hemisphere_transparent_background.png" width="50" height="50"></a>
     </div>
   	</nav>
+
 
 	<!-- create a box to hold the "planetarium", i.e. the planets animation -->
     <div id="planetarium"></div>
@@ -66,6 +67,7 @@
 	<!-- Nested divs for tooltip: 9, within "tooltip-Container", within "tooltip"-->
 	<div id="tooltip">
 		<div id="tooltip-Container">
+			<button id="closeButton">X</button>
 			<div class="tooltip-planet"></div>
 			<div class="tooltip-rule"></div>
 			<div class="tooltip-year"></div>
@@ -77,15 +79,13 @@
 			<div id="tooltip-count" 		class="tooltip-info"></div>
 			<div id="tooltip-mass" 			class="tooltip-info"></div>			
 			<div id="tooltip-button" 		class="tooltip-info"></div>
-			<!-- <div class="tooltip-tail"></div> -->
 		</div>
 	</div>
 
-<!-- 	<div id="pullout">
+	<div id="pullout">
  		<div id="pullout-tab"></div>
  		<div id="pullout-inner">
 	 		<div class="pullout-planet"></div>
-			<div class="pullout-year"></div>
 			<div id="pullout-temperature" 	class="pullout-info"></div>
 			<div id="pullout-radius"		class="pullout-info"></div>
 			<div id="pullout-depth" 		class="pullout-info"></div>
@@ -94,33 +94,25 @@
 			<div id="pullout-count" 		class="pullout-info"></div>
 			<div id="pullout-mass" 			class="pullout-info"></div>		
  		</div>
-	</div> -->
+	</div>
 
-
-
-	<!-- Load in javascript code -->
-
-	<script src="js/d3-x3dom-axis.js"></script> <!-- for viewpoint debugging -->
-	<script src="js/KOIarchive_stellar.js"></script>
-	<script src="js/bsc.js"></script>
-	<!-- <script src="js/planet_data.js"></script> -->
-	<script src="js/showTooltip.js"></script>
-	<script src="js/showpullOut.js"></script>
-	<!-- <script src="js/gradients.js"></script> -->
-	<script src="js/galacticCoords.js"></script>
-	<script src="js/scale.js"></script>
-	<script src="js/legend.js"></script>
-    <script src="js/mainCode.js"></script>
-    <!-- <script src="js/planet_view.js"></script> -->
-    <script src="js/zoom.js"></script>
-
-    <!-- Materialize Catherine -->  
-  	<script type="text/javascript" src="../homepage/js/materialize.min.js"></script>
-
-
+	<div id="sliderBar"></div>
+  	
 	<button onclick="galaxyView()">Galaxy View</button>
     <button onclick="earthView()">Earth View</button>
     
+
+	<!-- Load in javascript code -->
+	<script src="js/KOIarchive_stellar.js"></script>
+	<script src="js/bsc.js"></script>
+	<script src="js/showTooltip.js"></script>
+	<script src="js/galacticCoords.js"></script>
+	<script src="js/scale.js"></script>
+    <script src="js/mainCode.js"></script>
+    <script src="js/zoom.js"></script>
+
+    <!-- Materialize -->  
+  	<script type="text/javascript" src="../homepage/js/materialize.min.js"></script>
 
   </body>
 
