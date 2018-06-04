@@ -253,21 +253,16 @@ function earthView() {
   				  .attr("fieldOfView", fov)
             .attr('centerOfRotation', "0 0 0");
 
-				//drawn_keplerstars.attr('radius', function(d) {return 0.25*rScale(d.koi_srad);})
-        
-        /*
-        var x3dElem  = document.getElementById('chartholder');
-        //console.log(x3dElem);
-        var vMatInv  = x3dElem.runtime.viewMatrix().inverse();
-        var vMat = x3dElem.runtime.viewMatrix()
-        //console.log(vMat);
-        console.log(vMatInv);
+        //set zoom scale
+        zoom = d3.behavior.zoom()
+          .scaleExtent([0.0001, 0.25])
+          .on("zoom", zoomed);
 
-        var element, bindable;
-        element = document.getElementById('chartholder');
-        bindable = element.runtime.getActiveBindable('viewpoint');
-        //bindable.setAttribute('set_bind', 'false');
-        console.log(bindable);*/
+        //reset slider to left side of slider bar
+        var sliderelement = $( "#sliderVal" );
+        sliderelement.val(function( index, value ) {
+          return zoom.scaleExtent()[0];
+        });
 				}
 
 // Enable switch back to "Galaxy view"
@@ -306,7 +301,16 @@ function galaxyView() {
 				    .attr('zNear', zN)
   				  .attr('zFar', zF)
 
-				//drawn_keplerstars.attr('radius', function(d) {return 1.5*rScale(d.koi_srad);}) //james 
+        //set zoom scale
+        zoom = d3.behavior.zoom()
+          .scaleExtent([0.0001, 0.05])
+          .on("zoom", zoomed);
+
+        //reset slider to left side of slider bar
+        var sliderelement = $( "#sliderVal" );
+        sliderelement.val(function( index, value ) {
+          return zoom.scaleExtent()[0];
+        });
 
 				}
 
