@@ -14,16 +14,15 @@ document.getElementById('pullout').addEventListener('click', function() {
   });
 
 //change the text inside the pullout tab
-d3.select("#pullout .pullout-planet").html("");
-d3.select("#pullout-temperature") .html("To zoom through the atlas, scroll. ");
-d3.select("#pullout-radius")    .html("To change your viewpoint, double-click on a location to view from. ");
-d3.select("#pullout-depth")     .html("To change your perspective, click and drag. ");
-d3.select("#pullout-duration")    .html("Press the R button to go back to originally chosen viewpoint.");
-d3.select("#pullout-ratio")     .html("Click on a star to see more information and go to the Planet View.");
-d3.select("#pullout-count")     .html("");
-d3.select("#pullout-mass")      .html("");
-d3.select("#pullout-button")    .html("");
-
+d3.select("#pullout .pullout-planet").html("<br />");
+d3.select("#pullout-temperature") .html("<b>Scroll</b> or use the <b>slider</b> to zoom in/out.");
+d3.select("#pullout-radius")    .html("<b>Double-click</b> on a point to center it.");
+d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
+d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
+d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
+d3.select("#pullout-duration")     .html("<br />");
+d3.select("#pullout-ratio")      .html("<b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
+d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth.");
 
 // window.onresize = updateWindow;	
 
@@ -219,19 +218,17 @@ var drawn_cylinder = scene.selectAll(".cylinder")
 // Enable switch to "Earth view," i.e. view from the Kepler satellite
 function earthView() {
         console.log("beginning earthView");
-        console.log("currentOrientation: ");
-        console.log(viewpoint.attr("orientation"));
 
         //change the text inside the pullout tab
-        d3.select("#pullout .pullout-planet").html("");
-        d3.select("#pullout-temperature") .html("To zoom through the atlas, scroll. ");
-        d3.select("#pullout-radius")    .html("To change your viewpoint, double-click on a location to view from. ");
-        d3.select("#pullout-depth")     .html("To change your perspective, click and drag. ");
-        d3.select("#pullout-duration")    .html("Press the R button to go back to originally chosen viewpoint.");
-        d3.select("#pullout-ratio")     .html("Click on a star to see more information and go to the Planet View.");
-        d3.select("#pullout-count")     .html("");
-        d3.select("#pullout-mass")      .html("");
-        d3.select("#pullout-button")    .html("");
+        d3.select("#pullout .pullout-planet").html("<br />");
+        d3.select("#pullout-temperature") .html("<b>Scroll</b> or use the <b>slider</b> to zoom in/out.");
+        d3.select("#pullout-radius")    .html("<b>Double-click</b> on a point to center it.");
+        d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
+        d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
+        d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
+        d3.select("#pullout-duration")     .html("<br />");
+        d3.select("#pullout-ratio")      .html("<b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
+        d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth.");
 
         //change location of arrow and "to galactic center" label
         d3.select("#theArrow").attr("translation", "73 -10 0").attr("scale", "0.3 0.3 0.3")
@@ -268,19 +265,17 @@ function earthView() {
 // Enable switch back to "Galaxy view"
 function galaxyView() {
         console.log("beginning galaxyView");
-        console.log("currentOrientation: ");
-        console.log(viewpoint.attr("orientation"));
 
         //change the text inside the pullout tab
-        d3.select("#pullout .pullout-planet").html("");
-        d3.select("#pullout-temperature") .html("To zoom through the atlas, scroll. ");
-        d3.select("#pullout-radius")    .html("To change your viewpoint, double-click on a location to view from. ");
-        d3.select("#pullout-depth")     .html("To change your perspective, click and drag. ");
-        d3.select("#pullout-duration")    .html("Press the R button to go back to originally chosen viewpoint.");
-        d3.select("#pullout-ratio")     .html("Click on a star to see more information and go to the Planet View.");
-        d3.select("#pullout-count")     .html("");
-        d3.select("#pullout-mass")      .html("");
-        d3.select("#pullout-button")    .html("");
+        d3.select("#pullout .pullout-planet").html("<br />");
+        d3.select("#pullout-temperature") .html("<b>Scroll</b> or use the <b>slider</b> to zoom in/out.");
+        d3.select("#pullout-radius")    .html("<b>Double-click</b> on a point to center it.");
+        d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
+        d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
+        d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
+        d3.select("#pullout-duration")     .html("<br />");
+        d3.select("#pullout-ratio")      .html("<b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
+        d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth.");
 
         //change location of arrow and "to galactic center" label
         d3.select("#theArrow").attr("translation", "500 0 0").attr("scale", "1 1 1")
