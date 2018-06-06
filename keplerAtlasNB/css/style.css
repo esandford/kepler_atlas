@@ -4,6 +4,10 @@ body {
 	font-family: 'Open Sans', sans-serif;
 	text-align: center;
 	vertical-align: middle;
-  background-color: white;
+  	background-color: white;
 	cursor: default;
+}
+
+figcaption { 
+    display: block;
 }

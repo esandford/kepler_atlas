@@ -117,9 +117,10 @@ function return_ror_minmax(keplerstars){
 
 rorMin = return_ror_minmax(keplerstars)[0] //get minimum and maximum radii -James
 rorMax = return_ror_minmax(keplerstars)[1]
+
 var rorScale = d3.scale.linear()
       .domain([0, rorMax])
-      .range([1, 100]); //james
+      .range([1, rorMax/rorMin]); //james
 
 //Set scale for radius of circles
 //new function to find minimum and maximum stellar radius across the entire data set -James

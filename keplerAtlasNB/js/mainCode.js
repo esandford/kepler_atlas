@@ -22,7 +22,7 @@ d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to th
 d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
 d3.select("#pullout-duration")     .html("<br />");
 d3.select("#pullout-ratio")      .html("<b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
-d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth.");
+d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
 // window.onresize = updateWindow;	
 
@@ -228,7 +228,7 @@ function earthView() {
         d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
         d3.select("#pullout-duration")     .html("<br />");
         d3.select("#pullout-ratio")      .html("<b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
-        d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth.");
+        d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
         //change location of arrow and "to galactic center" label
         d3.select("#theArrow").attr("translation", "73 -10 0").attr("scale", "0.3 0.3 0.3")
@@ -275,7 +275,7 @@ function galaxyView() {
         d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
         d3.select("#pullout-duration")     .html("<br />");
         d3.select("#pullout-ratio")      .html("<b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
-        d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth.");
+        d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
         //change location of arrow and "to galactic center" label
         d3.select("#theArrow").attr("translation", "500 0 0").attr("scale", "1 1 1")
@@ -336,6 +336,12 @@ function planetView(system_kepID){
     $('#theScene > .zoneUD').remove();
   }
   
+  //edit pullout text
+  d3.select("#pullout-depth")     .html("<br />");
+  d3.select("#pullout-duration")    .html("The light green band represents the system's <b>habitable zone</b>, which is at the right equilibrium temperature for liquid water to exist.");
+  d3.select("#pullout-ratio")     .html("<br /> The planets' sizes have been exaggerated in this view. To see planets scaled accurately relative to their star, click below.");
+  d3.select("#pullout-button")    .html("<button onclick=planetViewSizes("+system_kepID+")>Size-Scaled</button>");
+
   //make the tooltip go away
   stopTooltip = true;
 
@@ -353,6 +359,11 @@ function planetView(system_kepID){
     .attr('zFar', zF)
     .attr("fieldOfView", fov)
     .attr("centerOfRotation", cor);
+
+  //set zoom scale
+  zoom = d3.behavior.zoom()
+    .scaleExtent([0.0001, 0.005])
+    .on("zoom", zoomed);
 
   //display the system
   var solarRad_to_AU = 0.00465046726;
@@ -402,6 +413,8 @@ function planetView(system_kepID){
                          .attr('translation', '10000 10000 11000')
                          .attr('scale', function(d){
                           var rad = smaScale(d.koi_srad*solarRad_to_AU);
+                          //console.log("star");
+                          //console.log(rad);
                           return rad + ' ' + rad + ' ' + rad;
                          })
                          .append('shape')
@@ -416,6 +429,8 @@ function planetView(system_kepID){
                            .attr('translation', function(d){return 10000+smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU) + ' ' + 10000 + ' ' + 11000})
                            .attr('scale', function(d){
                             var rad = smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU);
+                            //console.log("planet");
+                            //console.log(rad);
                             return rad + ' ' + rad + ' ' +rad;
                            })
                            .attr('class','planet')
@@ -431,6 +446,8 @@ function planetView(system_kepID){
                   .attr('translation', '10000 10000 11000') 
                   .attr('scale', function(d){
                     var rad = smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);
+                    //console.log("orbit");
+                    //console.log(rad);
                     return rad + ' ' + rad + ' ' + rad;
                   }) 
                   .attr('class', 'orbit')
@@ -481,6 +498,199 @@ function planetView(system_kepID){
 
       var newX_shifted = smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU)*Math.cos(toRadians(d.theta)) + 10000;
       var newY_shifted = smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU)*Math.sin(toRadians(d.theta)) + 10000;
+
+      //console.log(Math.pow(newX, 2) + Math.pow(newY, 2));
+
+      return newX_shifted + ' ' + newY_shifted + ' ' + 11000;};
+  };
+
+  //Change x and y location of each planet
+  timer = d3.timer(function() {
+                scene.selectAll(".planet")
+                      .attr('translation', locate());
+              });
+
+  //increment counter of planet view draws
+  nPlanetViewDraws += 1;
+
+};
+
+
+function planetViewSizes(system_kepID){
+  
+  console.log("beginning planetView, size-scaled");
+  
+  //remove earlier-drawn planetary system ,if there is one
+  if(nPlanetViewDraws > 0){
+    $('#theScene > .planetHost').remove();
+    $('#theScene > .planet').remove();
+    $('#theScene > .orbit').remove();
+    $('#theScene > .zone').remove();
+    $('#theScene > .zoneUD').remove();
+  }
+  
+  //edit pullout text
+  d3.select("#pullout-depth")     .html("<br />");
+  d3.select("#pullout-duration")    .html("The light green band represents the system's <b>habitable zone</b>, which is at the right equilibrium temperature for liquid water to exist.");
+  d3.select("#pullout-ratio")     .html("<br /> The star and planets' sizes have been exaggerated relative to their distances apart in this view. To see correctly-scaled distances, click below.");
+  d3.select("#pullout-button")    .html("<button onclick=planetView("+system_kepID+")>Distance-Scaled</button>");
+
+  //make the tooltip go away
+  stopTooltip = true;
+
+  //fly away to a random point in space to draw the planet view
+  var fov = 0.02;
+  var view_pos = [49995.04201, 9644.33980, 11267.33030]
+  var view_or = [0.58043, 0.57246, 0.57913, 2.08821]
+  var zN = 0.;
+  var zF = 5000000.;
+  var cor = [10000, 10000, 11000]
+
+  viewpoint.attr("position", view_pos.join(" "))
+    .attr("orientation", view_or.join(" "))
+    .attr('zNear', zN)
+    .attr('zFar', zF)
+    .attr("fieldOfView", fov)
+    .attr("centerOfRotation", cor);
+
+  //set zoom scale
+  zoom = d3.behavior.zoom()
+    .scaleExtent([0.0001, 0.02])
+    .on("zoom", zoomed);
+
+  //display the system
+  var solarRad_to_AU = 0.00465046726;
+  var to_draw = [];
+  var scales_arr = [];
+  var planetToDraw;
+  
+  for(i=0;i<keplerstars.length;i++){
+    if(keplerstars[i].kepid == system_kepID){
+      //make a copy of this object to hold its data
+      planetToDraw = {};
+
+      //empty this object out
+      for (var member in planetToDraw) delete planetToDraw[member];
+
+      //make a copy of this object to use its data
+      var planetToDraw = $.extend(true,{},keplerstars[i]) //JSON.parse(JSON.stringify(keplerstars[i]))
+      to_draw.push(planetToDraw);
+
+      scales_arr.push(planetToDraw.koi_srad * solarRad_to_AU);
+      scales_arr.push(planetToDraw.koi_srad * planetToDraw.koi_ror * solarRad_to_AU);
+      scales_arr.push(planetToDraw.koi_srad * planetToDraw.koi_dor * solarRad_to_AU);
+      scales_arr.push((Math.pow(planetToDraw.koi_steff,2)/Math.pow(273,2))*((planetToDraw.koi_srad * solarRad_to_AU)/2)); //outer HZ radius
+      };
+  };
+
+  var smaMin = d3.min(scales_arr);
+  var smaMax = d3.max(scales_arr);
+
+  //var max_to_min_ratio = smaMax/smaMin;
+
+  //while(max_to_min_ratio > x){
+  //  max_to_min_ratio = max_to_min_ratio/2;
+  //}
+  
+  var smaScale = null;                          
+  smaScale = d3.scale.linear()
+                  .domain([smaMin, smaMax])
+                  //.range([1, max_to_min_ratio]);
+                  .range([1.5, x/1.5]);
+
+  var drawn_planetHost = scene.selectAll(".planetHost")
+                        .data([to_draw[0]])
+                         .enter()
+                         .append('transform')
+                         .attr('class', 'planetHost')
+                         .attr('translation', '10000 10000 11000')
+                         .attr('scale', function(d){
+                          var rad =  rorScale(d.koi_srad);
+                          console.log("star");
+                          console.log(rad);
+                          return rad + ' ' + rad + ' ' + rad;
+                         })
+                         .append('shape')
+                         .call(makeSolid, diffuseColor=function(d){
+                          return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1)
+                         .append('sphere');
+                         
+  var drawn_planet = scene.selectAll(".planet")
+                          .data(to_draw)
+                           .enter()
+                           .append('transform')
+                           .attr('translation', function(d){return 10000+50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU) + ' ' + 10000 + ' ' + 11000})
+                           .attr('scale', function(d){
+                            var rad = rorScale(d.koi_ror * d.koi_srad);
+                            console.log("planet");
+                            console.log(rad);
+                            return rad + ' ' + rad + ' ' +rad;
+                           })
+                           .attr('class','planet')
+                           .append('shape')
+                           .call(makeSolid, diffuseColor=function(d){return keplerplanetcolorScale(d.koi_teq)}, emissiveColor='black', opacity = 1) 
+                           .append('sphere');
+                           
+  
+  var drawn_orbit = scene.selectAll(".orbit")  
+                  .data(to_draw)      
+                  .enter()          
+                  .append('transform')   
+                  .attr('translation', '10000 10000 11000') 
+                  .attr('scale', function(d){
+                    var rad = 50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);
+                    console.log("orbit");
+                    console.log(rad);
+                    return rad + ' ' + rad + ' ' + rad;
+                  }) 
+                  .attr('class', 'orbit')
+                  .append('shape')        
+                  .call(makeSolid, diffuseColor='white', emissiveColor='white', opacity=1)       
+                  .append('Circle2D')        
+                  .attr('subdivision',500);
+  
+
+  var drawn_zone = scene.selectAll(".zone")
+                          .data([to_draw[0]])
+                          .enter()
+                          .append('transform')
+                          .attr('class', 'zone')
+                          .attr('translation', '10000 10000 11000')
+                          .append('shape')
+                          .call(makeSolid, diffuseColor='#85D63E', emissiveColor='#85D63E', opacity=0.5)
+                          .append('Disk2D')
+                          .attr('innerradius', function(d){return 50*smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return 50*smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('subdivision', 30);
+                
+  var drawn_zoneUpsideDown = scene.selectAll(".zoneUD")
+                          .data([to_draw[0]])
+                          .enter()
+                          .append('transform')
+                          .attr('class', 'zoneUD')  
+                          .attr('translation', '10000 10000 11000')  
+                          .attr('rotation', '1 0 0 3.14159') //flip over
+                          .append('shape')
+                          .call(makeSolid, diffuseColor='#85D63E', emissiveColor='#85D63E', opacity=0.5)
+                          .append('Disk2D')
+                          .attr('innerradius', function(d){return 50*smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return 50*smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('subdivision', 30);
+  
+  //Calculate the new x or y position per planet
+  function locate() {
+    return function(d){
+      var k = 360 / (d.koi_period * resolution * speedUp);
+      for (var i = 0; i < resolution; i++) {
+        d.theta += k;
+      }
+    
+      if (d.theta > 360){
+        d.theta -= 360;
+      }
+
+      var newX_shifted = 50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU)*Math.cos(toRadians(d.theta)) + 10000;
+      var newY_shifted = 50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU)*Math.sin(toRadians(d.theta)) + 10000;
 
       //console.log(Math.pow(newX, 2) + Math.pow(newY, 2));
 
