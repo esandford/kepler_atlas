@@ -606,8 +606,8 @@ function planetViewSizes(system_kepID){
                          .attr('translation', '10000 10000 11000')
                          .attr('scale', function(d){
                           var rad =  rorScale(d.koi_srad);
-                          console.log("star");
-                          console.log(rad);
+                          //console.log("star");
+                          //console.log(rad);
                           return rad + ' ' + rad + ' ' + rad;
                          })
                          .append('shape')
@@ -622,8 +622,8 @@ function planetViewSizes(system_kepID){
                            .attr('translation', function(d){return 10000+50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU) + ' ' + 10000 + ' ' + 11000})
                            .attr('scale', function(d){
                             var rad = rorScale(d.koi_ror * d.koi_srad);
-                            console.log("planet");
-                            console.log(rad);
+                            //console.log("planet");
+                            //console.log(rad);
                             return rad + ' ' + rad + ' ' +rad;
                            })
                            .attr('class','planet')
@@ -639,8 +639,8 @@ function planetViewSizes(system_kepID){
                   .attr('translation', '10000 10000 11000') 
                   .attr('scale', function(d){
                     var rad = 50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);
-                    console.log("orbit");
-                    console.log(rad);
+                    //console.log("orbit");
+                    //console.log(rad);
                     return rad + ' ' + rad + ' ' + rad;
                   }) 
                   .attr('class', 'orbit')
