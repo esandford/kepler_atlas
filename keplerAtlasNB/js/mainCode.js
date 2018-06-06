@@ -7,10 +7,21 @@ var
 	x = ((w.innerWidth || e.clientWidth || g.clientWidth) - 50),
 	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 150);
 
+var pulloutCounter = 0;
+d3.select("#pullout-caret").html("<")
+
 //pullout tab --Caroline
 document.getElementById('pullout').addEventListener('click', function() {
   var pullout = document.getElementById('pullout');
   pullout.classList.toggle('active');
+  pulloutCounter += 1;
+  var pulloutCaretDirection = pulloutCounter % 2;
+  if(pulloutCaretDirection==0){
+    d3.select("#pullout-caret").html("<");
+  }
+  else{
+    d3.select("#pullout-caret").html(">");
+  }
   });
 
 //change the text inside the pullout tab
@@ -20,8 +31,8 @@ d3.select("#pullout-radius")    .html("<b>Double-click</b> on a point to center 
 d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
 d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
 d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
-d3.select("#pullout-duration")     .html("<br />");
-d3.select("#pullout-ratio")      .html("<b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
+d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. <br /> ");
+d3.select("#pullout-ratio")      .html("<br /> <b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
 d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
 // window.onresize = updateWindow;	
@@ -180,7 +191,7 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
             				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)});
 
 //Draw the bright star catalog
-/*var drawn_brightstars = scene.selectAll(".brightstar")
+var drawn_brightstars = scene.selectAll(".brightstar")
 				.data(brightstars)
             	.enter()
             	.append('transform')
@@ -195,7 +206,7 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
             	.call(makeSolid, diffuseColor=function(d){return vmagcolorscale(d.Vmagnitude)}, emissiveColor='black',opacity=0.8)
               .append('sphere')
             	.attr('radius', function(d) {return vmagRscale(d.Vmagnitude)});
-*/
+
 
 // draw a cylinder to represent the Milky Way disk
 var cylinder = [{"height":5, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
@@ -226,8 +237,8 @@ function earthView() {
         d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
         d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
         d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
-        d3.select("#pullout-duration")     .html("<br />");
-        d3.select("#pullout-ratio")      .html("<b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
+        d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. <br /> ");
+        d3.select("#pullout-ratio")      .html("<br /> <b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
         d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
         //change location of arrow and "to galactic center" label
@@ -273,8 +284,8 @@ function galaxyView() {
         d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
         d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
         d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
-        d3.select("#pullout-duration")     .html("<br />");
-        d3.select("#pullout-ratio")      .html("<b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
+        d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. <br /> ");
+        d3.select("#pullout-ratio")      .html("<br /> <b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
         d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
         //change location of arrow and "to galactic center" label
