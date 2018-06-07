@@ -4,565 +4,764 @@ var
 	d = document,
 	e = d.documentElement,
 	g = d.getElementsByTagName('body')[0],
-	x = (w.innerWidth || e.clientWidth || g.clientWidth) - 50,
-	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 50)*2;
+	x = ((w.innerWidth || e.clientWidth || g.clientWidth) - 50),
+	y = ((w.innerHeight|| e.clientHeight|| g.clientHeight) - 150);
 
-//window.onresize = updateWindow;	
+var pulloutCounter = 0;
+d3.select("#pullout-caret").html("<")
+
+//pullout tab --Caroline
+document.getElementById('pullout').addEventListener('click', function() {
+  var pullout = document.getElementById('pullout');
+  pullout.classList.toggle('active');
+  pulloutCounter += 1;
+  var pulloutCaretDirection = pulloutCounter % 2;
+  if(pulloutCaretDirection==0){
+    d3.select("#pullout-caret").html("<");
+  }
+  else{
+    d3.select("#pullout-caret").html(">");
+  }
+  });
+
+//change the text inside the pullout tab
+d3.select("#pullout .pullout-planet").html("<br />");
+d3.select("#pullout-temperature") .html("<b>Scroll</b> or use the <b>slider</b> to zoom in/out.");
+d3.select("#pullout-radius")    .html("<b>Double-click</b> on a point to center it.");
+d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
+d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
+d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
+d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. A small section of the midplane of the Milky Way galaxy is shown in blue. <br /> ");
+d3.select("#pullout-ratio")      .html("<br /> <b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
+d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
+
+// window.onresize = updateWindow;	
+
+//a function that x3dom uses to attach an "appearance" and "color" to a data selection.
+//If you subsequently append a shape to that selection, x3dom will render the shape in 3D with this appearance/color. -ES
+var makeSolid = function(selection, diffuseColor, emissiveColor, opacity, materialClass) {
+            selection.append("appearance")
+                .append("material")
+                .attr("class", materialClass)
+                .attr("diffuseColor", diffuseColor || "black")
+                .attr("emissiveColor", emissiveColor || "black")
+                .attr("transparency", function(){return 1 - opacity;})
+            return selection;
+        };
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////// Initiate elements ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-var stopTooltip = false;	//keeps track of whether the tooltip is currently displayed
+var stopTooltip = false;	
 //Planet orbit variables
-var resolution = 1, //The larger this is the more accurate the speed is, i.e. the less jumpy the animation looks 
-	speedUp = 400, //the larger this is, the slower the planets orbit
+//The larger this is the more accurate the speed is
+var resolution = 1, //sets behavior or animation orbit
+	speedUp = 400, //speed of planets
 	au = 149597871, //km
 	radiusSun = 695800, //km
-	radiusJupiter = 69911, //km
-	phi = 0, //rotation of ellipses--major axis lies along horizontal line
-	radiusSizer = 6, //Size increaser of radii of planets
-	planetOpacity = 0.6; //sets opacity of planets to 60%
+	radiusJupiter = 69911; //km
+	phi=0;
 
-//Create SVG
-var svg = d3.select("#planetarium").append("svg")
-	.attr("width", x)
-	.attr("height", y); //append our svg to the div with id "planetarium", created in exoplanetsWebsite.html
+//number of times we've drawn a planet view
+var nPlanetViewDraws = 0;
+var timer;
 
-
-//Create a container for everything with the centre in the middle
-var container = svg.append("g").attr("class","container")
-					.attr("transform", "translate(" + x/2 + "," + y/2 + ")")
-  
-//Create star in the Middle - scaled to the orbits
-//Radius of our Sun in these coordinates (taking into account size of circle inside image)
-//var ImageWidth = radiusSun/au * 3000 * (2.7/1.5);
-
-/*container.append("svg:image")
-	.attr("x", -ImageWidth)
-	.attr("y", -ImageWidth)
-	.attr("class", "sun")
-	.attr("xlink:href", "img/sun.png")
-	.attr("width", ImageWidth*2)
-	.attr("height", ImageWidth*2)
-	.attr("text-anchor", "middle");	*/
-
-///////////////////////////////////////////////////////////////////////////
-//////////////////////////// Create Scales ////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-
-//Create color gradient for planets based on the temperature of the star that they orbit
-var colors = ["#FB1108","#FD150B","#FA7806","#FBE426","#FCFB8F","#F3F5E7","#C7E4EA","#ABD6E6","#9AD2E1","#42A1C1","#1C5FA5", "#172484"];
-var colorScale = d3.scale.linear()
-	  .domain([2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 14000, 20000, 30000]) // Temperatures
-	  .range(colors); //allows for conversion of a numerical temperature into a color
-
-var opacityScale = d3.scale.linear()
-		.domain([0,1000])
-		.range([0,1]);
-
-//Set scale for radius of circles
-var rScale = d3.scale.linear()
-	.range([1, 20])
-	.domain([0, d3.max(planets, function(d) { return d.Radius; })]); //allows for conversion of planet radii to units of pixels
-
-//set scales for x and y "axes"
-var xScale = d3.scale.linear()
-            .domain([-200,200])
-            .range([0, x]);
-
-var yScale = d3.scale.linear()
-            .domain([0,5000])
-            .range([y, 0.]);
-
-//Format with 2 decimals
 var formatSI = d3.format(".2f");
+//Angle conversion functions
 
-//Create the gradients for the planet fill
-//var gradientChoice = "Temp";
-//createGradients();
+function toRadians (angle) { return angle * (Math.PI / 180);}
+function toDegrees (angle) { return angle * (180 / Math.PI);}
 
-///////////////////////////////////////////////////////////////////////////
-/////////////////////////// Plot and move planets /////////////////////////
-///////////////////////////////////////////////////////////////////////////
+//In the html code, we've created an object of ID "chartholder" within <x3d> tags. Here, we set the dimensions of that object. -ES
+var x3d = d3.select("#chartholder")
+			.attr("class","x3dom-canvas")
+            .attr("width", x + "px")
+            .attr("height", y + "px")
+            .attr("showLog", "false")
+            .attr("showStat", "false");
 
-//Drawing a line for the orbit
-/*var orbitsContainer = container.append("g").attr("class","orbitsContainer"); // append "g" to "container" and give it class "orbitsContainer"
-var orbits = orbitsContainer.selectAll("g.orbit") //select everything of type g with class "orbit"
-				.data(planets).enter().append("ellipse") //attaches planets data to currently empty selection; enters data into selection; appends an ellipse for each planet
-				.attr("class", "orbit") //give the ellipse class "orbit"
-				.attr("cx", function(d) {return d.cx;}) //set x-position of center
-				.attr("cy", function(d) {return d.cy;}) //set y-position of center
-				.attr("rx", function(d) {return d.major;}) //set major axis
-				.attr("ry", function(d) {return d.minor;}) //set minor axis
-				.style("fill", "#3E5968")
-				.style("fill-opacity", 0)
-				.style("stroke", "white")
-				.style("stroke-opacity", 0);*/
+//create the scene
+var scene = x3d.append("scene")
+				        .attr("class","x3dom-scene")
+                //.attr("id","theScene");
 
-//Drawing the planets			
-var planetContainer = container.append("g").attr("class","planetContainer");
-var planets = planetContainer.selectAll("g.planet")
-				.data(planets).enter()					
-				.append("circle")
-				.attr("class", "planet")
-				//.attr("r", function(d) {return radiusSizer*d.Radius;})//rScale(d.Radius);})
-				//.attr("cx", function(d) {return d.x;})
-				//.attr("cy", function(d) {return d.y;})
-				.attr("r", 2) //  d.koi_srad
-				.attr("cx", function(d) {
-					var x = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[0]; // "d" = the planet I'm currently on, in the implicit for-loop
-					var scaledX = xScale(x)
-					console.log(x);
-					return scaledX;}) // "d" = the planet I'm currently on, in the implicit for-loop
-				.attr("cy", function(d) {return yScale(convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[1]);}) // "d" = the planet I'm currently on, in the implicit for-loop
-				.style("fill", "white") // d.koi_steff or d.nkoi
-				//.style("fill", function(d){return "url(#gradientRadial-" + d.ID + ")";}) //what is going on here?
-				//.style("opacity", planetOpacity) // make this depend on Z
-				.style("opacity", function(d) {
-					var z = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec)[2];
-					if (z > 2000){
-						console.log(d.kepid);
-					}
-					return opacityScale(z);})
-				.style("stroke-opacity", 0)
-				.style("stroke-width", "3px")
-				.style("stroke", "white")
-				//.on("mouseover", function(d, i) {
-				//	stopTooltip = false					
-				//	showTooltip(d);
-				//	showEllipse(d, i, 0.8);
-				//})
-				//.on("mouseout", function(d, i) {
-				//	showEllipse(d, i, 0);
-				//});
+var sceneToRef = scene._groups[0][0]
+sceneToRef.setAttribute("id","theScene")
 
-//Remove tooltip when clicking anywhere in body
-d3.select("svg")
-	.on("click", function(d) {stopTooltip = true;});
+//starts camera at ideal viewpoint
+var view = 'galaxy';
+var view_pos = [0., 500., 50000.]; //x, y, z relative to origin (0, 0, 0)
+//var view_pos = [-37902.27708, -31717.63386, -17253.83076]; //new view_pos and fov -Chris
+var fov = 0.05; 	// Preferred minimum viewing angle from this viewpoint in radians. 
+				// Small field of view roughly corresponds to a telephoto lens, 
+				// large field of view roughly corresponds to a wide-angle lens. 
+				// Hint: modifying Viewpoint distance to object may be better for zooming. 
+				// Warning: fieldOfView may not be correct for different window sizes and aspect ratios. 
 
-/*
-///////////////////////////////////////////////////////////////////////////
-//////////////////////////// Explanation Texts ////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-//Intro Text Wrapper
-var introText = svg.append("g").attr("class", "introWrapper");
-					//.attr("transform", "translate(" + -x/2 + "," + -y/2 + ")");
-//Title				
-var Title = introText.append("text")
-	.attr("class", "title")
-	.attr("x", 10 + "px")
-	.attr("y", 10 + "px")
-	.attr("dy", "1em")
-	.style("fill","white")
-	.attr("opacity", 1)
-	.text("EXOPLANETS");
-	
-//Intro text	
-var TextIntro = introText.append("text")
-	.attr("class", "intro")
-	.attr("x", 10 + "px")
-	.attr("y", 40 + "px")
-	.attr("dy", "1em")
-	.style("fill","white")
-	.attr("opacity", 1)
-	.text("Since the definitive discovery of the first exoplanet in 1992 "+
-		  "more than 1800 exoplanets have been found. Depending on circumstances and method of discovery " +
-		  "we might know enough of the exoplanet to simulate its orbit. " +
-		  "Here you can see 288 exoplanets from exoplanets.org for which we know the eccentricity and " +
-		  "semi-major axis of the orbit, radius of the planet and (effective) temperature of the star which it orbits")
-	.call(wrap, 300);
+var view_or = [1., 0., 0., 0.]; //relative to default (0, 0, 1, 0)
+var zN = 0; 		//near plane
+var zF = 150000;	//far plane
+
+var viewpoint = scene.append("viewpoint")
+  .attr("id", "vp")
+  .attr("position", view_pos.join(" "))
+  .attr("orientation", view_or.join(" "))
+  .attr("fieldOfView", fov)
+  .attr('centerOfRotation', "0 0 0")
+  .attr('zNear', zN)
+  .attr('zFar', zF);
 
 
-//The explanation text during the introduction
-var TextTop = container.append("text")
-	.attr("class", "explanation")
-	.attr("x", 0 + "px")
-	.attr("y", -70 + "px")
-	.attr("dy", "1em")
-	.style("fill","white")
-	.attr("opacity", 0)
-	.text("");   
-	
-//Create the legend
-createLegend();
+// Make an arrow to point to the Galactic center.
+var zeroArr = [0];
+var arrow = scene.selectAll(".arrow")
+                  .data(zeroArr)
+                  .enter()
+                  .append("transform")
+                  .attr("class","arrow")
+                  .attr("id", "theArrow")
+                  .attr("translation", "500 0 0")
+                  .attr("rotation", "0 0 1 1.570795")
+                  .append("shape")
+                  .call(makeSolid, diffuseColor='white', emissiveColor='black', opacity=1)
+                  .append("cylinder")
+                  .attr("height", "70")
+                  .attr("radius", "3")
+                  .attr("top", "false");
 
-//Initiate the progress Circle
-var arc = d3.svg.arc()
-	.innerRadius(10)
-	.outerRadius(12);
-progressCircle(8);
+var arrowhead = scene.selectAll(".arrowhead")
+                  .data(zeroArr)
+                  .enter()
+                  .append("transform")
+                  .attr("class","arrowhead")
+                  .attr("id", "theArrowhead")
+                  .attr("translation", "535 0 0")
+                  .attr("rotation", "0 0 1 4.712385") //rotate by 3pi/2
+                  .append("shape")
+                  .call(makeSolid, diffuseColor='white', emissiveColor='black', opacity=1)
+                  .append("cone")
+                  .attr("bottomRadius", "12")
+                  .attr("height", "18");
+
+var arrowlabel = scene.selectAll(".arrowlabel")
+                  .data(zeroArr)
+                  .enter()
+                  .append("transform")
+                  .attr("class","arrowlabel")
+                  .attr("id", "theArrowlabel")
+                  .attr("translation", "525 50 20")
+                  .attr("scale", "5 5 5")
+                  .append("billboard")
+                  .append("shape")
+                  .call(makeSolid, diffuseColor='white', emissiveColor='black', opacity=1)
+                  .append("text")
+                  .attr("string", "To galactic center")
+                  .attr("solid", "false")
+                  .append("fontstyle")
+                  .attr("size","10")
+                  .attr("family", "sans")
+                  .attr("justify", "middle");
 
 ///////////////////////////////////////////////////////////////////////////
-//////////////////////// Set up pointer events ////////////////////////////
-///////////////////////////////////////////////////////////////////////////	
-//Reload page
-d3.select("#reset").on("click", function(e) {location.reload();});
-
-//Show information
-d3.select("#info").on("click", showInfo);
-
-//Remove info
-d3.select("#infoClose").on("click", closeInfo);
-
-//Skip intro
-d3.select("#remove")
-	.on("click", function(e) {
-	
-		//Remove all non needed text
-		d3.select(".introWrapper").transition().style("opacity", 0);
-		d3.select("#start").transition().style("opacity", 0);
-		d3.select(".explanation").transition().style("opacity", 0);
-		d3.select(".progressWrapper").transition().style("opacity", 0);
-		
-		//Make skip intro less visible, since now it doesn't work any more
-		d3.select("#remove")
-			.transition().duration(1000)
-			.style("pointer-events", "none")
-			.style("opacity",0.3);
-		
-		//Legend visible
-		d3.select(".legendContainer").transition().style("opacity", 1);
-		//Bring all planets back
-		dim(delayTime = 0);
-		bringBack(opacity = planetOpacity, delayTime=1);
-		
-		//Reset any event listeners
-		resetEvents();
-	});
-
-//Switch between different gradient options
-d3.select("#color")
-	.on("click", function(e) {
-		gradientChoice = (gradientChoice == "Rainbow") ? "Temp" : "Rainbow";
-		
-		svg.selectAll(".planet")
-			.transition()
-			.style("fill", function(d){ 
-					if (gradientChoice == "Temp") {return "url(#gradientRadial-" + d.ID + ")";}
-					else if (gradientChoice == "Rainbow") {return "url(#gradientLinear)";}
-				})
-	});	
-	
-//Scale planets accordingly
-var scale = false;
-d3.select("#scale")
-	.on("click", function(e) {
-			
-	if (scale == false) {
-		d3.select("#scale").text("unscale planets");
-
-		d3.selectAll(".planet")
-			.transition().duration(2000)
-			.attr("r", function(d) {
-				var newRadius = radiusJupiter/au*3000*d.Radius;
-				if  (newRadius < 1) {return 0;}
-				else {return newRadius;}
-			});
-		
-		scale = true;
-	} else if (scale == true) {
-		d3.select("#scale").text("scale planets");
-
-		d3.selectAll(".planet")
-			.transition().duration(2000)
-			.attr("r", function(d) {return radiusSizer * d.Radius;});	
-		
-		scale = false;			
-	}//else if
-});
-
+/////////////////////////// Plot stars //////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
-////////////////////// Start introductions steps //////////////////////////
-///////////////////////////////////////////////////////////////////////////	
 
-//Start introduction
-d3.select("#start")
-	.on("click", Draw0);
-	
-var counter = 1;
-//Order of steps when clicking button
-d3.select(".progressWrapper")      
-	.on("click", function(e){
+//Draw the Kepler stars			
+var drawn_keplerstars = scene.selectAll(".keplerstar")
+							 .data(keplerstars)
+            				 .enter()
+            				 .append('transform')
+                     .attr('class', 'keplerstar')
+            				 .attr('translation', function(d){ 
+            				    var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.ra, xyzinputdec=d.dec);
+								        var x = xyz[0];
+								        var y = xyz[1];
+								        var z = xyz[2];
 
-		if(counter == 1) Draw1();
-		else if(counter == 2) Draw2();
-		else if(counter == 3) Draw3();
-		else if(counter == 4) Draw4();
-		else if(counter == 5) Draw5();
-		else if(counter == 6) Draw6();
-		
-		counter = counter + 1;
-	});
+                        d.x = xScale(x);
+                        d.y = yScale(y);
+                        d.z = zScale(z);
 
-///////////////////////////////////////////////////////////////////////////
-//////////////////////// Storytelling steps ///////////////////////////////
-///////////////////////////////////////////////////////////////////////////	
+            				    return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
+                     .attr('scale', function(d){
+                        var rad = 0.25*rScale(d.koi_srad);
+                        return rad + ' ' + rad + ' ' + rad;
+                      })
+                     .append('shape')                
+            				 .call(makeSolid, diffuseColor=function(d){
+            				 return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
+            				 .append('sphere');
 
-function Draw0(){
-
-	stopTooltip = true;	
-	
-	//Make other buttons invisible as to not distract
-	d3.select("#start").transition().duration(1000).style("opacity", 0);
-	//Remove button
-	setTimeout(function() {
-		d3.select("#start")
-			.style("visibility","hidden");
-		}, 1200);
-	
-
-	//Make legend invisible as to not distract
-	d3.select(".legendContainer").transition().duration(1000).style("opacity", 0);
-	d3.select(".introWrapper").transition().duration(1000).style("opacity", 0);
-	
-	//Remove event listeners during examples
-	removeEvents();
-							
-	//Start
-	startCircle(time = 29);
-	
-	changeText("Let me introduce you to this chaos of exoplanets that orbit many " + 
-			   "different stars in our Milky Way", 
-				delayDisappear = 0, delayAppear = 1);
-	//Dim all planets
-	dim(delayTime=0);
-	
-	//Highlight the biggest planet
-	highlight(235, delayTime=8);
-				
-	changeText("Here we have WASP-12 b, one of the biggest planets in our dataset. " +
-			   "Its radius is more than 20x bigger than Earth", 
-				delayDisappear = 7, delayAppear = 8);
+//Draw the bright star catalog
+var drawn_brightstars = scene.selectAll(".brightstar")
+				.data(brightstars)
+            	.enter()
+            	.append('transform')
+              .attr('class', 'brightstar')
+            	.attr('translation', function(d){ 
+            		var xyz = convertXYZ(distance=d.dist, xyzinputRA=d.RA, xyzinputdec=d.dec);
+					      var x = xyz[0];
+					      var y = xyz[1];
+					      var z = xyz[2];
+            		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
+              .attr('scale', function(d){
+                var rad = vmagRscale(d.Vmagnitude);
+                return rad + ' ' + rad + ' ' + rad;
+              })
+              .append('shape')
+              //.append("appearance")
+              //.append("material")
+              //.attr("diffuseColor", "white")
+              //.attr("emissiveColor", "white")
+              //.attr("transparency", 0)
+              .call(makeSolid, diffuseColor=function(d){return vmagcolorscale(d.Vmagnitude)}, emissiveColor='black', opacity=0.8, materialClass='brightstarMaterial')
+              .append('sphere');
 
 
-	changeText("As comparison, here we have Kepler-68 c, which is about the same size as Earth. " + 
-			   "It's so small in comparison to the rest that you can barely see it",
-				delayDisappear = 16, delayAppear = 17);
-				
-	//Highlight an Earth like chosen planet
-	highlight(215, delayTime=17);
+// draw a cylinder to represent the Milky Way disk
+var MWdisk = [{"height":5, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
 
-	changeText("As a note, although the sizes of the planet are scaled, and the orbits are scaled, " + 
-			   "they are not scaled to each other. Otherwise most planets would become smaller than " +
-			   "a pixel if I keep them on these orbits. ",
-				delayDisappear = 27, delayAppear = 28);
+var drawn_MWdisk = scene.selectAll(".MWdisk") 	
+					.data(MWdisk)				
+					.enter()					
+					.append('transform')
+          .attr('class', 'MWdisk')
+					.attr('rotation', function(d){    //specify that this "transform" will impose a rotation of the circle
+						return d.rotaxis_xcoord + ' ' + d.rotaxis_ycoord + ' ' + d.rotaxis_zcoord + ' ' + d.rot_angle;
+					})
+          .append('shape')			
+					//.append('appearance')
+          //.append('material')
+          //.attr('class', 'MWdiskMaterial')
+          //.attr('diffuseColor','blue')
+          //.attr('emissiveColor','black')
+          //.attr('transparency',"0.6")
+          .call(makeSolid, diffuseColor='blue', emissiveColor='black', opacity=0.4)
+          .append('cylinder')
+					.attr('radius', function(d){return d.radius;})	//set the radius
+					.attr('height', function(d){return d.height;})
+					.attr('subdivision',40);
 
-}//function Draw0
+// Enable switch to "Earth view," i.e. view from the Kepler satellite
+function earthView() {
+        console.log("beginning earthView");
 
-//Scaling radii	
-function Draw1() {
+        //change the text inside the pullout tab
+        d3.select("#pullout .pullout-planet").html("<br />");
+        d3.select("#pullout-temperature") .html("<b>Scroll</b> or use the <b>slider</b> to zoom in/out.");
+        d3.select("#pullout-radius")    .html("<b>Double-click</b> on a point to center it.");
+        d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
+        d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
+        d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
+        d3.select("#pullout-duration")     .html("<br />")
+        d3.select("#pullout-ratio")      .html("<br /> <b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
+        d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
-	startCircle(time = 5);
-	
-	changeText("Scaling the planetary radii to the orbits would give you this result. " +
-			   "(The star in the center was already scaled to our Sun)",
-				delayDisappear = 0, delayAppear = 3);
-				
-	//Dim all planets
-	dim(delayTime = 0);
-	//Bring all planets back
-	bringBack(opacity = planetOpacity, delayTime = 1); 
-		
-	d3.selectAll(".planet")
-		.transition().delay(700 * 2).duration(2000)
-		.attr("r", function(d) {
-			var newRadius = radiusJupiter/au*3000*d.Radius;
-			if  (newRadius < 1) {return 0;}
-			else {return newRadius;}
-		});
+        //change location of arrow and "to galactic center" label
+        d3.select("#theArrow").attr("translation", "73 -10 0").attr("scale", "0.3 0.3 0.3")
+        d3.select("#theArrowhead").attr("translation", "85 -10 0").attr("scale", "0.3 0.3 0.3")
+       //d3.select("#theArrowlabel").attr("translation", "60 -20 0").attr("scale", "0.5 0.5 0.5")
 
-}//function Draw1
+        view = 'earth';
+        stopTooltip=false;
+				var fov = 0.25;
+				var view_pos = [-117.67830, -491.90906, -114.90123]
+				var view_or = [0.98242, 0.00872, -0.18650, 1.87139]
+				var zN = -1000.;
+				var zF = 10000.;
 
-//Radius of orbit
-function Draw2() {
+				viewpoint.attr("position", view_pos.join(" "))
+				    .attr("orientation", view_or.join(" "))
+				    .attr('zNear', zN)
+  				  .attr('zFar', zF)
+  				  .attr("fieldOfView", fov)
+            .attr('centerOfRotation', "0 0 0");
 
-	startCircle(time = 26);
-	
-	//Dim all planets again
-	dim(delayTime = 0);
-	//Make planets bigger again
-	d3.selectAll(".planet")
-		.transition().delay(700 * 1).duration(1500)
-		.attr("r", function(d) {return radiusSizer * d.Radius;});		
+        //set zoom scale
+        zoom = d3.behavior.zoom()
+          .scaleExtent([0.0001, 0.25])
+          .on("zoom", zoomed);
 
-	//Highlight the biggest planet
-	highlight(235, delayTime=4);
-	changeText("Let's get back to WASP-12 b. The distance to the star it orbits is only 2% of the distance " +
-			   "between the Earth and the Sun",
-				delayDisappear = 0, delayAppear = 3);
+        //reset slider to left side of slider bar
+        var sliderelement = $( "#sliderVal" );
+        sliderelement.val(function( index, value ) {
+          return zoom.scaleExtent()[0];
+        });
 
-	changeText("The distance between the Earth and the Sun is 150 million kilometers " +
-			   "and is called an Astronomical Unit, or 'au'. Thus the distance of WASP-12 b to its star is 0.02 au",
-				delayDisappear = 12, delayAppear = 13);
+        //set cylinder and bright star opacity equal to 0
+        $('.brightstarMaterial').attr("transparency", 1);
+        $('#theScene > .MWdisk').remove();
+        
+				}
 
-	changeText("This is extremely close. Even Mercury, the planet closest to our Sun, is stil 0.3 au away, which " +
-			   "would not fit on most regular screen sizes ",
-				delayDisappear = 24, delayAppear = 25);						
-}//Draw2
+// Enable switch back to "Galaxy view"
+function galaxyView() {
+        console.log("beginning galaxyView");
 
-//Orbital period
-function Draw3(){
-	startCircle(time = 18);
-	
-	changeText("The planets you see here are quite different from Earth because of more reasons. " +
-			   "The average time it takes these 288 planets to go around their star is only 17 Earth days! ",
-				delayDisappear = 0, delayAppear = 1);
+        //change the text inside the pullout tab
+        d3.select("#pullout .pullout-planet").html("<br />");
+        d3.select("#pullout-temperature") .html("<b>Scroll</b> or use the <b>slider</b> to zoom in/out.");
+        d3.select("#pullout-radius")    .html("<b>Double-click</b> on a point to center it.");
+        d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
+        d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
+        d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
+        d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. A small section of the midplane of the Milky Way galaxy is shown in blue. <br /> ");
+        d3.select("#pullout-ratio")      .html("<br /> <b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
+        d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
-	changeText("WASP-12 b goes around in just 26 hours",
-				delayDisappear = 11, delayAppear = 12);	
-				
-	//Highlight an Earth like chosen planet
-	highlight(215, delayTime=16);
-	changeText("and Kepler-68 c in almost 10 days",
-				delayDisappear = 16, delayAppear = 17);			
+        //change location of arrow and "to galactic center" label
+        d3.select("#theArrow").attr("translation", "500 0 0").attr("scale", "1 1 1")
+        d3.select("#theArrowhead").attr("translation", "535 0 0").attr("scale", "1 1 1")
+       
+        view = 'galaxy';
+	      stopTooltip=false;
+				var view_pos = [0., 500., 50000.];
+				var view_or = [1., 0., 0., 0.]; 
+				var fov = 0.05;
+				var zN = 0; 
+				var zF = 150000;
 
-}//Draw3
-		
+				viewpoint.attr("position", view_pos.join(" "))
+				    .attr("orientation", view_or.join(" "))
+				    .attr("fieldOfView", fov)
+				    .attr('centerOfRotation', "0 0 0")
+				    .attr('zNear', zN)
+  				  .attr('zFar', zF)
 
-//Elliptical orbits - Circles
-function Draw4(){	
+        //set zoom scale
+        zoom = d3.behavior.zoom()
+          .scaleExtent([0.0001, 0.05])
+          .on("zoom", zoomed);
 
-	//Start progress button
-	startCircle(time = 22);
-	
-	changeText("Both of the planets highlighted now are on very circular orbits. " +
-			   "However, this is not always the case",
-				delayDisappear = 0, delayAppear = 1);	
-				
-	changeText("Most orbits are shaped more like stretched out circles: ellipses. " +
-			   "The 'eccentricity' describes how round or how stretched out an ellipse is",
-				delayDisappear = 10, delayAppear = 11);
+        //reset slider to left side of slider bar
+        var sliderelement = $( "#sliderVal" );
+        sliderelement.val(function( index, value ) {
+          return zoom.scaleExtent()[0];
+        });
 
-	changeText("If the eccentricity is close to 0, the ellipse is more like a circle, " +
-			   "like our planets here. However, if the eccentricity is close to 1, " +
-			   "the ellipse is long and skinny",
-				delayDisappear = 20, delayAppear = 21);
-				
-}//Draw4	
+        //make bright stars and MW disk visible again
+        $('.brightstarMaterial').attr("transparency", 0.2);
 
-//Elliptical orbits 
-function Draw5() {
+        drawn_MWdisk = scene.selectAll(".MWdisk")   
+          .data(MWdisk)       
+          .enter()          
+          .append('transform')
+          .attr('class', 'MWdisk')
+          .attr('rotation', function(d){    //specify that this "transform" will impose a rotation of the circle
+            return d.rotaxis_xcoord + ' ' + d.rotaxis_ycoord + ' ' + d.rotaxis_zcoord + ' ' + d.rot_angle;
+          })
+          .append('shape')      
+          //.append('appearance')
+          //.append('material')
+          //.attr('id', 'MWdiskMaterial')
+          //.attr('diffuseColor','blue')
+          //.attr('emissiveColor','black')
+          //.attr('transparency',"0.6")
+          .call(makeSolid, diffuseColor='blue', emissiveColor='black', opacity=0.4)
+          .append('cylinder')
+          .attr('radius', function(d){return d.radius;})  //set the radius
+          .attr('height', function(d){return d.height;})
+          .attr('subdivision',40);
 
-	//Start progress button
-	startCircle(time = 10);
-	
-	changeText("Here we have Kepler-75 b, which is already on a very stretched orbit. " +
-			   "Its eccentricity is 0.57",
-				delayDisappear = 1, delayAppear = 2, xloc=200, yloc = -24*1);
-				
-	//Dim all planets again
-	dim(delayTime = 0);
-	
-	//Highlight elliptical orbit
-	highlight(237, delayTime=2);
+				}
 
-	changeText("Let me speed things up a bit. Do you see that the planet is moving faster " +
-			   "when it is close to the star? If you want to know why that happens, " +
-			   "please look up Kepler's 2nd law",
-				delayDisappear = 8, delayAppear = 9, xloc=200, yloc = -24*2);
-	
-	
-	setTimeout(function() {speedUp = 50;}, 700*8);
-			
-}//Draw5
+function getRelativeCoords(event) {
+    return { x: event.offsetX, y: event.offsetY };
+}
 
-//Colour of the planet
-function Draw6() {
+var all_keplerstars = document.getElementsByClassName("keplerstar");
 
-	//Return planets to original speed
-	speedUp = 400;
-	
-	//Start progress button
-	startCircle(time = 33);
-	
-	//Dim all planets again
-	dim(delayTime = 0);
-	
-	//Bring all planets back
-	bringBack(opacity = 0.3, delayTime = 1);
-		
-	changeText("Wondering about the color of the planets? They are colored according to " +
-			   "the approximate color of the star around which they orbit",
-				delayDisappear = 0, delayAppear = 1);
-				
-	changeText("Depending on the mass of a star, its temperature is different and therefore " +
-			   "the color in which we see it",
-				delayDisappear = 8, delayAppear = 9);
+for (i=0; i < all_keplerstars.length; i++) {
+    all_keplerstars[i].onclick = function(d){
+    	coords = getRelativeCoords(event);
+      stopTooltip = false;
+		  showTooltip(d.hitObject.__data__, coords);
+    }
+};
 
-	changeText("You can hover over the legend in the bottom right to highlight only planets " +
-			  "that rotate around similar stars",
-				delayDisappear = 16, delayAppear = 17);
-				
-	//Make legend invisible as to not distract
-	d3.select(".legendContainer").transition().delay(17 * 700).duration(2000).style("opacity", 1);
-	//Replace Legend events
-	d3.selectAll('.legend')
-		.on("mouseover", classSelect(0.04))
-		.on("mouseout", classSelect(planetOpacity));  
-		
-	changeText("I'll admit, this coloring might be a bit confusing, since now they seem like little stars " +
-			   "orbiting our Sun",
-				delayDisappear = 24, delayAppear = 25);
-				
-	
-	changeText("However, seeing that we've come to the end of the introduction, I'll let you " +
-			   "decide what you like best...",
-				delayDisappear = 32, delayAppear = 33);
-				
-	d3.select(".progressWrapper")
-			.transition().delay(700 * 35).duration(1000)
-			.style("opacity", 0);
-	
-	d3.select("#crazy")
-		.style("visibility","visible")
-		.style("left", (x/2 - 112/2 + 6) + "px")
-		.style("top", (y/2 - 100) + "px")
-		.transition().delay(700 * 35).duration(1000)
-		.style("opacity", 1);		
-				
-}//Draw6
+function planetView(system_kepID){
+  
+  console.log("beginning planetView");
+  
+  //remove earlier-drawn planetary system ,if there is one
+  if(nPlanetViewDraws > 0){
+    $('#theScene > .planetHost').remove();
+    $('#theScene > .planet').remove();
+    $('#theScene > .orbit').remove();
+    $('#theScene > .zone').remove();
+    $('#theScene > .zoneUD').remove();
+  }
+  
+  //edit pullout text
+  d3.select("#pullout-depth")     .html("<br /><br /><br />");
+  d3.select("#pullout-duration")    .html("The light green band represents the system's <b>habitable zone</b>, which is at the right equilibrium temperature for liquid water to exist.");
+  d3.select("#pullout-ratio")     .html("<br /> The planets' sizes have been exaggerated in this view. To see planets scaled accurately relative to their star, click below.");
+  d3.select("#pullout-button")    .html("<button onclick=planetViewSizes("+system_kepID+")>Size-Scaled</button>");
 
-//Switch between different gradient options of Easter Egg
-d3.select("#crazy")
-	.on("click", function(e) {
-		
-		setTimeout(function() {resetEvents();}, 3000);
-		
-		//Remove text
-		changeText("", delayDisappear = 0, delayAppear = 1);
-		
-		//Make skip intro less visible, since now it doesn't work any more
-		d3.select("#remove")
-			.transition().duration(1000)
-			.style("pointer-events", "none")
-			.style("opacity",0.3);
-		
-		//Bring all planets back to initial opacity
-		bringBack(opacity = planetOpacity);
-		
-		//Bring color to the planets
-		svg.selectAll(".planet")
-			.transition().delay(1000)
-			.style("fill", "url(#gradientLinear)");
-		gradientChoice = "Rainbow";
-		
-		//Remove button				
-		d3.select("#crazy")
-			.transition().duration(2500)
-			.style("top", y + "px")
-			.style("left", 500 + "px")
-			.style("opacity", 0);
-		
-		//Truly remove the button after it has become invisible
-		setTimeout(function() {
-				d3.select("#crazy").style("visibility","hidden");
-			}, 2000);
-		
-		//Show the new button at the bottom
-		d3.select("#color")
-			.style("visibility", "visible")
-			.transition().delay(1500).duration(1000)
-			.style("opacity", 1);
-	});
-//});*/
+  //make the tooltip go away
+  stopTooltip = true;
+
+  //fly away to a random point in space to draw the planet view
+  var fov = 0.001;
+  var view_pos = [49995.04201, 9644.33980, 11267.33030]
+  var view_or = [0.58043, 0.57246, 0.57913, 2.08821]
+  var zN = 0.;
+  var zF = 5000000.;
+  var cor = [10000, 10000, 11000]
+
+  viewpoint.attr("position", view_pos.join(" "))
+    .attr("orientation", view_or.join(" "))
+    .attr('zNear', zN)
+    .attr('zFar', zF)
+    .attr("fieldOfView", fov)
+    .attr("centerOfRotation", cor);
+
+  //set zoom scale
+  zoom = d3.behavior.zoom()
+    .scaleExtent([0.0001, 0.001])
+    .on("zoom", zoomed);
+
+  //display the system
+  var solarRad_to_AU = 0.00465046726;
+  var to_draw = [];
+  var scales_arr = [];
+  var planetToDraw;
+  
+  for(i=0;i<keplerstars.length;i++){
+    if(keplerstars[i].kepid == system_kepID){
+      //make a copy of this object to hold its data
+      planetToDraw = {};
+
+      //empty this object out
+      for (var member in planetToDraw) delete planetToDraw[member];
+
+      //make a copy of this object to use its data
+      var planetToDraw = $.extend(true,{},keplerstars[i]) //JSON.parse(JSON.stringify(keplerstars[i]))
+      to_draw.push(planetToDraw);
+
+      scales_arr.push(planetToDraw.koi_srad * solarRad_to_AU);
+      scales_arr.push(planetToDraw.koi_srad * planetToDraw.koi_ror * solarRad_to_AU);
+      scales_arr.push(planetToDraw.koi_srad * planetToDraw.koi_dor * solarRad_to_AU);
+      scales_arr.push((Math.pow(planetToDraw.koi_steff,2)/Math.pow(273,2))*((planetToDraw.koi_srad * solarRad_to_AU)/2)); //outer HZ radius
+      };
+  };
+
+  var smaMin = d3.min(scales_arr);
+  var smaMax = d3.max(scales_arr);
+
+  //var max_to_min_ratio = smaMax/smaMin;
+
+  //while(max_to_min_ratio > x){
+  //  max_to_min_ratio = max_to_min_ratio/2;
+  //}
+  
+  var smaScale = null;                          
+  smaScale = d3.scale.linear()
+                  .domain([smaMin, smaMax])
+                  //.range([1, max_to_min_ratio]);
+                  .range([1.5, x/1.5]);
+
+  var drawn_planetHost = scene.selectAll(".planetHost")
+                        .data([to_draw[0]])
+                         .enter()
+                         .append('transform')
+                         .attr('class', 'planetHost')
+                         .attr('translation', '10000 10000 11000')
+                         .attr('scale', function(d){
+                          var rad = smaScale(d.koi_srad*solarRad_to_AU);
+                          //console.log("star");
+                          //console.log(rad);
+                          return rad + ' ' + rad + ' ' + rad;
+                         })
+                         .append('shape')
+                         .call(makeSolid, diffuseColor=function(d){
+                          return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1)
+                         .append('sphere');
+                         
+  var drawn_planet = scene.selectAll(".planet")
+                          .data(to_draw)
+                           .enter()
+                           .append('transform')
+                           .attr('translation', function(d){return 10000+smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU) + ' ' + 10000 + ' ' + 11000})
+                           .attr('scale', function(d){
+                            var rad = smaScale(d.koi_srad*d.koi_ror*solarRad_to_AU);
+                            //console.log("planet");
+                            //console.log(rad);
+                            return rad + ' ' + rad + ' ' +rad;
+                           })
+                           .attr('class','planet')
+                           .append('shape')
+                           .call(makeSolid, diffuseColor=function(d){return keplerplanetcolorScale(d.koi_teq)}, emissiveColor='black', opacity = 1) 
+                           .append('sphere');
+                           
+  
+  var drawn_orbit = scene.selectAll(".orbit")  
+                  .data(to_draw)      
+                  .enter()          
+                  .append('transform')   
+                  .attr('translation', '10000 10000 11000') 
+                  .attr('scale', function(d){
+                    var rad = smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);
+                    //console.log("orbit");
+                    //console.log(rad);
+                    return rad + ' ' + rad + ' ' + rad;
+                  }) 
+                  .attr('class', 'orbit')
+                  .append('shape')        
+                  .call(makeSolid, diffuseColor='white', emissiveColor='white', opacity=1)       
+                  .append('Circle2D')        
+                  .attr('subdivision',500);
+  
+
+  var drawn_zone = scene.selectAll(".zone")
+                          .data([to_draw[0]])
+                          .enter()
+                          .append('transform')
+                          .attr('class', 'zone')
+                          .attr('translation', '10000 10000 11000')
+                          .append('shape')
+                          .call(makeSolid, diffuseColor='#85D63E', emissiveColor='#85D63E', opacity=0.5)
+                          .append('Disk2D')
+                          .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('subdivision', 30);
+                
+  var drawn_zoneUpsideDown = scene.selectAll(".zoneUD")
+                          .data([to_draw[0]])
+                          .enter()
+                          .append('transform')
+                          .attr('class', 'zoneUD')  
+                          .attr('translation', '10000 10000 11000')  
+                          .attr('rotation', '1 0 0 3.14159') //flip over
+                          .append('shape')
+                          .call(makeSolid, diffuseColor='#85D63E', emissiveColor='#85D63E', opacity=0.5)
+                          .append('Disk2D')
+                          .attr('innerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('subdivision', 30);
+  
+  //Calculate the new x or y position per planet
+  function locate() {
+    return function(d){
+      var k = 360 / (d.koi_period * resolution * speedUp);
+      for (var i = 0; i < resolution; i++) {
+        d.theta += k;
+      }
+    
+      if (d.theta > 360){
+        d.theta -= 360;
+      }
+
+      var newX_shifted = smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU)*Math.cos(toRadians(d.theta)) + 10000;
+      var newY_shifted = smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU)*Math.sin(toRadians(d.theta)) + 10000;
+
+      //console.log(Math.pow(newX, 2) + Math.pow(newY, 2));
+
+      return newX_shifted + ' ' + newY_shifted + ' ' + 11000;};
+  };
+
+  //Change x and y location of each planet
+  timer = d3.timer(function() {
+                scene.selectAll(".planet")
+                      .attr('translation', locate());
+              });
+
+  //increment counter of planet view draws
+  nPlanetViewDraws += 1;
+
+};
+
+
+function planetViewSizes(system_kepID){
+  
+  console.log("beginning planetView, size-scaled");
+  
+  //remove earlier-drawn planetary system ,if there is one
+  if(nPlanetViewDraws > 0){
+    $('#theScene > .planetHost').remove();
+    $('#theScene > .planet').remove();
+    $('#theScene > .orbit').remove();
+    $('#theScene > .zone').remove();
+    $('#theScene > .zoneUD').remove();
+  }
+  
+  //edit pullout text
+  d3.select("#pullout-depth")     .html("<br />");
+  d3.select("#pullout-duration")    .html("The light green band represents the system's <b>habitable zone</b>, which is at the right equilibrium temperature for liquid water to exist.");
+  d3.select("#pullout-ratio")     .html("<br /> The star and planets' sizes have been exaggerated relative to their distances apart in this view. To see correctly-scaled distances, click below.");
+  d3.select("#pullout-button")    .html("<button onclick=planetView("+system_kepID+")>Distance-Scaled</button>");
+
+  //make the tooltip go away
+  stopTooltip = true;
+
+  //fly away to a random point in space to draw the planet view
+  var fov = 0.02;
+  var view_pos = [49995.04201, 9644.33980, 11267.33030]
+  var view_or = [0.58043, 0.57246, 0.57913, 2.08821]
+  var zN = 0.;
+  var zF = 5000000.;
+  var cor = [10000, 10000, 11000]
+
+  viewpoint.attr("position", view_pos.join(" "))
+    .attr("orientation", view_or.join(" "))
+    .attr('zNear', zN)
+    .attr('zFar', zF)
+    .attr("fieldOfView", fov)
+    .attr("centerOfRotation", cor);
+
+  //set zoom scale
+  zoom = d3.behavior.zoom()
+    .scaleExtent([0.0001, 0.02])
+    .on("zoom", zoomed);
+
+  //display the system
+  var solarRad_to_AU = 0.00465046726;
+  var to_draw = [];
+  var scales_arr = [];
+  var planetToDraw;
+  
+  for(i=0;i<keplerstars.length;i++){
+    if(keplerstars[i].kepid == system_kepID){
+      //make a copy of this object to hold its data
+      planetToDraw = {};
+
+      //empty this object out
+      for (var member in planetToDraw) delete planetToDraw[member];
+
+      //make a copy of this object to use its data
+      var planetToDraw = $.extend(true,{},keplerstars[i]) //JSON.parse(JSON.stringify(keplerstars[i]))
+      to_draw.push(planetToDraw);
+
+      scales_arr.push(planetToDraw.koi_srad * solarRad_to_AU);
+      scales_arr.push(planetToDraw.koi_srad * planetToDraw.koi_ror * solarRad_to_AU);
+      scales_arr.push(planetToDraw.koi_srad * planetToDraw.koi_dor * solarRad_to_AU);
+      scales_arr.push((Math.pow(planetToDraw.koi_steff,2)/Math.pow(273,2))*((planetToDraw.koi_srad * solarRad_to_AU)/2)); //outer HZ radius
+      };
+  };
+
+  var smaMin = d3.min(scales_arr);
+  var smaMax = d3.max(scales_arr);
+
+  //var max_to_min_ratio = smaMax/smaMin;
+
+  //while(max_to_min_ratio > x){
+  //  max_to_min_ratio = max_to_min_ratio/2;
+  //}
+  
+  var smaScale = null;                          
+  smaScale = d3.scale.linear()
+                  .domain([smaMin, smaMax])
+                  //.range([1, max_to_min_ratio]);
+                  .range([1.5, x/1.5]);
+
+  var drawn_planetHost = scene.selectAll(".planetHost")
+                        .data([to_draw[0]])
+                         .enter()
+                         .append('transform')
+                         .attr('class', 'planetHost')
+                         .attr('translation', '10000 10000 11000')
+                         .attr('scale', function(d){
+                          var rad =  rorScale(d.koi_srad);
+                          //console.log("star");
+                          //console.log(rad);
+                          return rad + ' ' + rad + ' ' + rad;
+                         })
+                         .append('shape')
+                         .call(makeSolid, diffuseColor=function(d){
+                          return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1)
+                         .append('sphere');
+                         
+  var drawn_planet = scene.selectAll(".planet")
+                          .data(to_draw)
+                           .enter()
+                           .append('transform')
+                           .attr('translation', function(d){return 10000+50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU) + ' ' + 10000 + ' ' + 11000})
+                           .attr('scale', function(d){
+                            var rad = rorScale(d.koi_ror * d.koi_srad);
+                            //console.log("planet");
+                            //console.log(rad);
+                            return rad + ' ' + rad + ' ' +rad;
+                           })
+                           .attr('class','planet')
+                           .append('shape')
+                           .call(makeSolid, diffuseColor=function(d){return keplerplanetcolorScale(d.koi_teq)}, emissiveColor='black', opacity = 1) 
+                           .append('sphere');
+                           
+  
+  var drawn_orbit = scene.selectAll(".orbit")  
+                  .data(to_draw)      
+                  .enter()          
+                  .append('transform')   
+                  .attr('translation', '10000 10000 11000') 
+                  .attr('scale', function(d){
+                    var rad = 50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU);
+                    //console.log("orbit");
+                    //console.log(rad);
+                    return rad + ' ' + rad + ' ' + rad;
+                  }) 
+                  .attr('class', 'orbit')
+                  .append('shape')        
+                  .call(makeSolid, diffuseColor='white', emissiveColor='white', opacity=1)       
+                  .append('Circle2D')        
+                  .attr('subdivision',500);
+  
+
+  var drawn_zone = scene.selectAll(".zone")
+                          .data([to_draw[0]])
+                          .enter()
+                          .append('transform')
+                          .attr('class', 'zone')
+                          .attr('translation', '10000 10000 11000')
+                          .append('shape')
+                          .call(makeSolid, diffuseColor='#85D63E', emissiveColor='#85D63E', opacity=0.5)
+                          .append('Disk2D')
+                          .attr('innerradius', function(d){return 50*smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return 50*smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('subdivision', 30);
+                
+  var drawn_zoneUpsideDown = scene.selectAll(".zoneUD")
+                          .data([to_draw[0]])
+                          .enter()
+                          .append('transform')
+                          .attr('class', 'zoneUD')  
+                          .attr('translation', '10000 10000 11000')  
+                          .attr('rotation', '1 0 0 3.14159') //flip over
+                          .append('shape')
+                          .call(makeSolid, diffuseColor='#85D63E', emissiveColor='#85D63E', opacity=0.5)
+                          .append('Disk2D')
+                          .attr('innerradius', function(d){return 50*smaScale((Math.pow(d.koi_steff,2)/Math.pow(373,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('outerradius', function(d){return 50*smaScale((Math.pow(d.koi_steff,2)/Math.pow(273,2))*((d.koi_srad * solarRad_to_AU)/2))})
+                          .attr('subdivision', 30);
+  
+  //Calculate the new x or y position per planet
+  function locate() {
+    return function(d){
+      var k = 360 / (d.koi_period * resolution * speedUp);
+      for (var i = 0; i < resolution; i++) {
+        d.theta += k;
+      }
+    
+      if (d.theta > 360){
+        d.theta -= 360;
+      }
+
+      var newX_shifted = 50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU)*Math.cos(toRadians(d.theta)) + 10000;
+      var newY_shifted = 50*smaScale(d.koi_srad*d.koi_dor*solarRad_to_AU)*Math.sin(toRadians(d.theta)) + 10000;
+
+      //console.log(Math.pow(newX, 2) + Math.pow(newY, 2));
+
+      return newX_shifted + ' ' + newY_shifted + ' ' + 11000;};
+  };
+
+  //Change x and y location of each planet
+  timer = d3.timer(function() {
+                scene.selectAll(".planet")
+                      .attr('translation', locate());
+              });
+
+  //increment counter of planet view draws
+  nPlanetViewDraws += 1;
+
+};
+

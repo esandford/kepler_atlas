@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  	<title>Kepler Atlas</title>
+<head>
+	 <head profile="http://www.w3.org/2005/10/profile">
+	<link rel="icon" type="image/x-icon" href="https://images.theconversation.com/files/69250/original/image-20150116-5165-1djhhn9.png?ixlib=rb-1.1.0&q=45&auto=format&w=926&fit=clip">
+</head>
+<body background="star3.jpg">
+  <body>
+  <head profile="http://www.w3.org/2005/10/profile"> <!-- favicon -->
+	<link rel="icon" type="image/x-icon" href="http://www.noteaproductions.com/art/SC%20photos/planets/Planet___Alaerin_by_Stock7000.jpg">
+    <meta charset="utf-8" />
+
+    <!-- d3 library -->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v4.0.0-alpha.28.min.js"></script>
+    
+	<!-- Google fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+
+	<!-- X3DOM 3D visualization library -->
+	<link rel="stylesheet" type="text/css" href="http://x3dom.org/release/x3dom.css" />
+	<script type="text/javascript" src="http://x3dom.org/release/x3dom-full.js"></script>
+    <script type="text/javascript" src="https://x3dom.org/release/components/Geometry2D.js"></script> 
+
+	<!-- custom css -->
+	<link type="text/css" rel="stylesheet" href="css/style.css"/>
+	<link type="text/css" rel="stylesheet" href="css/tooltip.css"/>
+	<link type="text/css" rel="stylesheet" href="css/infoBox.css"/>
+
+  </head>
+  <body>
+
+	<!-- create a box to hold the "planetarium", i.e. the planets animation -->
+    <div id="planetarium"></div>
+
+    <!-- create X3DOM scene -->
+    <x3d id="chartholder"></x3d> 
+
+	<!-- Create div structure for Tooltip -->
+	<!-- Nested divs for tooltip: 9, within "tooltip-Container", within "tooltip"-->
+	<div id="tooltip">
+		<div id="tooltip-Container">
+			<div class="tooltip-planet"></div>
+			<div class="tooltip-rule"></div>
+			<div class="tooltip-year"></div>
+			<div id="tooltip-radius"	class="tooltip-info"></div>
+			<div id="tooltip-dist" 		class="tooltip-info"></div>
+			<div id="tooltip-period" 	class="tooltip-info"></div>
+			<div id="tooltip-eccen" 	class="tooltip-info"></div>
+			<div id="tooltip-class" 	class="tooltip-info"></div>
+			<div class="tooltip-tail"></div>
+		</div>
+	</div>
+	<script src="js/d3-x3dom-axis.js"></script> <!-- for viewpoint debugging -->
+	<script src="js/KOIarchive_stellar.js"></script>
+	<script src="js/bsc.js"></script>
+	<script src="js/planet_data.js"></script> 
+
+	<script src="js/galacticCoords.js"></script>
+	<script src="js/scale.js"></script>
+
+    <script src="js/planet_view.js"></script>
+
+  
+
+    <!-- james & caroline -->
+    <!-- <button onclick="planetsizeView()">Scaled Sizing</button> 
+    <button onclick="planetdistanceView()">Scaled Distance</button> --><!-- need to nest planetsizeView and planetdistanceView into planetView, and in addition resetView button was suggested for better, more mainstreamed functionality--> 
+
+  </body>
+
+</html>

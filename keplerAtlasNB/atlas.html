@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head profile="http://www.w3.org/2005/10/profile">
+	<link rel="icon" type="image/x-icon" href="https://images.theconversation.com/files/69250/original/image-20150116-5165-1djhhn9.png?ixlib=rb-1.1.0&q=45&auto=format&w=926&fit=clip">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  </head>
+    <body background="img/star3.jpg">
+
+    <head profile="http://www.w3.org/2005/10/profile"> 
+  	<title>Kepler Atlas</title>
+  	<script src="https://use.fontawesome.com/7c624f9eb8.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  	<meta charset="utf-8"/>
+
+  	<!-- favicon -->
+	<link rel="icon" type="image/x-icon" href="http://www.noteaproductions.com/art/SC%20photos/planets/Planet___Alaerin_by_Stock7000.jpg">
+    
+
+    <!-- d3 library -->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v4.0.0-alpha.28.min.js"></script>
+    
+	<!-- Google fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  	<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700" rel="stylesheet">
+  	
+	<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
+
+	<!-- X3DOM 3D visualization library -->
+	<script type="text/javascript" src="https://github.com/x3dom/x3dom/releases/download/1.7.2/x3dom-full.js"></script> 
+
+	<!-- <script type="text/javascript" src="../x3dom/dist/x3dom-full.js"></script> -->	
+
+	<!-- jquery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+	<!-- custom css -->
+	<link type="text/css" rel="stylesheet" href="css/style.css"/>
+	<link type="text/css" rel="stylesheet" href="css/tooltip.css"/>
+	<link type="text/css" rel="stylesheet" href="css/pullout.css"/>
+	<link type="text/css" rel="stylesheet" href="css/slider.css"/>
+
+  </head>
+  <body>
+  	<!-- Navbar -->
+  	<nav class="white" role="navigation">
+  	<!--<a id="logo-container" href="index.html"><img border="0" alt="W3Schools" src="https://upload.wikimedia.org/wikipedia/commons/2/22/Earth_Western_Hemisphere_transparent_background.png" width="50" height="50"></a>-->
+  	<a id="logo-container" href="index.html"><img border="0" alt="W3Schools" src="img/logo.png" width="222" height="64"></a>
+    </div>
+  	</nav>
+
+
+	<!-- create a box to hold the "planetarium", i.e. the planets animation -->
+    <div id="planetarium"></div>
+
+    <!-- create X3DOM scene -->
+    <x3d id="chartholder"></x3d> 
+
+	<!-- Create div structure for Tooltip -->
+	<!-- Nested divs for tooltip: 9, within "tooltip-Container", within "tooltip"-->
+	<div id="tooltip">
+		<div id="tooltip-Container">
+			<button id="closeButton">X</button>
+			<div class="tooltip-planet"></div>
+			<div class="tooltip-rule"></div>
+			<div class="tooltip-year"></div>
+			<div id="tooltip-temperature" 	class="tooltip-info"></div>
+			<div id="tooltip-radius"		class="tooltip-info"></div>
+			<div id="tooltip-mass" 			class="tooltip-info"></div>	
+			<div id="tooltip-count" 		class="tooltip-info"></div>	
+			<div id="tooltip-depth" 		class="tooltip-info"></div>
+			<div id="tooltip-duration" 		class="tooltip-info"></div>
+			<div id="tooltip-ratio" 		class="tooltip-info"></div>	
+			<div id="tooltip-button" 		class="tooltip-info"></div>
+		</div>
+	</div>
+
+	<div id="pullout">
+ 		<div id="pullout-tab"></div>
+ 		<div id="pullout-inner">
+	 		<div class="pullout-planet"></div>
+	 		<div id="pullout-caret" 	class="pullout-caret"></div>
+			<div id="pullout-temperature" 	class="pullout-info"></div>
+			<div id="pullout-radius"		class="pullout-info"></div>
+			<div id="pullout-mass" 			class="pullout-info"></div>
+			<div id="pullout-count" 		class="pullout-info"></div>
+			<div id="pullout-depth" 		class="pullout-info"></div>
+			<div id="pullout-duration" 		class="pullout-info"></div>
+			<div id="pullout-ratio" 		class="pullout-info"></div>
+			<div id="pullout-button" 		class="pullout-info"></div>
+			
+  			<img src="img/keplerStarsColorScale.png" style="margin:auto; width:240px;display:block" />	
+  			<figcaption>Star colors</figcaption>
+					
+ 		</div>
+	</div>
+
+	<div id="sliderBar"></div>
+  	
+	<button onclick="galaxyView()">Galaxy View</button>
+    <button onclick="earthView()">Earth View</button>
+    
+
+	<!-- Load in javascript code -->
+	<script src="js/KOIarchive_stellar.js"></script>
+	<script src="js/bsc.js"></script>
+	<script src="js/showTooltip.js"></script>
+	<script src="js/galacticCoords.js"></script>
+	<script src="js/scale.js"></script>
+    <script src="js/mainCode.js"></script>
+    <script src="js/zoom.js"></script>
+
+    <!-- Materialize -->  
+  	<script type="text/javascript" src="js/materialize.min.js"></script>
+
+  </body>
+
+</html>
