@@ -31,7 +31,7 @@ d3.select("#pullout-radius")    .html("<b>Double-click</b> on a point to center 
 d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
 d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
 d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
-d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. <br /> ");
+d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. A small section of the midplane of the Milky Way galaxy is shown in blue. <br /> ");
 d3.select("#pullout-ratio")      .html("<br /> <b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
 d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
@@ -39,9 +39,10 @@ d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from
 
 //a function that x3dom uses to attach an "appearance" and "color" to a data selection.
 //If you subsequently append a shape to that selection, x3dom will render the shape in 3D with this appearance/color. -ES
-var makeSolid = function(selection, diffuseColor, emissiveColor, opacity) {
+var makeSolid = function(selection, diffuseColor, emissiveColor, opacity, materialClass) {
             selection.append("appearance")
                 .append("material")
+                .attr("class", materialClass)
                 .attr("diffuseColor", diffuseColor || "black")
                 .attr("emissiveColor", emissiveColor || "black")
                 .attr("transparency", function(){return 1 - opacity;})
@@ -183,12 +184,14 @@ var drawn_keplerstars = scene.selectAll(".keplerstar")
                         d.z = zScale(z);
 
             				    return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
-            				 //.attr('scale', function(d) {return 0.25*rScale(d.koi_srad)}) //sizes of spheres; faster than setting radius attribute
+                     .attr('scale', function(d){
+                        var rad = 0.25*rScale(d.koi_srad);
+                        return rad + ' ' + rad + ' ' + rad;
+                      })
                      .append('shape')                
             				 .call(makeSolid, diffuseColor=function(d){
             				 return keplerstarscolorScale(d.koi_steff)}, emissiveColor='black', opacity=1) //uses a function to return the STeff and apply our color scale to create differences 
-            				 .append('sphere')
-            				 .attr('radius', function(d) {return 0.25*rScale(d.koi_srad)});
+            				 .append('sphere');
 
 //Draw the bright star catalog
 var drawn_brightstars = scene.selectAll(".brightstar")
@@ -202,29 +205,43 @@ var drawn_brightstars = scene.selectAll(".brightstar")
 					      var y = xyz[1];
 					      var z = xyz[2];
             		return xScale(x) + ' ' + yScale(y) + ' ' + zScale(z);})
+              .attr('scale', function(d){
+                var rad = vmagRscale(d.Vmagnitude);
+                return rad + ' ' + rad + ' ' + rad;
+              })
               .append('shape')
-            	.call(makeSolid, diffuseColor=function(d){return vmagcolorscale(d.Vmagnitude)}, emissiveColor='black',opacity=0.8)
-              .append('sphere')
-            	.attr('radius', function(d) {return vmagRscale(d.Vmagnitude)});
+              //.append("appearance")
+              //.append("material")
+              //.attr("diffuseColor", "white")
+              //.attr("emissiveColor", "white")
+              //.attr("transparency", 0)
+              .call(makeSolid, diffuseColor=function(d){return vmagcolorscale(d.Vmagnitude)}, emissiveColor='black', opacity=0.8, materialClass='brightstarMaterial')
+              .append('sphere');
 
 
 // draw a cylinder to represent the Milky Way disk
-var cylinder = [{"height":5, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
+var MWdisk = [{"height":5, "radius":2000, "rotaxis_xcoord":1, "rotaxis_ycoord":0, "rotaxis_zcoord":0, "rot_angle":1.570796}];
 
-var drawn_cylinder = scene.selectAll(".cylinder") 	
-					.data(cylinder)				
+var drawn_MWdisk = scene.selectAll(".MWdisk") 	
+					.data(MWdisk)				
 					.enter()					
 					.append('transform')
+          .attr('class', 'MWdisk')
 					.attr('rotation', function(d){    //specify that this "transform" will impose a rotation of the circle
 						return d.rotaxis_xcoord + ' ' + d.rotaxis_ycoord + ' ' + d.rotaxis_zcoord + ' ' + d.rot_angle;
 					})
-					.attr('class', 'MWdisk')
-          .append('shape')					//for each circle, append an as-yet-unspecified shape to be drawn on our 3D canvas
-					.call(makeSolid, diffuseColor='blue', emissiveColor='black', opacity=0.4) 			//set the color
-          			.append('cylinder')					//make the shape a 2D circle
+          .append('shape')			
+					//.append('appearance')
+          //.append('material')
+          //.attr('class', 'MWdiskMaterial')
+          //.attr('diffuseColor','blue')
+          //.attr('emissiveColor','black')
+          //.attr('transparency',"0.6")
+          .call(makeSolid, diffuseColor='blue', emissiveColor='black', opacity=0.4)
+          .append('cylinder')
 					.attr('radius', function(d){return d.radius;})	//set the radius
-					.attr('height', function(d){return d.height})
-					.attr('subdivision',40)
+					.attr('height', function(d){return d.height;})
+					.attr('subdivision',40);
 
 // Enable switch to "Earth view," i.e. view from the Kepler satellite
 function earthView() {
@@ -237,7 +254,7 @@ function earthView() {
         d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
         d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
         d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
-        d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. <br /> ");
+        d3.select("#pullout-duration")     .html("<br />")
         d3.select("#pullout-ratio")      .html("<br /> <b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
         d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
@@ -271,6 +288,11 @@ function earthView() {
         sliderelement.val(function( index, value ) {
           return zoom.scaleExtent()[0];
         });
+
+        //set cylinder and bright star opacity equal to 0
+        $('.brightstarMaterial').attr("transparency", 1);
+        $('#theScene > .MWdisk').remove();
+        
 				}
 
 // Enable switch back to "Galaxy view"
@@ -284,7 +306,7 @@ function galaxyView() {
         d3.select("#pullout-mass")     .html("<b>Click and drag</b> to change your perspective. ");
         d3.select("#pullout-count")    .html("<b>Press the R button</b> to go back to the original viewpoint.");
         d3.select("#pullout-depth")     .html("<b>Click</b> on a star to visit it and see its planets.");
-        d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. <br /> ");
+        d3.select("#pullout-duration")     .html("<br /> The yellow points are stars visible to the naked eye from Earth. These stars are at an average distance of 300 light-years from Earth. A small section of the midplane of the Milky Way galaxy is shown in blue. <br /> ");
         d3.select("#pullout-ratio")      .html("<br /> <b>Galaxy View</b> shows you a view of the <i>Kepler</i> planet-hosting stars from a vantage point high above the Milky Way disk.");
         d3.select("#pullout-button")    .html("<b>Earth View</b> shows you the view from the <i>Kepler</i> space telescope, which is very near Earth. <br />");
 
@@ -318,6 +340,30 @@ function galaxyView() {
           return zoom.scaleExtent()[0];
         });
 
+        //make bright stars and MW disk visible again
+        $('.brightstarMaterial').attr("transparency", 0.2);
+
+        drawn_MWdisk = scene.selectAll(".MWdisk")   
+          .data(MWdisk)       
+          .enter()          
+          .append('transform')
+          .attr('class', 'MWdisk')
+          .attr('rotation', function(d){    //specify that this "transform" will impose a rotation of the circle
+            return d.rotaxis_xcoord + ' ' + d.rotaxis_ycoord + ' ' + d.rotaxis_zcoord + ' ' + d.rot_angle;
+          })
+          .append('shape')      
+          //.append('appearance')
+          //.append('material')
+          //.attr('id', 'MWdiskMaterial')
+          //.attr('diffuseColor','blue')
+          //.attr('emissiveColor','black')
+          //.attr('transparency',"0.6")
+          .call(makeSolid, diffuseColor='blue', emissiveColor='black', opacity=0.4)
+          .append('cylinder')
+          .attr('radius', function(d){return d.radius;})  //set the radius
+          .attr('height', function(d){return d.height;})
+          .attr('subdivision',40);
+
 				}
 
 function getRelativeCoords(event) {
@@ -348,7 +394,7 @@ function planetView(system_kepID){
   }
   
   //edit pullout text
-  d3.select("#pullout-depth")     .html("<br />");
+  d3.select("#pullout-depth")     .html("<br /><br /><br />");
   d3.select("#pullout-duration")    .html("The light green band represents the system's <b>habitable zone</b>, which is at the right equilibrium temperature for liquid water to exist.");
   d3.select("#pullout-ratio")     .html("<br /> The planets' sizes have been exaggerated in this view. To see planets scaled accurately relative to their star, click below.");
   d3.select("#pullout-button")    .html("<button onclick=planetViewSizes("+system_kepID+")>Size-Scaled</button>");
@@ -357,7 +403,7 @@ function planetView(system_kepID){
   stopTooltip = true;
 
   //fly away to a random point in space to draw the planet view
-  var fov = 0.005;
+  var fov = 0.001;
   var view_pos = [49995.04201, 9644.33980, 11267.33030]
   var view_or = [0.58043, 0.57246, 0.57913, 2.08821]
   var zN = 0.;
@@ -373,7 +419,7 @@ function planetView(system_kepID){
 
   //set zoom scale
   zoom = d3.behavior.zoom()
-    .scaleExtent([0.0001, 0.005])
+    .scaleExtent([0.0001, 0.001])
     .on("zoom", zoomed);
 
   //display the system

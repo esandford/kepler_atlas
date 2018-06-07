@@ -6,7 +6,7 @@
   /*left: -260px;*/
   left: 0px;
   width: 296px;
-  height: 600px;
+  height: 650px;
   background: #ffffff;
   transition: all 0.5s ease;
 }
@@ -22,12 +22,12 @@
   top: 0;
   left: 10px;
   width: 240px;
-  height: 600px;
+  height: 650px;
 }
 
 #pullout-form {
   width: 240px;
-  height: 600px;
+  height: 650px;
 }
 
 #pullout-tab {
@@ -35,7 +35,7 @@
   top: 10;
   right: 0;
   width: 36px;
-  height: 600px;
+  height: 650px;
   background: #2f46a3;
   /*background: #ffffff;*/
   cursor: pointer;
