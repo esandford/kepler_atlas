@@ -4,6 +4,7 @@
 // function(t,n){return;}() returns a syntax error
 //but
 // !function(t,n){return;} returns True
+
 ! function(t, n) {
 	//console.log("t is " + t); //t is [object Window]
 	//console.log("n is " + n); //n is function defined below
@@ -12,26 +13,26 @@
 	//condition ? value-if-true : value-if-false
 
 	//without nested ternary:
-	//var size_of_x;
-	//if(x == 0){
-    //	size_of_x = "none";
-	//}
-	//else if(x < 5){
-    //	size_of_x = "small";
-	//}
-	//else if (x > 5 && x < 10){
-    //	size_of_x = "medium";
-	//}
-	//else {
-    //	size_of_x = "big";
-	//}
+	/*var size_of_x;
+	if(x == 0){
+    	size_of_x = "none";
+	}
+	else if(x < 5){
+    	size_of_x = "small";
+	}
+	else if (x > 5 && x < 10){
+    	size_of_x = "medium";
+	}
+	else {
+    	size_of_x = "big";
+	}*/
 
 	//now, with nested ternary:
-	//var size_of_x =
-  	//	(x == 0) 			  ? "none"   :
-  	//	(x < 5) 			  ? "small"  :
-  	//	((x > 5) && (x < 10)) ? "medium" :
-    //       		                "big"    ;
+	/*var size_of_x =
+  		(x == 0) 			  ? "none"   :
+  		(x < 5) 			  ? "small"  :
+  		((x > 5) && (x < 10)) ? "medium" :
+           		                "big"    ;*/
     
     //console.log(typeof exports); //undefined
     //console.log(typeof module); //undefined
